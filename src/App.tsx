@@ -52,17 +52,17 @@ function AppRoutes() {
         <Route
           path="/nags"
           element={
-            <ProtectedRoute>
+            <GuardianRoute>
               <NagList />
-            </ProtectedRoute>
+            </GuardianRoute>
           }
         />
         <Route
           path="/create-nag"
           element={
-            <ProtectedRoute>
+            <GuardianRoute>
               <CreateNag />
-            </ProtectedRoute>
+            </GuardianRoute>
           }
         />
         <Route
