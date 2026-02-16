@@ -44,7 +44,7 @@ export default function NagList() {
     return (
       <div>
         <p>
-          No family selected. <Link to="/family">Go to dashboard</Link>
+          No family selected. <Link to="/">Go to dashboard</Link>
         </p>
       </div>
     );
@@ -57,7 +57,7 @@ export default function NagList() {
     <div>
       <div className="header">
         <h2>All Nags</h2>
-        <Link to="/">Home</Link>
+        <Link to="/">Family</Link>
       </div>
 
       <p className="page-hint">

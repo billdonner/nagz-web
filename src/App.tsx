@@ -23,6 +23,14 @@ function GuardianRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function HomeRedirect() {
+  const { userId } = useAuth();
+  const { members } = useMembers();
+  const role = members.find((m) => m.user_id === userId)?.role;
+  if (role === "guardian") return <FamilyDashboard />;
+  return <KidView />;
+}
+
 function AppRoutes() {
   const { token } = useAuth();
 
@@ -37,7 +45,7 @@ function AppRoutes() {
           path="/"
           element={
             <ProtectedRoute>
-              <KidView />
+              <HomeRedirect />
             </ProtectedRoute>
           }
         />

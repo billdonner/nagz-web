@@ -110,7 +110,7 @@ export default function KidView() {
   if (!familyId) {
     return (
       <p>
-        No family selected. <Link to="/family">Go to dashboard</Link>
+        No family selected. <Link to="/">Go to dashboard</Link>
       </p>
     );
   }
@@ -130,7 +130,8 @@ export default function KidView() {
         <h2>{getName(viewUserId!)}'s Nags</h2>
         <div className="header-actions">
           <span className="logged-in-as">{getName(userId!)}</span>
-          {myRole === "guardian" && <Link to="/family">Family</Link>}
+          {myRole === "guardian" && <Link to="/nags">Nagz</Link>}
+          {myRole === "guardian" && <Link to="/">Family</Link>}
           <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>

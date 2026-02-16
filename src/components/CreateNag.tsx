@@ -31,7 +31,7 @@ export default function CreateNag() {
   if (!familyId) {
     return (
       <p>
-        No family selected. <Link to="/family">Go to dashboard</Link>
+        No family selected. <Link to="/">Family</Link>
       </p>
     );
   }
@@ -75,7 +75,7 @@ export default function CreateNag() {
     <div>
       <div className="header">
         <h2>Create Nag</h2>
-        <Link to="/">Home</Link>
+        <button className="link-button" onClick={() => navigate(-1)}>Cancel</button>
       </div>
 
       <p className="page-hint">
