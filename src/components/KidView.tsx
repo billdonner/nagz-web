@@ -102,12 +102,8 @@ export default function KidView() {
       <div className="header">
         <h2>{getName(viewUserId!)}'s Nags</h2>
         <div className="header-actions">
-          <Link to="/family" className="btn-secondary">
-            Family
-          </Link>
-          <Link to="/nags" className="btn-secondary">
-            Nagz
-          </Link>
+          <Link to="/family">Family</Link>
+          <Link to="/nags">Nagz</Link>
         </div>
       </div>
 

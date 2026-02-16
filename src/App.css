@@ -75,12 +75,15 @@
 
 .header-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   align-items: center;
 }
 
 .header-actions a {
-  text-decoration: none;
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: 0.9rem;
 }
 
 /* Navigation */

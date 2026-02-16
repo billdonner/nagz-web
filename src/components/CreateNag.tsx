@@ -75,9 +75,7 @@ export default function CreateNag() {
     <div>
       <div className="header">
         <h2>Create Nag</h2>
-        <Link to="/" className="btn-secondary">
-          Home
-        </Link>
+        <Link to="/">Home</Link>
       </div>
 
       <p className="page-hint">
