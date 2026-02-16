@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { customInstance } from "../api/axios-instance";
+import { useMembers } from "../members";
 import type { NagResponse } from "../api/model";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -15,6 +16,7 @@ export default function NagList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("");
+  const { getName } = useMembers();
 
   const familyId = localStorage.getItem("nagz_family_id");
 
@@ -41,7 +43,9 @@ export default function NagList() {
   if (!familyId) {
     return (
       <div>
-        <p>No family selected. <Link to="/">Go to dashboard</Link></p>
+        <p>
+          No family selected. <Link to="/">Go to dashboard</Link>
+        </p>
       </div>
     );
   }
@@ -53,7 +57,9 @@ export default function NagList() {
     <div>
       <div className="header">
         <h2>All Nags</h2>
-        <Link to="/" className="btn-secondary">Back</Link>
+        <Link to="/" className="btn-secondary">
+          Back
+        </Link>
       </div>
 
       <div className="filters">
@@ -92,8 +98,8 @@ export default function NagList() {
               <th>Category</th>
               <th>Status</th>
               <th>Recipient</th>
+              <th>From</th>
               <th>Due</th>
-              <th>Created</th>
             </tr>
           </thead>
           <tbody>
@@ -110,9 +116,9 @@ export default function NagList() {
                     {nag.status}
                   </span>
                 </td>
-                <td>{nag.recipient_id.slice(0, 8)}...</td>
+                <td>{getName(nag.recipient_id)}</td>
+                <td>{getName(nag.creator_id)}</td>
                 <td>{new Date(nag.due_at).toLocaleString()}</td>
-                <td>{new Date(nag.created_at).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

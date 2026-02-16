@@ -232,6 +232,12 @@ th {
   color: #6b7280;
 }
 
+.card-from {
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
 .card-actions {
   display: flex;
   gap: 0.5rem;

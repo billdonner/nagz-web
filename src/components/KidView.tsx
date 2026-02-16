@@ -1,11 +1,13 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
+import { useMembers } from "../members";
 import { customInstance } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
 
 export default function KidView() {
   const { userId } = useAuth();
+  const { getName } = useMembers();
   const familyId = localStorage.getItem("nagz_family_id");
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,7 +103,12 @@ export default function KidView() {
           {openNags.map((nag) => (
             <div key={nag.id} className="card">
               <div className="card-header">
-                <span className="badge badge-category">{nag.category}</span>
+                <div>
+                  <span className="badge badge-category">{nag.category}</span>
+                  <span className="card-from">
+                    from {getName(nag.creator_id)}
+                  </span>
+                </div>
                 <span className="due-date">
                   Due: {new Date(nag.due_at).toLocaleString()}
                 </span>
@@ -129,6 +136,7 @@ export default function KidView() {
             <thead>
               <tr>
                 <th>Category</th>
+                <th>From</th>
                 <th>Status</th>
                 <th>Due</th>
               </tr>
@@ -137,6 +145,7 @@ export default function KidView() {
               {doneNags.map((nag) => (
                 <tr key={nag.id}>
                   <td>{nag.category}</td>
+                  <td>{getName(nag.creator_id)}</td>
                   <td>
                     <span className={`badge badge-${nag.status}`}>
                       {nag.status}

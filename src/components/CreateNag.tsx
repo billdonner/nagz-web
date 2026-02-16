@@ -2,11 +2,13 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { customInstance } from "../api/axios-instance";
 import { NagCategory, DoneDefinition } from "../api/model";
+import { useMembers } from "../members";
 import type { NagCreate, NagResponse } from "../api/model";
 
 export default function CreateNag() {
   const navigate = useNavigate();
   const familyId = localStorage.getItem("nagz_family_id");
+  const { members } = useMembers();
 
   const [recipientId, setRecipientId] = useState("");
   const [category, setCategory] = useState<string>(NagCategory.chores);
@@ -27,8 +29,8 @@ export default function CreateNag() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!recipientId.trim() || !dueAt) {
-      setError("Recipient ID and due date are required");
+    if (!recipientId || !dueAt) {
+      setError("Recipient and due date are required");
       return;
     }
     setSubmitting(true);
@@ -36,7 +38,7 @@ export default function CreateNag() {
     try {
       const body: NagCreate = {
         family_id: familyId,
-        recipient_id: recipientId.trim(),
+        recipient_id: recipientId,
         category: category as NagCreate["category"],
         done_definition: doneDefinition as NagCreate["done_definition"],
         due_at: new Date(dueAt).toISOString(),
@@ -49,7 +51,7 @@ export default function CreateNag() {
       });
       navigate("/nags");
     } catch {
-      setError("Failed to create nag. Check the recipient ID.");
+      setError("Failed to create nag.");
     }
     setSubmitting(false);
   };
@@ -65,14 +67,19 @@ export default function CreateNag() {
 
       <form onSubmit={handleSubmit} className="form">
         <label>
-          Recipient (user UUID)
-          <input
-            type="text"
-            placeholder="recipient-user-uuid"
+          Recipient
+          <select
             value={recipientId}
             onChange={(e) => setRecipientId(e.target.value)}
             required
-          />
+          >
+            <option value="">-- select a family member --</option>
+            {members.map((m) => (
+              <option key={m.user_id} value={m.user_id}>
+                {m.display_name ?? m.user_id.slice(0, 8)} ({m.role})
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>

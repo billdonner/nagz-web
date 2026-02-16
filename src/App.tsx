@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth";
+import { MembersProvider } from "./members";
 import Login from "./components/Login";
 import FamilyDashboard from "./components/FamilyDashboard";
 import NagList from "./components/NagList";
@@ -65,7 +66,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
+        <MembersProvider>
+          <AppRoutes />
+        </MembersProvider>
       </AuthProvider>
     </BrowserRouter>
   );
