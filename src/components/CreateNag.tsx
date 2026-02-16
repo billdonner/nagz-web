@@ -23,6 +23,7 @@ export default function CreateNag() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow.toISOString().slice(0, 16);
   });
+  const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -49,6 +50,7 @@ export default function CreateNag() {
         category: category as NagCreate["category"],
         done_definition: doneDefinition as NagCreate["done_definition"],
         due_at: new Date(dueAt).toISOString(),
+        description: description.trim() || undefined,
       };
       await customInstance<NagResponse>({
         url: "/api/v1/nags",
@@ -115,6 +117,16 @@ export default function CreateNag() {
               </option>
             ))}
           </select>
+        </label>
+
+        <label>
+          Description
+          <textarea
+            placeholder="What needs to be done? (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+          />
         </label>
 
         <label>

@@ -128,6 +128,9 @@ export default function KidView() {
                   Due: {new Date(nag.due_at).toLocaleString()}
                 </span>
               </div>
+              {nag.description && (
+                <p className="card-description">{nag.description}</p>
+              )}
               {isOwnView && (
                 <div className="card-actions">
                   <button onClick={() => markComplete(nag.id)}>
@@ -161,7 +164,12 @@ export default function KidView() {
             <tbody>
               {doneNags.map((nag) => (
                 <tr key={nag.id}>
-                  <td>{nag.category}</td>
+                  <td>
+                    {nag.category}
+                    {nag.description && (
+                      <div className="nag-description">{nag.description}</div>
+                    )}
+                  </td>
                   <td>{getName(nag.creator_id)}</td>
                   <td>
                     <span className={`badge badge-${nag.status}`}>

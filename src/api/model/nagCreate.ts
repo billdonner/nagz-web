@@ -15,6 +15,7 @@ export interface NagCreate {
   due_at: string;
   category: NagCategory;
   done_definition: DoneDefinition;
+  description?: string | null;
   strategy_template?: StrategyTemplate;
   policy_id?: string | null;
 }

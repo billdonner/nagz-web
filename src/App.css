@@ -321,6 +321,21 @@ th {
   color: #1d4ed8;
 }
 
+/* Nag description */
+.card-description {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.nag-description {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.2rem;
+  font-weight: 400;
+}
+
 /* Error */
 .error {
   color: #ef4444;

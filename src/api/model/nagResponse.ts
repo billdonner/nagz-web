@@ -18,6 +18,7 @@ export interface NagResponse {
   due_at: string;
   category: NagCategory;
   done_definition: DoneDefinition;
+  description: string | null;
   strategy_template: StrategyTemplate;
   status: NagStatus;
   created_at: string;

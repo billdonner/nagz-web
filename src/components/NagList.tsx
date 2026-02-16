@@ -104,8 +104,13 @@ export default function NagList() {
           </thead>
           <tbody>
             {nags.map((nag) => (
-              <tr key={nag.id}>
-                <td>{nag.category}</td>
+              <tr key={nag.id} title={nag.description ?? undefined}>
+                <td>
+                  {nag.category}
+                  {nag.description && (
+                    <div className="nag-description">{nag.description}</div>
+                  )}
+                </td>
                 <td>
                   <span
                     className="badge"
