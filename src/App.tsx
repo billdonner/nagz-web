@@ -28,6 +28,14 @@ function AppRoutes() {
           path="/"
           element={
             <ProtectedRoute>
+              <KidView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family"
+          element={
+            <ProtectedRoute>
               <FamilyDashboard />
             </ProtectedRoute>
           }

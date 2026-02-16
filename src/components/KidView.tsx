@@ -87,7 +87,7 @@ export default function KidView() {
   if (!familyId) {
     return (
       <p>
-        No family selected. <Link to="/">Go to dashboard</Link>
+        No family selected. <Link to="/family">Go to dashboard</Link>
       </p>
     );
   }
@@ -100,12 +100,15 @@ export default function KidView() {
   return (
     <div>
       <div className="header">
-        <h2>
-          {isOwnView ? "My Nags" : `${getName(viewUserId!)}'s Nags`}
-        </h2>
-        <Link to="/" className="btn-secondary">
-          Back
-        </Link>
+        <h2>{getName(viewUserId!)}'s Nags</h2>
+        <div className="header-actions">
+          <Link to="/family" className="btn-secondary">
+            Family
+          </Link>
+          <Link to="/nags" className="btn-secondary">
+            Nagz
+          </Link>
+        </div>
       </div>
 
       <p className="page-hint">

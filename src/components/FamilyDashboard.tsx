@@ -85,8 +85,8 @@ export default function FamilyDashboard() {
       <div className="header">
         <h2>{familyName ?? "Family Dashboard"}</h2>
         <div className="header-actions">
-          <Link to="/nags" className="btn-secondary">
-            Nagz
+          <Link to="/" className="btn-secondary">
+            Home
           </Link>
           <button onClick={logout} className="btn-secondary">
             Logout

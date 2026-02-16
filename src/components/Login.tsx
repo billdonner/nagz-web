@@ -1,5 +1,7 @@
 import { useAuth } from "../auth";
 
+const DONNER_FAMILY_ID = "93803dda-64e6-491c-b460-02ab3b72c465";
+
 const DEV_USERS = [
   { name: "Andrew", role: "guardian", token: "dev:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" },
   { name: "Katherine", role: "guardian", token: "dev:bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" },
@@ -21,7 +23,10 @@ export default function Login() {
           <button
             key={u.token}
             className="login-user-btn"
-            onClick={() => login(u.token)}
+            onClick={() => {
+              localStorage.setItem("nagz_family_id", DONNER_FAMILY_ID);
+              login(u.token);
+            }}
           >
             <span className="login-user-name">
               {u.role === "guardian" && "* "}
