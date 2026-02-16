@@ -83,6 +83,16 @@
   margin: 0;
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.header-actions a {
+  text-decoration: none;
+}
+
 /* Navigation */
 .nav-links {
   display: flex;

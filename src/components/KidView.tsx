@@ -164,8 +164,8 @@ export default function KidView() {
                 <div className="card-header">
                   <div>
                     <span className="badge badge-category">{nag.category}</span>
-                    <span className={`badge badge-${nag.status}`}>
-                      {nag.status}
+                    <span className={`badge badge-${nag.status.startsWith("cancelled") ? "cancelled" : nag.status}`}>
+                      {nag.status.startsWith("cancelled") ? "cancelled" : nag.status}
                     </span>
                     <span className="card-from">
                       from {getName(nag.creator_id)}

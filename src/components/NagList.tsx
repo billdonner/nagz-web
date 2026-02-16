@@ -122,7 +122,7 @@ export default function NagList() {
                       backgroundColor: STATUS_COLORS[nag.status] ?? "#6b7280",
                     }}
                   >
-                    {nag.status}
+                    {nag.status.startsWith("cancelled") ? "cancelled" : nag.status}
                   </span>
                 </td>
                 <td>{getName(nag.recipient_id)}</td>
