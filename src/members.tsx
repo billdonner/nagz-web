@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { customInstance } from "./api/axios-instance";
+import { useAuth } from "./auth";
 
 export interface Member {
   user_id: string;
@@ -36,6 +37,7 @@ const MembersContext = createContext<MembersCtx>({
 });
 
 export function MembersProvider({ children }: { children: ReactNode }) {
+  const { token } = useAuth();
   const [members, setMembers] = useState<Member[]>([]);
   const [familyName, setFamilyName] = useState<string | null>(null);
   const [nameMap, setNameMap] = useState<Record<string, string>>({});
@@ -73,7 +75,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [load, token]);
 
   const getName = useCallback(
     (userId: string) => nameMap[userId] ?? userId.slice(0, 8) + "...",
