@@ -147,6 +147,16 @@ button:disabled {
   background: #f59e0b;
 }
 
+.badge-clickable {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.badge-clickable:hover {
+  background: #d97706;
+}
+
 .badge-category {
   background: #6366f1;
 }

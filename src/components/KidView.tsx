@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance } from "../api/axios-instance";
@@ -8,6 +8,8 @@ import type { NagResponse } from "../api/model";
 export default function KidView() {
   const { userId } = useAuth();
   const { getName } = useMembers();
+  const [searchParams] = useSearchParams();
+  const viewUserId = searchParams.get("user") ?? userId;
   const familyId = localStorage.getItem("nagz_family_id");
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ export default function KidView() {
         params: { family_id: familyId },
       });
       // Filter to only this user's nags
-      setNags(data.filter((n) => n.recipient_id === userId));
+      setNags(data.filter((n) => n.recipient_id === viewUserId));
     } catch {
       setError("Failed to load nags");
     }
@@ -36,7 +38,7 @@ export default function KidView() {
 
   useEffect(() => {
     loadNags();
-  }, [familyId, userId]);
+  }, [familyId, viewUserId]);
 
   const markComplete = async (nagId: string) => {
     try {
@@ -87,7 +89,7 @@ export default function KidView() {
   return (
     <div>
       <div className="header">
-        <h2>My Nags</h2>
+        <h2>{viewUserId === userId ? "My Nags" : `${getName(viewUserId!)}'s Nags`}</h2>
         <Link to="/" className="btn-secondary">
           Back
         </Link>

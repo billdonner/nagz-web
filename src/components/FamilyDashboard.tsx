@@ -82,8 +82,6 @@ export default function FamilyDashboard() {
 
       <nav className="nav-links">
         <Link to="/nags">All Nags</Link>
-        <Link to="/create-nag">Create Nag</Link>
-        <Link to="/kid">Kid View</Link>
       </nav>
 
       {members.length > 0 && (
@@ -117,7 +115,16 @@ export default function FamilyDashboard() {
                     )}
                   </td>
                   <td>
-                    <span className={`badge badge-${m.role}`}>{m.role}</span>
+                    {m.role === "child" ? (
+                      <button
+                        className="badge badge-child badge-clickable"
+                        onClick={() => navigate(`/kid?user=${m.user_id}`)}
+                      >
+                        Kid View
+                      </button>
+                    ) : (
+                      <span className="badge badge-guardian">{m.role}</span>
+                    )}
                   </td>
                   <td>{new Date(m.joined_at).toLocaleDateString()}</td>
                 </tr>

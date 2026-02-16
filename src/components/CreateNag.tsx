@@ -18,7 +18,11 @@ export default function CreateNag() {
   const [doneDefinition, setDoneDefinition] = useState<string>(
     DoneDefinition.ack_only
   );
-  const [dueAt, setDueAt] = useState("");
+  const [dueAt, setDueAt] = useState(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().slice(0, 16);
+  });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
