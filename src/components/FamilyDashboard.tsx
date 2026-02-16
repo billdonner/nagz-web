@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance } from "../api/axios-instance";
+import type { NagResponse } from "../api/model";
 
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
@@ -12,12 +13,13 @@ export default function FamilyDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [manualFamilyId, setManualFamilyId] = useState("");
+  const [nagCounts, setNagCounts] = useState<Record<string, number>>({});
 
   const loadFamily = async (fid: string) => {
     setLoading(true);
     setError("");
     try {
-      await customInstance<unknown[]>({
+      const nags = await customInstance<NagResponse[]>({
         url: "/api/v1/nags",
         method: "GET",
         params: { family_id: fid },
@@ -25,6 +27,13 @@ export default function FamilyDashboard() {
       setFamilyId(fid);
       localStorage.setItem("nagz_family_id", fid);
       reloadMembers();
+
+      // Count nags per recipient
+      const counts: Record<string, number> = {};
+      for (const n of nags) {
+        counts[n.recipient_id] = (counts[n.recipient_id] ?? 0) + 1;
+      }
+      setNagCounts(counts);
     } catch {
       setError("Could not access family. Check the family ID.");
     }
@@ -91,44 +100,44 @@ export default function FamilyDashboard() {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Role</th>
+                <th>Nagz</th>
                 <th>Joined</th>
               </tr>
             </thead>
             <tbody>
-              {members.map((m) => (
-                <tr
-                  key={m.user_id}
-                  className={m.user_id === userId ? "row-highlight" : ""}
-                >
-                  <td>
-                    <button
-                      className="link-button"
-                      onClick={() =>
-                        navigate(`/create-nag?recipient=${m.user_id}`)
-                      }
-                    >
-                      {m.display_name ?? m.user_id.slice(0, 8)}
-                    </button>
-                    {m.user_id === userId && (
-                      <span className="you-badge">you</span>
-                    )}
-                  </td>
-                  <td>
-                    {m.role === "child" ? (
+              {members.map((m) => {
+                const count = nagCounts[m.user_id] ?? 0;
+                return (
+                  <tr
+                    key={m.user_id}
+                    className={m.user_id === userId ? "row-highlight" : ""}
+                  >
+                    <td>
                       <button
-                        className="badge badge-child badge-clickable"
+                        className="link-button"
+                        onClick={() =>
+                          navigate(`/create-nag?recipient=${m.user_id}`)
+                        }
+                      >
+                        {m.role === "guardian" && "* "}
+                        {m.display_name ?? m.user_id.slice(0, 8)}
+                      </button>
+                      {m.user_id === userId && (
+                        <span className="you-badge">you</span>
+                      )}
+                    </td>
+                    <td>
+                      <button
+                        className="badge badge-nag-count badge-clickable"
                         onClick={() => navigate(`/kid?user=${m.user_id}`)}
                       >
-                        Kid View
+                        {count}
                       </button>
-                    ) : (
-                      <span className="badge badge-guardian">{m.role}</span>
-                    )}
-                  </td>
-                  <td>{new Date(m.joined_at).toLocaleDateString()}</td>
-                </tr>
-              ))}
+                    </td>
+                    <td>{new Date(m.joined_at).toLocaleDateString()}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

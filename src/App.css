@@ -147,6 +147,12 @@ button:disabled {
   background: #f59e0b;
 }
 
+.badge-nag-count {
+  background: #6366f1;
+  min-width: 2rem;
+  text-align: center;
+}
+
 .badge-clickable {
   cursor: pointer;
   border: none;
@@ -154,7 +160,7 @@ button:disabled {
 }
 
 .badge-clickable:hover {
-  background: #d97706;
+  filter: brightness(0.85);
 }
 
 .badge-category {
