@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
+import axios from "axios";
 
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
@@ -14,6 +15,13 @@ export default function FamilyDashboard() {
   const [error, setError] = useState("");
   const [manualFamilyId, setManualFamilyId] = useState("");
   const [nagCounts, setNagCounts] = useState<Record<string, number>>({});
+
+  // Add member form
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newRole, setNewRole] = useState<string>("child");
+  const [addError, setAddError] = useState("");
+  const [adding, setAdding] = useState(false);
 
   const loadFamily = async (fid: string) => {
     setLoading(true);
@@ -48,6 +56,35 @@ export default function FamilyDashboard() {
       setLoading(false);
     }
   }, []);
+
+  const handleAddMember = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!newName.trim() || !familyId) return;
+    setAdding(true);
+    setAddError("");
+    try {
+      await customInstance<unknown>({
+        url: `/api/v1/families/${familyId}/members/create`,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: { display_name: newName.trim(), role: newRole },
+      });
+      setNewName("");
+      setNewRole("child");
+      setShowAddForm(false);
+      reloadMembers();
+      await loadFamily(familyId);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const msg =
+          err.response?.data?.detail ?? err.response?.data?.error?.message;
+        setAddError(msg ?? "Failed to add member.");
+      } else {
+        setAddError("Failed to add member.");
+      }
+    }
+    setAdding(false);
+  };
 
   if (loading) return <p>Loading...</p>;
 
@@ -93,7 +130,8 @@ export default function FamilyDashboard() {
       </div>
 
       <p className="page-hint">
-        Tap a name to create a nag for that person. Tap the count to view their nags. * = guardian.
+        Tap a name to create a nag for that person. Tap the count to view their
+        nags. * = guardian.
       </p>
 
       {members.length > 0 && (
@@ -139,6 +177,54 @@ export default function FamilyDashboard() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {showAddForm ? (
+        <form onSubmit={handleAddMember} className="form add-member-form">
+          <h3>Add Member</h3>
+          <label>
+            Name
+            <input
+              type="text"
+              placeholder="Display name"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              required
+              autoFocus
+            />
+          </label>
+          <label>
+            Role
+            <select value={newRole} onChange={(e) => setNewRole(e.target.value)}>
+              <option value="child">Child</option>
+              <option value="guardian">Guardian</option>
+            </select>
+          </label>
+          {addError && <p className="error">{addError}</p>}
+          <div className="card-actions">
+            <button type="submit" disabled={adding}>
+              {adding ? "Adding..." : "Add"}
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => {
+                setShowAddForm(false);
+                setAddError("");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <button
+          className="link-button"
+          onClick={() => setShowAddForm(true)}
+          style={{ marginTop: "1rem" }}
+        >
+          + Add family member
+        </button>
       )}
     </div>
   );

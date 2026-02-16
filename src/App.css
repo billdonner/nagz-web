@@ -386,6 +386,18 @@ th {
   font-weight: 400;
 }
 
+/* Add member form */
+.add-member-form {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.add-member-form h3 {
+  margin-top: 0;
+}
+
 /* Page hints */
 .page-hint {
   color: #6b7280;
