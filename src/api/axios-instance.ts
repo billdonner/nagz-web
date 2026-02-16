@@ -7,7 +7,7 @@ export const AXIOS_INSTANCE = Axios.create({
 AXIOS_INSTANCE.interceptors.request.use((config) => {
   const token = localStorage.getItem("nagz_token");
   if (token) {
-    config.headers.authorization = token;
+    config.headers.authorization = `Bearer ${token}`;
   }
   return config;
 });
