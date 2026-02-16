@@ -4,6 +4,7 @@ import { useAuth } from "../auth";
 import { customInstance } from "../api/axios-instance";
 import { useMembers } from "../members";
 import type { NagResponse } from "../api/model";
+import { CreateNagModal } from "./CreateNag";
 
 const STATUS_COLORS: Record<string, string> = {
   open: "#3b82f6",
@@ -19,28 +20,30 @@ export default function NagList() {
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("");
   const [detailNag, setDetailNag] = useState<NagResponse | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
   const { getName, loading: membersLoading } = useMembers();
 
   const familyId = localStorage.getItem("nagz_family_id");
 
-  useEffect(() => {
+  const loadNags = async () => {
     if (!familyId) return;
-    const load = async () => {
-      try {
-        const params: Record<string, string> = { family_id: familyId };
-        if (filter) params.state = filter;
-        const data = await customInstance<NagResponse[]>({
-          url: "/api/v1/nags",
-          method: "GET",
-          params,
-        });
-        setNags(data);
-      } catch {
-        setError("Failed to load nagz");
-      }
-      setLoading(false);
-    };
-    load();
+    try {
+      const params: Record<string, string> = { family_id: familyId };
+      if (filter) params.state = filter;
+      const data = await customInstance<NagResponse[]>({
+        url: "/api/v1/nags",
+        method: "GET",
+        params,
+      });
+      setNags(data);
+    } catch {
+      setError("Failed to load nagz");
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadNags();
   }, [familyId, filter]);
 
   if (!familyId) {
@@ -184,9 +187,33 @@ export default function NagList() {
               <dt>Strategy</dt>
               <dd>{detailNag.strategy_template}</dd>
             </dl>
-            <button onClick={() => setDetailNag(null)}>Close</button>
+            <div className="card-actions">
+              <button
+                onClick={() => {
+                  setDetailNag(null);
+                  setShowCreate(true);
+                }}
+              >
+                Create Nagz
+              </button>
+              <button className="btn-secondary" onClick={() => setDetailNag(null)}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
+      )}
+
+      {showCreate && familyId && (
+        <CreateNagModal
+          familyId={familyId}
+          recipientId={detailNag?.recipient_id}
+          onClose={() => setShowCreate(false)}
+          onCreated={() => {
+            setShowCreate(false);
+            loadNags();
+          }}
+        />
       )}
     </div>
   );
