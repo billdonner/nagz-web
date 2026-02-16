@@ -120,6 +120,140 @@
         }
       }
     },
+    "/api/v1/preferences/{user_id}": {
+      "get": {
+        "tags": [
+          "preferences"
+        ],
+        "summary": "Get Preferences For User",
+        "description": "GET /preferences/{user_id}?family_id= \u2014 self or guardian.",
+        "operationId": "get_preferences_for_user_api_v1_preferences__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "family_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "preferences"
+        ],
+        "summary": "Patch Preferences For User",
+        "description": "PATCH /preferences/{user_id}?family_id= \u2014 self or guardian.",
+        "operationId": "patch_preferences_for_user_api_v1_preferences__user_id__patch",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "family_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreferenceUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/families": {
       "post": {
         "tags": [
@@ -151,6 +285,59 @@
         },
         "responses": {
           "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/families/{family_id}": {
+      "get": {
+        "tags": [
+          "families"
+        ],
+        "summary": "Get Family",
+        "description": "GET /families/{familyId} \u2014 any family member.",
+        "operationId": "get_family_api_v1_families__family_id__get",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -282,6 +469,124 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MemberResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "families"
+        ],
+        "summary": "List Members",
+        "description": "GET /families/{familyId}/members \u2014 any family member.",
+        "operationId": "list_members_api_v1_families__family_id__members_get",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberDetail"
+                  },
+                  "title": "Response List Members Api V1 Families  Family Id  Members Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/families/{family_id}/members/create": {
+      "post": {
+        "tags": [
+          "families"
+        ],
+        "summary": "Create And Add Member",
+        "description": "POST /families/{familyId}/members/create \u2014 guardian_only. Creates a new user and adds them.",
+        "operationId": "create_and_add_member_api_v1_families__family_id__members_create_post",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberCreateAndAdd"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDetail"
                 }
               }
             }
@@ -704,6 +1009,55 @@
         },
         "responses": {
           "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "nags"
+        ],
+        "summary": "List Excuses",
+        "description": "GET /nags/{nagId}/excuses \u2014 creator_or_guardian or recipient.",
+        "operationId": "list_excuses_api_v1_nags__nag_id__excuses_get",
+        "parameters": [
+          {
+            "name": "nag_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Nag Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -1353,7 +1707,7 @@
           "gamification"
         ],
         "summary": "Get Summary",
-        "description": "GET /gamification/summary?family_id={familyId} \u2014 member, requires_consent(gamification_participation).",
+        "description": "GET /gamification/summary?family_id={familyId} \u2014 member, requires gamification_enabled preference.",
         "operationId": "get_summary_api_v1_gamification_summary_get",
         "parameters": [
           {
@@ -1404,7 +1758,7 @@
           "gamification"
         ],
         "summary": "Get Leaderboard",
-        "description": "GET /gamification/leaderboard?family_id={familyId} \u2014 member, requires_consent(gamification_participation).",
+        "description": "GET /gamification/leaderboard?family_id={familyId} \u2014 member, requires gamification_enabled preference.",
         "operationId": "get_leaderboard_api_v1_gamification_leaderboard_get",
         "parameters": [
           {
@@ -3015,6 +3369,69 @@
         ],
         "title": "MemberAdd"
       },
+      "MemberCreateAndAdd": {
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "role": {
+            "$ref": "#/components/schemas/FamilyRole"
+          }
+        },
+        "type": "object",
+        "required": [
+          "display_name",
+          "role"
+        ],
+        "title": "MemberCreateAndAdd"
+      },
+      "MemberDetail": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "role": {
+            "$ref": "#/components/schemas/FamilyRole"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MembershipStatus"
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Joined At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "display_name",
+          "family_id",
+          "role",
+          "status",
+          "joined_at"
+        ],
+        "title": "MemberDetail"
+      },
       "MemberResponse": {
         "properties": {
           "user_id": {
@@ -3091,6 +3508,17 @@
           "done_definition": {
             "$ref": "#/components/schemas/DoneDefinition"
           },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
           "strategy_template": {
             "$ref": "#/components/schemas/StrategyTemplate",
             "default": "friendly_reminder"
@@ -3150,6 +3578,17 @@
           },
           "done_definition": {
             "$ref": "#/components/schemas/DoneDefinition"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
           },
           "strategy_template": {
             "$ref": "#/components/schemas/StrategyTemplate"

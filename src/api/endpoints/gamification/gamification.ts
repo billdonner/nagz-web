@@ -18,7 +18,7 @@ import { customInstance } from '../../axios-instance';
 
   export const getGamification = () => {
 /**
- * GET /gamification/summary?family_id={familyId} — member, requires_consent(gamification_participation).
+ * GET /gamification/summary?family_id={familyId} — member, requires gamification_enabled preference.
  * @summary Get Summary
  */
 const getSummaryApiV1GamificationSummaryGet = (
@@ -31,7 +31,7 @@ const getSummaryApiV1GamificationSummaryGet = (
       );
     }
   /**
- * GET /gamification/leaderboard?family_id={familyId} — member, requires_consent(gamification_participation).
+ * GET /gamification/leaderboard?family_id={familyId} — member, requires gamification_enabled preference.
  * @summary Get Leaderboard
  */
 const getLeaderboardApiV1GamificationLeaderboardGet = (

@@ -7,7 +7,9 @@
  */
 import type {
   GetPreferencesApiV1PreferencesGetParams,
+  GetPreferencesForUserApiV1PreferencesUserIdGetParams,
   PatchPreferencesApiV1PreferencesPatchParams,
+  PatchPreferencesForUserApiV1PreferencesUserIdPatchParams,
   PreferenceResponse,
   PreferenceUpdate
 } from '../../model';
@@ -46,6 +48,39 @@ const patchPreferencesApiV1PreferencesPatch = (
     },
       );
     }
-  return {getPreferencesApiV1PreferencesGet,patchPreferencesApiV1PreferencesPatch}};
+  /**
+ * GET /preferences/{user_id}?family_id= — self or guardian.
+ * @summary Get Preferences For User
+ */
+const getPreferencesForUserApiV1PreferencesUserIdGet = (
+    userId: string,
+    params: GetPreferencesForUserApiV1PreferencesUserIdGetParams,
+ ) => {
+      return customInstance<PreferenceResponse>(
+      {url: `/api/v1/preferences/${userId}`, method: 'GET',
+        params
+    },
+      );
+    }
+  /**
+ * PATCH /preferences/{user_id}?family_id= — self or guardian.
+ * @summary Patch Preferences For User
+ */
+const patchPreferencesForUserApiV1PreferencesUserIdPatch = (
+    userId: string,
+    preferenceUpdate: PreferenceUpdate,
+    params: PatchPreferencesForUserApiV1PreferencesUserIdPatchParams,
+ ) => {
+      return customInstance<PreferenceResponse>(
+      {url: `/api/v1/preferences/${userId}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: preferenceUpdate,
+        params
+    },
+      );
+    }
+  return {getPreferencesApiV1PreferencesGet,patchPreferencesApiV1PreferencesPatch,getPreferencesForUserApiV1PreferencesUserIdGet,patchPreferencesForUserApiV1PreferencesUserIdPatch}};
 export type GetPreferencesApiV1PreferencesGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPreferences>['getPreferencesApiV1PreferencesGet']>>>
 export type PatchPreferencesApiV1PreferencesPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPreferences>['patchPreferencesApiV1PreferencesPatch']>>>
+export type GetPreferencesForUserApiV1PreferencesUserIdGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPreferences>['getPreferencesForUserApiV1PreferencesUserIdGet']>>>
+export type PatchPreferencesForUserApiV1PreferencesUserIdPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPreferences>['patchPreferencesForUserApiV1PreferencesUserIdPatch']>>>

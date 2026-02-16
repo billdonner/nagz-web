@@ -10,6 +10,8 @@ import type {
   FamilyResponse,
   JoinRequest,
   MemberAdd,
+  MemberCreateAndAdd,
+  MemberDetail,
   MemberResponse
 } from '../../model';
 
@@ -29,6 +31,18 @@ const createFamilyApiV1FamiliesPost = (
       {url: `/api/v1/families`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: familyCreate
+    },
+      );
+    }
+  /**
+ * GET /families/{familyId} — any family member.
+ * @summary Get Family
+ */
+const getFamilyApiV1FamiliesFamilyIdGet = (
+    familyId: string,
+ ) => {
+      return customInstance<FamilyResponse>(
+      {url: `/api/v1/families/${familyId}`, method: 'GET'
     },
       );
     }
@@ -63,6 +77,33 @@ const addMemberApiV1FamiliesFamilyIdMembersPost = (
       );
     }
   /**
+ * GET /families/{familyId}/members — any family member.
+ * @summary List Members
+ */
+const listMembersApiV1FamiliesFamilyIdMembersGet = (
+    familyId: string,
+ ) => {
+      return customInstance<MemberDetail[]>(
+      {url: `/api/v1/families/${familyId}/members`, method: 'GET'
+    },
+      );
+    }
+  /**
+ * POST /families/{familyId}/members/create — guardian_only. Creates a new user and adds them.
+ * @summary Create And Add Member
+ */
+const createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost = (
+    familyId: string,
+    memberCreateAndAdd: MemberCreateAndAdd,
+ ) => {
+      return customInstance<MemberDetail>(
+      {url: `/api/v1/families/${familyId}/members/create`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: memberCreateAndAdd
+    },
+      );
+    }
+  /**
  * DELETE /families/{familyId}/members/{userId} — guardian_only.
  * @summary Remove Member
  */
@@ -75,8 +116,11 @@ const removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete = (
     },
       );
     }
-  return {createFamilyApiV1FamiliesPost,joinFamilyApiV1FamiliesFamilyIdJoinPost,addMemberApiV1FamiliesFamilyIdMembersPost,removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete}};
+  return {createFamilyApiV1FamiliesPost,getFamilyApiV1FamiliesFamilyIdGet,joinFamilyApiV1FamiliesFamilyIdJoinPost,addMemberApiV1FamiliesFamilyIdMembersPost,listMembersApiV1FamiliesFamilyIdMembersGet,createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost,removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete}};
 export type CreateFamilyApiV1FamiliesPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['createFamilyApiV1FamiliesPost']>>>
+export type GetFamilyApiV1FamiliesFamilyIdGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['getFamilyApiV1FamiliesFamilyIdGet']>>>
 export type JoinFamilyApiV1FamiliesFamilyIdJoinPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['joinFamilyApiV1FamiliesFamilyIdJoinPost']>>>
 export type AddMemberApiV1FamiliesFamilyIdMembersPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['addMemberApiV1FamiliesFamilyIdMembersPost']>>>
+export type ListMembersApiV1FamiliesFamilyIdMembersGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['listMembersApiV1FamiliesFamilyIdMembersGet']>>>
+export type CreateAndAddMemberApiV1FamiliesFamilyIdMembersCreatePostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost']>>>
 export type RemoveMemberApiV1FamiliesFamilyIdMembersUserIdDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete']>>>

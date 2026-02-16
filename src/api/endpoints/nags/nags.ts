@@ -103,10 +103,23 @@ const submitExcuseApiV1NagsNagIdExcusesPost = (
     },
       );
     }
-  return {createNagApiV1NagsPost,listNagsApiV1NagsGet,getNagApiV1NagsNagIdGet,updateNagApiV1NagsNagIdPatch,updateNagStatusApiV1NagsNagIdStatusPost,submitExcuseApiV1NagsNagIdExcusesPost}};
+  /**
+ * GET /nags/{nagId}/excuses — creator_or_guardian or recipient.
+ * @summary List Excuses
+ */
+const listExcusesApiV1NagsNagIdExcusesGet = (
+    nagId: string,
+ ) => {
+      return customInstance<unknown>(
+      {url: `/api/v1/nags/${nagId}/excuses`, method: 'GET'
+    },
+      );
+    }
+  return {createNagApiV1NagsPost,listNagsApiV1NagsGet,getNagApiV1NagsNagIdGet,updateNagApiV1NagsNagIdPatch,updateNagStatusApiV1NagsNagIdStatusPost,submitExcuseApiV1NagsNagIdExcusesPost,listExcusesApiV1NagsNagIdExcusesGet}};
 export type CreateNagApiV1NagsPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNags>['createNagApiV1NagsPost']>>>
 export type ListNagsApiV1NagsGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNags>['listNagsApiV1NagsGet']>>>
 export type GetNagApiV1NagsNagIdGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNags>['getNagApiV1NagsNagIdGet']>>>
 export type UpdateNagApiV1NagsNagIdPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNags>['updateNagApiV1NagsNagIdPatch']>>>
 export type UpdateNagStatusApiV1NagsNagIdStatusPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNags>['updateNagStatusApiV1NagsNagIdStatusPost']>>>
 export type SubmitExcuseApiV1NagsNagIdExcusesPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNags>['submitExcuseApiV1NagsNagIdExcusesPost']>>>
+export type ListExcusesApiV1NagsNagIdExcusesGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNags>['listExcusesApiV1NagsNagIdExcusesGet']>>>
