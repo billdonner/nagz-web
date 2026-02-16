@@ -536,6 +536,50 @@ th {
   white-space: nowrap;
 }
 
+/* Color picker */
+.color-picker {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.color-swatch {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  cursor: pointer;
+  padding: 0;
+}
+
+.color-swatch:hover {
+  border-color: #6b7280;
+}
+
+.color-swatch.selected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+}
+
+/* Toggle row */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-row label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.toggle-row input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
 /* Error */
 .error {
   color: #ef4444;

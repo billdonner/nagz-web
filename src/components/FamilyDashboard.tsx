@@ -6,6 +6,7 @@ import { customInstance } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
 import axios from "axios";
 import { CreateNagModal } from "./CreateNag";
+import { MemberSettings } from "./MemberSettings";
 
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
@@ -19,6 +20,8 @@ export default function FamilyDashboard() {
 
   // Create nag modal
   const [createNagRecipient, setCreateNagRecipient] = useState<string | null>(null);
+  // Member settings modal
+  const [settingsMemberId, setSettingsMemberId] = useState<string | null>(null);
 
   // Add member form
   const [showAddForm, setShowAddForm] = useState(false);
@@ -148,6 +151,7 @@ export default function FamilyDashboard() {
               <tr>
                 <th>Name</th>
                 <th>Nagz</th>
+                <th>Settings</th>
               </tr>
             </thead>
             <tbody>
@@ -175,6 +179,15 @@ export default function FamilyDashboard() {
                         {count}
                       </button>
                     </td>
+                    <td>
+                      <button
+                        className="link-button"
+                        onClick={() => setSettingsMemberId(m.user_id)}
+                        title="Settings"
+                      >
+                        Settings
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
@@ -192,6 +205,16 @@ export default function FamilyDashboard() {
             setCreateNagRecipient(null);
             loadFamily(familyId);
           }}
+        />
+      )}
+
+      {settingsMemberId && familyId && (
+        <MemberSettings
+          userId={settingsMemberId}
+          familyId={familyId}
+          displayName={getName(settingsMemberId)}
+          onClose={() => setSettingsMemberId(null)}
+          onSaved={() => setSettingsMemberId(null)}
         />
       )}
 

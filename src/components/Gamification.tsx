@@ -34,11 +34,6 @@ interface GamificationEventItem {
   at: string;
 }
 
-interface ConsentItem {
-  id: string;
-  consent_type: string;
-}
-
 export default function Gamification() {
   const { userId, logout } = useAuth();
   const { getName, members, familyName, loading: membersLoading } = useMembers();
@@ -48,10 +43,8 @@ export default function Gamification() {
   const [summary, setSummary] = useState<GamificationSummary | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [events, setEvents] = useState<GamificationEventItem[]>([]);
-  const [consentId, setConsentId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [noConsent, setNoConsent] = useState(false);
-  const [toggling, setToggling] = useState(false);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -59,32 +52,24 @@ export default function Gamification() {
     setLoading(true);
     setError("");
     setNoConsent(false);
-    setConsentId(null);
 
-    // Fetch consent status alongside gamification data
-    const [summaryResult, lbResult, eventsResult, consentsResult] =
-      await Promise.allSettled([
-        customInstance<GamificationSummary>({
-          url: "/api/v1/gamification/summary",
-          method: "GET",
-          params: { family_id: familyId },
-        }),
-        customInstance<LeaderboardResponse>({
-          url: "/api/v1/gamification/leaderboard",
-          method: "GET",
-          params: { family_id: familyId },
-        }),
-        customInstance<GamificationEventItem[]>({
-          url: "/api/v1/gamification/events",
-          method: "GET",
-          params: { user_id: userId, family_id: familyId },
-        }),
-        customInstance<ConsentItem[]>({
-          url: "/api/v1/consents",
-          method: "GET",
-          params: { family_id: familyId },
-        }),
-      ]);
+    const [summaryResult, lbResult, eventsResult] = await Promise.allSettled([
+      customInstance<GamificationSummary>({
+        url: "/api/v1/gamification/summary",
+        method: "GET",
+        params: { family_id: familyId },
+      }),
+      customInstance<LeaderboardResponse>({
+        url: "/api/v1/gamification/leaderboard",
+        method: "GET",
+        params: { family_id: familyId },
+      }),
+      customInstance<GamificationEventItem[]>({
+        url: "/api/v1/gamification/events",
+        method: "GET",
+        params: { user_id: userId, family_id: familyId },
+      }),
+    ]);
 
     if (summaryResult.status === "fulfilled") {
       setSummary(summaryResult.value);
@@ -94,12 +79,6 @@ export default function Gamification() {
     }
     if (eventsResult.status === "fulfilled") {
       setEvents(eventsResult.value);
-    }
-    if (consentsResult.status === "fulfilled") {
-      const gam = consentsResult.value.find(
-        (c) => c.consent_type === "gamification_participation"
-      );
-      if (gam) setConsentId(gam.id);
     }
 
     const summaryIs403 =
@@ -131,47 +110,6 @@ export default function Gamification() {
     load();
   }, [familyId, userId, load]);
 
-  const enableGamification = async () => {
-    if (!familyId) return;
-    setToggling(true);
-    setError("");
-    try {
-      await customInstance({
-        url: "/api/v1/consents",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: { consent_type: "gamification_participation", family_id: familyId },
-      });
-      setNoConsent(false);
-      await load();
-    } catch {
-      setError("Failed to enable gamification.");
-    }
-    setToggling(false);
-  };
-
-  const disableGamification = async () => {
-    if (!consentId) return;
-    setToggling(true);
-    setError("");
-    try {
-      await customInstance({
-        url: `/api/v1/consents/${consentId}`,
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        data: { revoked: true },
-      });
-      setSummary(null);
-      setLeaderboard([]);
-      setEvents([]);
-      setConsentId(null);
-      setNoConsent(true);
-    } catch {
-      setError("Failed to disable gamification.");
-    }
-    setToggling(false);
-  };
-
   if (!familyId) {
     return (
       <p>
@@ -194,12 +132,12 @@ export default function Gamification() {
           </div>
         </div>
         <p className="page-hint">
-          Gamification is not enabled for your account. Enable it to see points,
-          streaks, and leaderboards.
+          Gamification is not enabled for your account. A guardian can enable it
+          from the Family Dashboard.
         </p>
-        <button onClick={enableGamification} disabled={toggling}>
-          {toggling ? "Enabling..." : "Enable Gamification"}
-        </button>
+        {myRole === "guardian" && (
+          <Link to="/">Go to Family Dashboard</Link>
+        )}
         {error && <p className="error">{error}</p>}
       </div>
     );
@@ -302,15 +240,6 @@ export default function Gamification() {
           </div>
         </div>
       )}
-
-      <button
-        className="btn-secondary"
-        onClick={disableGamification}
-        disabled={toggling}
-        style={{ marginTop: "2rem" }}
-      >
-        {toggling ? "Disabling..." : "Disable Gamification"}
-      </button>
     </div>
   );
 }
