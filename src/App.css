@@ -34,6 +34,43 @@
   max-width: 360px;
 }
 
+.login-help {
+  margin-top: 2rem;
+  text-align: left;
+  width: 100%;
+  max-width: 520px;
+}
+
+.login-help p {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.token-table {
+  width: 100%;
+  font-size: 0.8rem;
+}
+
+.token-table td {
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.token-table code {
+  font-size: 0.75rem;
+  background: #f3f4f6;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  user-select: all;
+  cursor: pointer;
+}
+
+.role-label {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
 /* Header */
 .header {
   display: flex;
@@ -234,6 +271,10 @@ th {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 1rem;
+}
+
+.card-done {
+  opacity: 0.75;
 }
 
 .card-header {

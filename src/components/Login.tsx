@@ -34,6 +34,19 @@ export default function Login() {
         {error && <p className="error">{error}</p>}
         <button type="submit">Sign In</button>
       </form>
+
+      <div className="login-help">
+        <p>Dev tokens for the Donner family:</p>
+        <table className="token-table">
+          <tbody>
+            <tr><td>Andrew</td><td className="role-label">guardian</td><td><code>dev:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa</code></td></tr>
+            <tr><td>Katherine</td><td className="role-label">guardian</td><td><code>dev:bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb</code></td></tr>
+            <tr><td>George</td><td className="role-label">child</td><td><code>dev:cccccccc-cccc-cccc-cccc-cccccccccccc</code></td></tr>
+            <tr><td>Teddy</td><td className="role-label">child</td><td><code>dev:dddddddd-dddd-dddd-dddd-dddddddddddd</code></td></tr>
+            <tr><td>Will</td><td className="role-label">child</td><td><code>dev:eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee</code></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
