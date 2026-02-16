@@ -7,7 +7,7 @@ import type { NagResponse } from "../api/model";
 import axios from "axios";
 
 export default function KidView() {
-  const { userId } = useAuth();
+  const { userId, logout } = useAuth();
   const { getName, members } = useMembers();
   const [searchParams] = useSearchParams();
   const viewUserId = searchParams.get("user") ?? userId;
@@ -105,6 +105,7 @@ export default function KidView() {
         <div className="header-actions">
           {myRole === "guardian" && <Link to="/family">Family</Link>}
           <Link to="/nags">Nagz</Link>
+          <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>
 
