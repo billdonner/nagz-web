@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth";
-import { MembersProvider } from "./members";
+import { MembersProvider, useMembers } from "./members";
 import Login from "./components/Login";
 import FamilyDashboard from "./components/FamilyDashboard";
 import NagList from "./components/NagList";
@@ -11,6 +11,15 @@ import "./App.css";
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { token } = useAuth();
   if (!token) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
+function GuardianRoute({ children }: { children: React.ReactNode }) {
+  const { token, userId } = useAuth();
+  const { members } = useMembers();
+  if (!token) return <Navigate to="/login" replace />;
+  const role = members.find((m) => m.user_id === userId)?.role;
+  if (role && role !== "guardian") return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
@@ -35,9 +44,9 @@ function AppRoutes() {
         <Route
           path="/family"
           element={
-            <ProtectedRoute>
+            <GuardianRoute>
               <FamilyDashboard />
-            </ProtectedRoute>
+            </GuardianRoute>
           }
         />
         <Route

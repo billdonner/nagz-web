@@ -8,11 +8,12 @@ import axios from "axios";
 
 export default function KidView() {
   const { userId } = useAuth();
-  const { getName } = useMembers();
+  const { getName, members } = useMembers();
   const [searchParams] = useSearchParams();
   const viewUserId = searchParams.get("user") ?? userId;
   const isOwnView = viewUserId === userId;
   const familyId = localStorage.getItem("nagz_family_id");
+  const myRole = members.find((m) => m.user_id === userId)?.role;
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -102,7 +103,7 @@ export default function KidView() {
       <div className="header">
         <h2>{getName(viewUserId!)}'s Nags</h2>
         <div className="header-actions">
-          <Link to="/family">Family</Link>
+          {myRole === "guardian" && <Link to="/family">Family</Link>}
           <Link to="/nags">Nagz</Link>
         </div>
       </div>
