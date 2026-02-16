@@ -169,17 +169,30 @@ export default function KidView() {
                 {nag.description && (
                   <p className="card-description">{nag.description}</p>
                 )}
-                {isOpen && isOwnView && (
+                {isOpen && (
                   <div className="card-actions">
-                    <button onClick={() => markComplete(nag.id)}>
-                      Mark Complete
-                    </button>
-                    <button
-                      className="btn-secondary"
-                      onClick={() => setExcuseNagId(nag.id)}
-                    >
-                      Submit Excuse
-                    </button>
+                    {nag.recipient_id === userId ? (
+                      <>
+                        <button onClick={() => markComplete(nag.id)}>
+                          Mark Complete
+                        </button>
+                        <button
+                          className="btn-secondary"
+                          onClick={() => setExcuseNagId(nag.id)}
+                        >
+                          Submit Excuse
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button disabled title="Only the recipient can mark this complete">
+                          Mark Complete
+                        </button>
+                        <button disabled className="btn-secondary" title="Only the recipient can submit an excuse">
+                          Submit Excuse
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
