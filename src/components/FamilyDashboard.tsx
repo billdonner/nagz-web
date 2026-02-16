@@ -15,6 +15,7 @@ export default function FamilyDashboard() {
   const [error, setError] = useState("");
   const [manualFamilyId, setManualFamilyId] = useState("");
   const [nagCounts, setNagCounts] = useState<Record<string, number>>({});
+  const [gamificationOn, setGamificationOn] = useState(false);
 
   // Add member form
   const [showAddForm, setShowAddForm] = useState(false);
@@ -42,6 +43,20 @@ export default function FamilyDashboard() {
         counts[n.recipient_id] = (counts[n.recipient_id] ?? 0) + 1;
       }
       setNagCounts(counts);
+
+      // Check gamification consent
+      try {
+        const consents = await customInstance<{ consent_type: string }[]>({
+          url: "/api/v1/consents",
+          method: "GET",
+          params: { family_id: fid },
+        });
+        setGamificationOn(
+          consents.some((c) => c.consent_type === "gamification_participation")
+        );
+      } catch {
+        setGamificationOn(false);
+      }
     } catch {
       setError("Could not access family. Check the family ID.");
     }
@@ -123,7 +138,12 @@ export default function FamilyDashboard() {
         <h2>{familyName ?? "Family Dashboard"}</h2>
         <div className="header-actions">
           <Link to="/nags">Nagz</Link>
-          <Link to="/leaderboard">Leaderboard</Link>
+          <Link to="/leaderboard">
+            Leaderboard{" "}
+            <span className={gamificationOn ? "badge-consent-on" : "badge-consent-off"}>
+              {gamificationOn ? "ON" : "OFF"}
+            </span>
+          </Link>
           <span className="logged-in-as">{getName(userId!)}</span>
           <button onClick={logout} className="link-button">
             Logout

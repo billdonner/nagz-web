@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
@@ -24,6 +24,16 @@ interface LeaderboardResponse {
   leaderboard: LeaderboardEntry[];
 }
 
+interface GamificationEventItem {
+  id: string;
+  family_id: string;
+  user_id: string;
+  event_type: string;
+  delta_points: number;
+  streak_delta: number;
+  at: string;
+}
+
 export default function Gamification() {
   const { userId, logout } = useAuth();
   const { getName, members, familyName, loading: membersLoading } = useMembers();
@@ -32,60 +42,93 @@ export default function Gamification() {
 
   const [summary, setSummary] = useState<GamificationSummary | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [events, setEvents] = useState<GamificationEventItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [noConsent, setNoConsent] = useState(false);
+  const [enabling, setEnabling] = useState(false);
   const [error, setError] = useState("");
 
+  const load = useCallback(async () => {
+    if (!familyId || !userId) return;
+    setLoading(true);
+    setError("");
+    setNoConsent(false);
+
+    const [summaryResult, lbResult, eventsResult] = await Promise.allSettled([
+      customInstance<GamificationSummary>({
+        url: "/api/v1/gamification/summary",
+        method: "GET",
+        params: { family_id: familyId },
+      }),
+      customInstance<LeaderboardResponse>({
+        url: "/api/v1/gamification/leaderboard",
+        method: "GET",
+        params: { family_id: familyId },
+      }),
+      customInstance<GamificationEventItem[]>({
+        url: "/api/v1/gamification/events",
+        method: "GET",
+        params: { user_id: userId, family_id: familyId },
+      }),
+    ]);
+
+    if (summaryResult.status === "fulfilled") {
+      setSummary(summaryResult.value);
+    }
+    if (lbResult.status === "fulfilled") {
+      setLeaderboard(lbResult.value.leaderboard);
+    }
+    if (eventsResult.status === "fulfilled") {
+      setEvents(eventsResult.value);
+    }
+
+    // Check if both failed with 403
+    const summaryIs403 =
+      summaryResult.status === "rejected" &&
+      axios.isAxiosError(summaryResult.reason) &&
+      summaryResult.reason.response?.status === 403;
+    const lbIs403 =
+      lbResult.status === "rejected" &&
+      axios.isAxiosError(lbResult.reason) &&
+      lbResult.reason.response?.status === 403;
+
+    if (summaryIs403 || lbIs403) {
+      setNoConsent(true);
+    } else if (
+      summaryResult.status === "rejected" &&
+      lbResult.status === "rejected"
+    ) {
+      setError("Failed to load gamification data");
+    }
+
+    setLoading(false);
+  }, [familyId, userId]);
+
   useEffect(() => {
-    if (!familyId) {
+    if (!familyId || !userId) {
       setLoading(false);
       return;
     }
-    const load = async () => {
-      // Fetch independently so one failure doesn't block the other
-      const [summaryResult, lbResult] = await Promise.allSettled([
-        customInstance<GamificationSummary>({
-          url: "/api/v1/gamification/summary",
-          method: "GET",
-          params: { family_id: familyId },
-        }),
-        customInstance<LeaderboardResponse>({
-          url: "/api/v1/gamification/leaderboard",
-          method: "GET",
-          params: { family_id: familyId },
-        }),
-      ]);
-
-      if (summaryResult.status === "fulfilled") {
-        setSummary(summaryResult.value);
-      }
-      if (lbResult.status === "fulfilled") {
-        setLeaderboard(lbResult.value.leaderboard);
-      }
-
-      // Check if both failed with 403
-      const summaryIs403 =
-        summaryResult.status === "rejected" &&
-        axios.isAxiosError(summaryResult.reason) &&
-        summaryResult.reason.response?.status === 403;
-      const lbIs403 =
-        lbResult.status === "rejected" &&
-        axios.isAxiosError(lbResult.reason) &&
-        lbResult.reason.response?.status === 403;
-
-      if (summaryIs403 || lbIs403) {
-        setNoConsent(true);
-      } else if (
-        summaryResult.status === "rejected" &&
-        lbResult.status === "rejected"
-      ) {
-        setError("Failed to load gamification data");
-      }
-
-      setLoading(false);
-    };
     load();
-  }, [familyId]);
+  }, [familyId, userId, load]);
+
+  const enableGamification = async () => {
+    if (!familyId) return;
+    setEnabling(true);
+    try {
+      await customInstance({
+        url: "/api/v1/consents",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: { consent_type: "gamification_participation", family_id: familyId },
+      });
+      setNoConsent(false);
+      await load();
+    } catch {
+      setError("Failed to enable gamification.");
+    }
+    setEnabling(false);
+  };
 
   if (!familyId) {
     return (
@@ -113,9 +156,25 @@ export default function Gamification() {
           the <strong>gamification_participation</strong> consent to enable
           points and leaderboards.
         </p>
+        {myRole === "guardian" && (
+          <button onClick={enableGamification} disabled={enabling}>
+            {enabling ? "Enabling..." : "Enable Gamification"}
+          </button>
+        )}
+        {error && <p className="error">{error}</p>}
       </div>
     );
   }
+
+  const formatEventType = (t: string) => {
+    if (t === "nag_completed") return "Completed a nag";
+    if (t === "nag_missed") return "Missed a nag";
+    return t;
+  };
+
+  const recentEvents = [...events]
+    .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())
+    .slice(0, 20);
 
   return (
     <div>
@@ -186,6 +245,23 @@ export default function Gamification() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {recentEvents.length > 0 && (
+        <div className="activity-feed">
+          <h3>Recent Activity</h3>
+          <div className="activity-list">
+            {recentEvents.map((ev) => (
+              <div key={ev.id} className="activity-item">
+                <span className="activity-type">{formatEventType(ev.event_type)}</span>
+                <span className="activity-points">+{ev.delta_points} pts</span>
+                <span className="activity-time">
+                  {new Date(ev.at).toLocaleDateString()}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

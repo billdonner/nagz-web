@@ -475,6 +475,73 @@ th {
   color: #6b7280;
 }
 
+/* Consent badges */
+.badge-consent-on {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background: #22c55e;
+  color: white;
+  vertical-align: middle;
+  margin-left: 0.25rem;
+}
+
+.badge-consent-off {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background: #ef4444;
+  color: white;
+  vertical-align: middle;
+  margin-left: 0.25rem;
+}
+
+/* Activity feed */
+.activity-feed {
+  margin-top: 2rem;
+}
+
+.activity-feed h3 {
+  margin-bottom: 0.5rem;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.activity-type {
+  flex: 1;
+  color: #374151;
+}
+
+.activity-points {
+  font-weight: 600;
+  color: #22c55e;
+  margin: 0 1rem;
+  white-space: nowrap;
+}
+
+.activity-time {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
 /* Error */
 .error {
   color: #ef4444;
