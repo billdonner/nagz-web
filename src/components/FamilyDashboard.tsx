@@ -101,7 +101,6 @@ export default function FamilyDashboard() {
               <tr>
                 <th>Name</th>
                 <th>Nagz</th>
-                <th>Joined</th>
               </tr>
             </thead>
             <tbody>
@@ -134,7 +133,6 @@ export default function FamilyDashboard() {
                         {count}
                       </button>
                     </td>
-                    <td>{new Date(m.joined_at).toLocaleDateString()}</td>
                   </tr>
                 );
               })}

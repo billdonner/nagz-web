@@ -4,12 +4,14 @@ import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
+import axios from "axios";
 
 export default function KidView() {
   const { userId } = useAuth();
   const { getName } = useMembers();
   const [searchParams] = useSearchParams();
   const viewUserId = searchParams.get("user") ?? userId;
+  const isOwnView = viewUserId === userId;
   const familyId = localStorage.getItem("nagz_family_id");
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,6 @@ export default function KidView() {
         method: "GET",
         params: { family_id: familyId },
       });
-      // Filter to only this user's nags
       setNags(data.filter((n) => n.recipient_id === viewUserId));
     } catch {
       setError("Failed to load nags");
@@ -41,6 +42,7 @@ export default function KidView() {
   }, [familyId, viewUserId]);
 
   const markComplete = async (nagId: string) => {
+    setError("");
     try {
       await customInstance<NagResponse>({
         url: `/api/v1/nags/${nagId}/status`,
@@ -49,8 +51,12 @@ export default function KidView() {
         data: { status: "completed" },
       });
       await loadNags();
-    } catch {
-      setError("Failed to mark nag as complete");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
+        setError(err.response.data.error.message);
+      } else {
+        setError("Failed to mark nag as complete");
+      }
     }
   };
 
@@ -58,6 +64,7 @@ export default function KidView() {
     e.preventDefault();
     if (!excuseNagId || !excuseText.trim()) return;
     setSubmitting(true);
+    setError("");
     try {
       await customInstance<unknown>({
         url: `/api/v1/nags/${excuseNagId}/excuses`,
@@ -67,8 +74,12 @@ export default function KidView() {
       });
       setExcuseNagId(null);
       setExcuseText("");
-    } catch {
-      setError("Failed to submit excuse");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
+        setError(err.response.data.error.message);
+      } else {
+        setError("Failed to submit excuse");
+      }
     }
     setSubmitting(false);
   };
@@ -81,7 +92,7 @@ export default function KidView() {
     );
   }
 
-  if (loading) return <p>Loading your nags...</p>;
+  if (loading) return <p>Loading nags...</p>;
 
   const openNags = nags.filter((n) => n.status === "open");
   const doneNags = nags.filter((n) => n.status !== "open");
@@ -89,7 +100,9 @@ export default function KidView() {
   return (
     <div>
       <div className="header">
-        <h2>{viewUserId === userId ? "My Nags" : `${getName(viewUserId!)}'s Nags`}</h2>
+        <h2>
+          {isOwnView ? "My Nags" : `${getName(viewUserId!)}'s Nags`}
+        </h2>
         <Link to="/" className="btn-secondary">
           Back
         </Link>
@@ -99,7 +112,7 @@ export default function KidView() {
 
       <h3>Open ({openNags.length})</h3>
       {openNags.length === 0 ? (
-        <p>No open nags. You're all caught up!</p>
+        <p>No open nags.</p>
       ) : (
         <div className="card-list">
           {openNags.map((nag) => (
@@ -115,17 +128,19 @@ export default function KidView() {
                   Due: {new Date(nag.due_at).toLocaleString()}
                 </span>
               </div>
-              <div className="card-actions">
-                <button onClick={() => markComplete(nag.id)}>
-                  Mark Complete
-                </button>
-                <button
-                  className="btn-secondary"
-                  onClick={() => setExcuseNagId(nag.id)}
-                >
-                  Submit Excuse
-                </button>
-              </div>
+              {isOwnView && (
+                <div className="card-actions">
+                  <button onClick={() => markComplete(nag.id)}>
+                    Mark Complete
+                  </button>
+                  <button
+                    className="btn-secondary"
+                    onClick={() => setExcuseNagId(nag.id)}
+                  >
+                    Submit Excuse
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
