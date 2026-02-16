@@ -377,6 +377,14 @@ th {
   font-weight: 400;
 }
 
+/* Page hints */
+.page-hint {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+  line-height: 1.4;
+}
+
 /* Error */
 .error {
   color: #ef4444;

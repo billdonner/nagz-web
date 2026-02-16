@@ -108,6 +108,12 @@ export default function KidView() {
         </Link>
       </div>
 
+      <p className="page-hint">
+        {isOwnView
+          ? "These are your nags. Mark them complete when done, or submit an excuse if you can't finish."
+          : "You're viewing this person's nags. Only they can mark nags complete or submit excuses."}
+      </p>
+
       {error && <p className="error">{error}</p>}
 
       <h3>Open ({openNags.length})</h3>

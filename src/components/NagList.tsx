@@ -62,6 +62,10 @@ export default function NagList() {
         </Link>
       </div>
 
+      <p className="page-hint">
+        All nags across the family. Use the filters to show only open, completed, or missed nags.
+      </p>
+
       <div className="filters">
         <button
           className={!filter ? "active" : ""}

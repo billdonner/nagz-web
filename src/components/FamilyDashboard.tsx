@@ -89,6 +89,10 @@ export default function FamilyDashboard() {
         </button>
       </div>
 
+      <p className="page-hint">
+        Tap a name to create a nag for that person. Tap the count to view their nags. * = guardian.
+      </p>
+
       <nav className="nav-links">
         <Link to="/nags">All Nags</Link>
       </nav>

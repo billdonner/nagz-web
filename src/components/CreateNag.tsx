@@ -74,6 +74,11 @@ export default function CreateNag() {
         </Link>
       </div>
 
+      <p className="page-hint">
+        Choose who to nag, pick a category, add an optional description of what
+        needs to be done, and set when it's due. Only guardians can create nags.
+      </p>
+
       <form onSubmit={handleSubmit} className="form">
         <label>
           Recipient
