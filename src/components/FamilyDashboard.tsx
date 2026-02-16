@@ -123,6 +123,7 @@ export default function FamilyDashboard() {
         <h2>{familyName ?? "Family Dashboard"}</h2>
         <div className="header-actions">
           <Link to="/nags">Nagz</Link>
+          <Link to="/leaderboard">Leaderboard</Link>
           <span className="logged-in-as">{getName(userId!)}</span>
           <button onClick={logout} className="link-button">
             Logout

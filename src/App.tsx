@@ -6,6 +6,7 @@ import FamilyDashboard from "./components/FamilyDashboard";
 import NagList from "./components/NagList";
 import CreateNag from "./components/CreateNag";
 import KidView from "./components/KidView";
+import Gamification from "./components/Gamification";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -78,6 +79,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <KidView />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/leaderboard"
+          element={
+            <ProtectedRoute>
+              <Gamification />
             </ProtectedRoute>
           }
         />

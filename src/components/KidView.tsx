@@ -132,6 +132,7 @@ export default function KidView() {
           <span className="logged-in-as">{getName(userId!)}</span>
           {myRole === "guardian" && <Link to="/nags">Nagz</Link>}
           {myRole === "guardian" && <Link to="/">Family</Link>}
+          <Link to="/leaderboard">Leaderboard</Link>
           <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>
