@@ -152,7 +152,7 @@ export default function FamilyDashboard() {
       </div>
 
       <p className="page-hint">
-        Tap a name to view their nags. Tap the count to create a nag for them. * = guardian.
+        Tap a name to view their nagz. Tap the count to create one for them. * = guardian.
       </p>
 
       {members.length > 0 && (

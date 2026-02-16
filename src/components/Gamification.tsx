@@ -184,7 +184,7 @@ export default function Gamification() {
           {myRole === "guardian" ? (
             <Link to="/">Family</Link>
           ) : (
-            <Link to="/kid">My Nags</Link>
+            <Link to="/kid">My Nagz</Link>
           )}
           <span className="logged-in-as">{getName(userId!)}</span>
           <button onClick={logout} className="link-button">Logout</button>
@@ -215,7 +215,7 @@ export default function Gamification() {
       )}
 
       {leaderboard.length === 0 ? (
-        <p>No leaderboard data yet. Complete some nags to earn points!</p>
+        <p>No leaderboard data yet. Complete some nagz to earn points!</p>
       ) : (
         <table>
           <thead>

@@ -18,6 +18,7 @@ export default function NagList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("");
+  const [detailNag, setDetailNag] = useState<NagResponse | null>(null);
   const { getName, loading: membersLoading } = useMembers();
 
   const familyId = localStorage.getItem("nagz_family_id");
@@ -35,7 +36,7 @@ export default function NagList() {
         });
         setNags(data);
       } catch {
-        setError("Failed to load nags");
+        setError("Failed to load nagz");
       }
       setLoading(false);
     };
@@ -52,13 +53,16 @@ export default function NagList() {
     );
   }
 
-  if (loading || membersLoading) return <p>Loading nags...</p>;
+  if (loading || membersLoading) return <p>Loading nagz...</p>;
   if (error) return <p className="error">{error}</p>;
+
+  const statusLabel = (s: string) =>
+    s.startsWith("cancelled") ? "cancelled" : s;
 
   return (
     <div>
       <div className="header">
-        <h2>All Nags</h2>
+        <h2>All Nagz</h2>
         <div className="header-actions">
           <Link to="/">Family</Link>
           <Link to="/leaderboard">Leaderboard</Link>
@@ -68,7 +72,7 @@ export default function NagList() {
       </div>
 
       <p className="page-hint">
-        All nags across the family. Use the filters to show only open, completed, or missed nags.
+        All nagz across the family. Use the filters to show only open, completed, or missed nagz.
       </p>
 
       <div className="filters">
@@ -99,7 +103,7 @@ export default function NagList() {
       </div>
 
       {nags.length === 0 ? (
-        <p>No nags found.</p>
+        <p>No nagz found.</p>
       ) : (
         <table>
           <thead>
@@ -113,9 +117,14 @@ export default function NagList() {
           </thead>
           <tbody>
             {nags.map((nag) => (
-              <tr key={nag.id} title={nag.description ?? undefined}>
+              <tr key={nag.id}>
                 <td>
-                  {nag.category}
+                  <button
+                    className="link-button"
+                    onClick={() => setDetailNag(nag)}
+                  >
+                    {nag.category}
+                  </button>
                   {nag.description && (
                     <div className="nag-description">{nag.description}</div>
                   )}
@@ -127,7 +136,7 @@ export default function NagList() {
                       backgroundColor: STATUS_COLORS[nag.status] ?? "#6b7280",
                     }}
                   >
-                    {nag.status.startsWith("cancelled") ? "cancelled" : nag.status}
+                    {statusLabel(nag.status)}
                   </span>
                 </td>
                 <td>{getName(nag.recipient_id)}</td>
@@ -137,6 +146,47 @@ export default function NagList() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {detailNag && (
+        <div className="modal-overlay" onClick={() => setDetailNag(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Nag Details</h3>
+            <dl className="detail-list">
+              <dt>Category</dt>
+              <dd>
+                <span className="badge badge-category">{detailNag.category}</span>
+              </dd>
+              <dt>Status</dt>
+              <dd>
+                <span
+                  className={`badge badge-${statusLabel(detailNag.status)}`}
+                >
+                  {statusLabel(detailNag.status)}
+                </span>
+              </dd>
+              <dt>Recipient</dt>
+              <dd>{getName(detailNag.recipient_id)}</dd>
+              <dt>From</dt>
+              <dd>{getName(detailNag.creator_id)}</dd>
+              <dt>Due</dt>
+              <dd>{new Date(detailNag.due_at).toLocaleString()}</dd>
+              <dt>Created</dt>
+              <dd>{new Date(detailNag.created_at).toLocaleString()}</dd>
+              {detailNag.description && (
+                <>
+                  <dt>Description</dt>
+                  <dd>{detailNag.description}</dd>
+                </>
+              )}
+              <dt>Done Definition</dt>
+              <dd>{detailNag.done_definition}</dd>
+              <dt>Strategy</dt>
+              <dd>{detailNag.strategy_template}</dd>
+            </dl>
+            <button onClick={() => setDetailNag(null)}>Close</button>
+          </div>
+        </div>
       )}
     </div>
   );

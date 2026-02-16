@@ -54,7 +54,7 @@ export default function KidView() {
       }
       setExcuses(excuseMap);
     } catch {
-      setError("Failed to load nags");
+      setError("Failed to load nagz");
     }
     setLoading(false);
   };
@@ -115,7 +115,7 @@ export default function KidView() {
     );
   }
 
-  if (loading || membersLoading) return <p>Loading nags...</p>;
+  if (loading || membersLoading) return <p>Loading nagz...</p>;
 
   const filtered = filter
     ? nags.filter((n) => n.status === filter)
@@ -127,7 +127,7 @@ export default function KidView() {
   return (
     <div>
       <div className="header">
-        <h2>{getName(viewUserId!)}'s Nags</h2>
+        <h2>{getName(viewUserId!)}'s Nagz</h2>
         <div className="header-actions">
           <span className="logged-in-as">{getName(userId!)}</span>
           {myRole === "guardian" && <Link to="/nags">Nagz</Link>}
@@ -140,9 +140,9 @@ export default function KidView() {
       <p className="page-hint">
         {isOwnView
           ? myRole === "guardian"
-            ? "Your nags. Use the Family page to see all members and create nags."
-            : "These are your nags. Mark them complete when done, or submit an excuse if you can't finish."
-          : `Viewing ${getName(viewUserId!)}'s nags. Only they can mark nags complete or submit excuses.`}
+            ? "Your nagz. Use the Family page to see all members and create nagz."
+            : "These are your nagz. Mark them complete when done, or submit an excuse if you can't finish."
+          : `Viewing ${getName(viewUserId!)}'s nagz. Only they can mark them complete or submit excuses.`}
       </p>
 
       <div className="filters">
@@ -160,7 +160,7 @@ export default function KidView() {
       {error && <p className="error">{error}</p>}
 
       {filtered.length === 0 ? (
-        <p>No nags found.</p>
+        <p>No nagz found.</p>
       ) : (
         <div className="card-list">
           {filtered.map((nag) => {

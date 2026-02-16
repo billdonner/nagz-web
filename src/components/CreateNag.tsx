@@ -74,13 +74,13 @@ export default function CreateNag() {
   return (
     <div>
       <div className="header">
-        <h2>Create Nag</h2>
+        <h2>Create Nagz</h2>
         <button className="link-button" onClick={() => navigate(-1)}>Cancel</button>
       </div>
 
       <p className="page-hint">
         Choose who to nag, pick a category, add an optional description of what
-        needs to be done, and set when it's due. Only guardians can create nags.
+        needs to be done, and set when it's due. Only guardians can create nagz.
       </p>
 
       <form onSubmit={handleSubmit} className="form">
@@ -151,7 +151,7 @@ export default function CreateNag() {
         {error && <p className="error">{error}</p>}
 
         <button type="submit" disabled={submitting}>
-          {submitting ? "Creating..." : "Create Nag"}
+          {submitting ? "Creating..." : "Create Nagz"}
         </button>
       </form>
     </div>

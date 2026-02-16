@@ -332,6 +332,25 @@ th {
   margin-top: 0;
 }
 
+/* Detail list (definition list in modal) */
+.detail-list {
+  margin: 0 0 1rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 1rem;
+  font-size: 0.9rem;
+}
+
+.detail-list dt {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.detail-list dd {
+  margin: 0;
+  color: #111827;
+}
+
 .modal textarea {
   width: 100%;
   box-sizing: border-box;
