@@ -14,6 +14,7 @@ export default function KidView() {
   const isOwnView = viewUserId === userId;
   const familyId = localStorage.getItem("nagz_family_id");
   const myRole = members.find((m) => m.user_id === userId)?.role;
+  const showAll = myRole === "guardian" && isOwnView;
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -32,7 +33,7 @@ export default function KidView() {
         method: "GET",
         params: { family_id: familyId },
       });
-      setNags(data.filter((n) => n.recipient_id === viewUserId));
+      setNags(showAll ? data : data.filter((n) => n.recipient_id === viewUserId));
     } catch {
       setError("Failed to load nags");
     }
@@ -106,18 +107,20 @@ export default function KidView() {
   return (
     <div>
       <div className="header">
-        <h2>{getName(viewUserId!)}'s Nags</h2>
+        <h2>{showAll ? "All Nags" : `${getName(viewUserId!)}'s Nags`}</h2>
         <div className="header-actions">
+          <span className="logged-in-as">{getName(userId!)}</span>
           {myRole === "guardian" && <Link to="/family">Family</Link>}
-          {myRole === "guardian" && <Link to="/nags">Nagz</Link>}
           <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>
 
       <p className="page-hint">
-        {isOwnView
-          ? "These are your nags. Mark them complete when done, or submit an excuse if you can't finish."
-          : "You're viewing this person's nags. Only they can mark nags complete or submit excuses."}
+        {showAll
+          ? "All nags across the family. Tap a name on the Family page to create a nag."
+          : isOwnView
+            ? "These are your nags. Mark them complete when done, or submit an excuse if you can't finish."
+            : "You're viewing this person's nags. Only they can mark nags complete or submit excuses."}
       </p>
 
       <div className="filters">
@@ -148,6 +151,11 @@ export default function KidView() {
                     {!isOpen && (
                       <span className={`badge badge-${statusLabel(nag.status)}`}>
                         {statusLabel(nag.status)}
+                      </span>
+                    )}
+                    {showAll && (
+                      <span className="card-from">
+                        to {getName(nag.recipient_id)}
                       </span>
                     )}
                     <span className="card-from">

@@ -86,6 +86,12 @@
   font-size: 0.9rem;
 }
 
+.logged-in-as {
+  font-size: 0.85rem;
+  color: #374151;
+  font-weight: 600;
+}
+
 /* Navigation */
 .nav-links {
   display: flex;
