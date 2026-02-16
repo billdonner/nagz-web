@@ -184,11 +184,17 @@ export default function KidView() {
                 {nag.description && (
                   <p className="card-description">{nag.description}</p>
                 )}
-                {excuses[nag.id] && (
+                {excuses[nag.id] && excuses[nag.id].length > 0 && (
                   <div className="excuse-list">
+                    <span className="excuse-heading">
+                      Excuses ({excuses[nag.id].length})
+                    </span>
                     {excuses[nag.id].map((ex, i) => (
                       <div key={i} className="excuse-item">
-                        <span className="excuse-label">Excuse:</span> {ex.summary}
+                        <span className="excuse-text">{ex.summary}</span>
+                        <span className="excuse-time">
+                          {new Date(ex.at).toLocaleString()}
+                        </span>
                       </div>
                     ))}
                   </div>

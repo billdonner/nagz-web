@@ -411,15 +411,33 @@ th {
   margin-bottom: 0.75rem;
 }
 
+.excuse-heading {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 0.25rem;
+}
+
 .excuse-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
   font-size: 0.85rem;
   color: #b45309;
-  padding: 0.3rem 0;
+  padding: 0.25rem 0;
   line-height: 1.4;
 }
 
-.excuse-label {
-  font-weight: 600;
+.excuse-text {
+  flex: 1;
+}
+
+.excuse-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
 }
 
 /* Error */
