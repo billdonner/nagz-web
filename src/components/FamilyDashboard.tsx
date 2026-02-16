@@ -130,8 +130,7 @@ export default function FamilyDashboard() {
       </div>
 
       <p className="page-hint">
-        Tap a name to create a nag for that person. Tap the count to view their
-        nags. * = guardian.
+        Tap a name to view their nags. Tap the count to create a nag for them. * = guardian.
       </p>
 
       {members.length > 0 && (
@@ -155,9 +154,7 @@ export default function FamilyDashboard() {
                     <td>
                       <button
                         className="link-button"
-                        onClick={() =>
-                          navigate(`/create-nag?recipient=${m.user_id}`)
-                        }
+                        onClick={() => navigate(`/kid?user=${m.user_id}`)}
                       >
                         {m.role === "guardian" && "* "}
                         {m.display_name ?? m.user_id.slice(0, 8)}
@@ -166,7 +163,9 @@ export default function FamilyDashboard() {
                     <td>
                       <button
                         className="badge badge-nag-count badge-clickable"
-                        onClick={() => navigate(`/kid?user=${m.user_id}`)}
+                        onClick={() =>
+                          navigate(`/create-nag?recipient=${m.user_id}`)
+                        }
                       >
                         {count}
                       </button>
