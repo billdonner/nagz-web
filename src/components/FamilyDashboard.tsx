@@ -8,7 +8,7 @@ import type { NagResponse } from "../api/model";
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
   const navigate = useNavigate();
-  const { members, familyName, reload: reloadMembers } = useMembers();
+  const { members, familyName, getName, reload: reloadMembers } = useMembers();
   const [familyId, setFamilyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -85,7 +85,7 @@ export default function FamilyDashboard() {
       <div className="header">
         <h2>{familyName ?? "Family Dashboard"}</h2>
         <div className="header-actions">
-          <Link to="/">Home</Link>
+          <Link to="/">{getName(userId!)}</Link>
           <button onClick={logout} className="link-button">
             Logout
           </button>
@@ -124,9 +124,6 @@ export default function FamilyDashboard() {
                         {m.role === "guardian" && "* "}
                         {m.display_name ?? m.user_id.slice(0, 8)}
                       </button>
-                      {m.user_id === userId && (
-                        <span className="you-badge">you</span>
-                      )}
                     </td>
                     <td>
                       <button
