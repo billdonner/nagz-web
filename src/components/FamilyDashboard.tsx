@@ -5,6 +5,7 @@ import { useMembers } from "../members";
 import { customInstance } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
 import axios from "axios";
+import { CreateNagModal } from "./CreateNag";
 
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
@@ -15,6 +16,9 @@ export default function FamilyDashboard() {
   const [error, setError] = useState("");
   const [manualFamilyId, setManualFamilyId] = useState("");
   const [nagCounts, setNagCounts] = useState<Record<string, number>>({});
+
+  // Create nag modal
+  const [createNagRecipient, setCreateNagRecipient] = useState<string | null>(null);
 
   // Add member form
   const [showAddForm, setShowAddForm] = useState(false);
@@ -166,9 +170,7 @@ export default function FamilyDashboard() {
                     <td>
                       <button
                         className="badge badge-nag-count badge-clickable"
-                        onClick={() =>
-                          navigate(`/create-nag?recipient=${m.user_id}`)
-                        }
+                        onClick={() => setCreateNagRecipient(m.user_id)}
                       >
                         {count}
                       </button>
@@ -179,6 +181,18 @@ export default function FamilyDashboard() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {createNagRecipient && familyId && (
+        <CreateNagModal
+          familyId={familyId}
+          recipientId={createNagRecipient}
+          onClose={() => setCreateNagRecipient(null)}
+          onCreated={() => {
+            setCreateNagRecipient(null);
+            loadFamily(familyId);
+          }}
+        />
       )}
 
       {showAddForm ? (
