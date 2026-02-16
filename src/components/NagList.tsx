@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../auth";
 import { customInstance } from "../api/axios-instance";
 import { useMembers } from "../members";
 import type { NagResponse } from "../api/model";
@@ -12,6 +13,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function NagList() {
+  const { userId, logout } = useAuth();
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -57,7 +59,11 @@ export default function NagList() {
     <div>
       <div className="header">
         <h2>All Nags</h2>
-        <Link to="/">Family</Link>
+        <div className="header-actions">
+          <Link to="/">Family</Link>
+          <span className="logged-in-as">{getName(userId!)}</span>
+          <button onClick={logout} className="link-button">Logout</button>
+        </div>
       </div>
 
       <p className="page-hint">
