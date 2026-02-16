@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance } from "../api/axios-instance";
 
 export default function FamilyDashboard() {
-  const { logout } = useAuth();
-  const { members, reload: reloadMembers } = useMembers();
+  const { userId, logout } = useAuth();
+  const navigate = useNavigate();
+  const { members, familyName, reload: reloadMembers } = useMembers();
   const [familyId, setFamilyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -73,13 +74,10 @@ export default function FamilyDashboard() {
   return (
     <div>
       <div className="header">
-        <h2>Family Dashboard</h2>
-        <div>
-          <span className="badge">Family: {familyId.slice(0, 8)}...</span>
-          <button onClick={logout} className="btn-secondary">
-            Logout
-          </button>
-        </div>
+        <h2>{familyName ?? "Family Dashboard"}</h2>
+        <button onClick={logout} className="btn-secondary">
+          Logout
+        </button>
       </div>
 
       <nav className="nav-links">
@@ -101,8 +99,23 @@ export default function FamilyDashboard() {
             </thead>
             <tbody>
               {members.map((m) => (
-                <tr key={m.user_id}>
-                  <td>{m.display_name ?? m.user_id.slice(0, 8)}</td>
+                <tr
+                  key={m.user_id}
+                  className={m.user_id === userId ? "row-highlight" : ""}
+                >
+                  <td>
+                    <button
+                      className="link-button"
+                      onClick={() =>
+                        navigate(`/create-nag?recipient=${m.user_id}`)
+                      }
+                    >
+                      {m.display_name ?? m.user_id.slice(0, 8)}
+                    </button>
+                    {m.user_id === userId && (
+                      <span className="you-badge">you</span>
+                    )}
+                  </td>
                   <td>
                     <span className={`badge badge-${m.role}`}>{m.role}</span>
                   </td>

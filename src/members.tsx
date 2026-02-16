@@ -19,6 +19,7 @@ export interface Member {
 
 interface MembersCtx {
   members: Member[];
+  familyName: string | null;
   nameMap: Record<string, string>;
   getName: (userId: string) => string;
   loading: boolean;
@@ -27,6 +28,7 @@ interface MembersCtx {
 
 const MembersContext = createContext<MembersCtx>({
   members: [],
+  familyName: null,
   nameMap: {},
   getName: (id) => id.slice(0, 8) + "...",
   loading: true,
@@ -35,6 +37,7 @@ const MembersContext = createContext<MembersCtx>({
 
 export function MembersProvider({ children }: { children: ReactNode }) {
   const [members, setMembers] = useState<Member[]>([]);
+  const [familyName, setFamilyName] = useState<string | null>(null);
   const [nameMap, setNameMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
@@ -45,11 +48,18 @@ export function MembersProvider({ children }: { children: ReactNode }) {
       return;
     }
     try {
-      const data = await customInstance<Member[]>({
-        url: `/api/v1/families/${familyId}/members`,
-        method: "GET",
-      });
+      const [data, family] = await Promise.all([
+        customInstance<Member[]>({
+          url: `/api/v1/families/${familyId}/members`,
+          method: "GET",
+        }),
+        customInstance<{ family_id: string; name: string }>({
+          url: `/api/v1/families/${familyId}`,
+          method: "GET",
+        }),
+      ]);
       setMembers(data);
+      setFamilyName(family.name);
       const map: Record<string, string> = {};
       for (const m of data) {
         map[m.user_id] = m.display_name ?? m.user_id.slice(0, 8);
@@ -72,7 +82,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
 
   return (
     <MembersContext.Provider
-      value={{ members, nameMap, getName, loading, reload: load }}
+      value={{ members, familyName, nameMap, getName, loading, reload: load }}
     >
       {children}
     </MembersContext.Provider>

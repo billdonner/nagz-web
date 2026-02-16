@@ -271,6 +271,40 @@ th {
   box-sizing: border-box;
 }
 
+/* Current user highlight */
+.row-highlight {
+  background: #eff6ff;
+}
+
+.you-badge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+/* Clickable name in table */
+.link-button {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link-button:hover {
+  color: #1d4ed8;
+}
+
 /* Error */
 .error {
   color: #ef4444;

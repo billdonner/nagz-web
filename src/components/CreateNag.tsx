@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { customInstance } from "../api/axios-instance";
 import { NagCategory, DoneDefinition } from "../api/model";
 import { useMembers } from "../members";
@@ -7,10 +7,13 @@ import type { NagCreate, NagResponse } from "../api/model";
 
 export default function CreateNag() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const familyId = localStorage.getItem("nagz_family_id");
   const { members } = useMembers();
 
-  const [recipientId, setRecipientId] = useState("");
+  const [recipientId, setRecipientId] = useState(
+    searchParams.get("recipient") ?? ""
+  );
   const [category, setCategory] = useState<string>(NagCategory.chores);
   const [doneDefinition, setDoneDefinition] = useState<string>(
     DoneDefinition.ack_only
