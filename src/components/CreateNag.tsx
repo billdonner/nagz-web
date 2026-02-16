@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { customInstance } from "../api/axios-instance";
+import axios from "axios";
 import { NagCategory, DoneDefinition } from "../api/model";
 import { useMembers } from "../members";
 import type { NagCreate, NagResponse } from "../api/model";
@@ -59,8 +60,13 @@ export default function CreateNag() {
         data: body,
       });
       navigate("/nags");
-    } catch {
-      setError("Failed to create nag.");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const msg = err.response?.data?.detail ?? err.response?.data?.error?.message;
+        setError(msg ?? "Failed to create nag.");
+      } else {
+        setError("Failed to create nag.");
+      }
     }
     setSubmitting(false);
   };
