@@ -18,7 +18,7 @@ export default function NagList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("");
-  const { getName } = useMembers();
+  const { getName, loading: membersLoading } = useMembers();
 
   const familyId = localStorage.getItem("nagz_family_id");
 
@@ -52,7 +52,7 @@ export default function NagList() {
     );
   }
 
-  if (loading) return <p>Loading nags...</p>;
+  if (loading || membersLoading) return <p>Loading nags...</p>;
   if (error) return <p className="error">{error}</p>;
 
   return (

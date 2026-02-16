@@ -26,7 +26,7 @@ interface LeaderboardResponse {
 
 export default function Gamification() {
   const { userId, logout } = useAuth();
-  const { getName, members, familyName } = useMembers();
+  const { getName, members, familyName, loading: membersLoading } = useMembers();
   const familyId = localStorage.getItem("nagz_family_id");
   const myRole = members.find((m) => m.user_id === userId)?.role;
 
@@ -42,28 +42,46 @@ export default function Gamification() {
       return;
     }
     const load = async () => {
-      try {
-        const [summaryData, lbData] = await Promise.all([
-          customInstance<GamificationSummary>({
-            url: "/api/v1/gamification/summary",
-            method: "GET",
-            params: { family_id: familyId },
-          }),
-          customInstance<LeaderboardResponse>({
-            url: "/api/v1/gamification/leaderboard",
-            method: "GET",
-            params: { family_id: familyId },
-          }),
-        ]);
-        setSummary(summaryData);
-        setLeaderboard(lbData.leaderboard);
-      } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 403) {
-          setNoConsent(true);
-        } else {
-          setError("Failed to load gamification data");
-        }
+      // Fetch independently so one failure doesn't block the other
+      const [summaryResult, lbResult] = await Promise.allSettled([
+        customInstance<GamificationSummary>({
+          url: "/api/v1/gamification/summary",
+          method: "GET",
+          params: { family_id: familyId },
+        }),
+        customInstance<LeaderboardResponse>({
+          url: "/api/v1/gamification/leaderboard",
+          method: "GET",
+          params: { family_id: familyId },
+        }),
+      ]);
+
+      if (summaryResult.status === "fulfilled") {
+        setSummary(summaryResult.value);
       }
+      if (lbResult.status === "fulfilled") {
+        setLeaderboard(lbResult.value.leaderboard);
+      }
+
+      // Check if both failed with 403
+      const summaryIs403 =
+        summaryResult.status === "rejected" &&
+        axios.isAxiosError(summaryResult.reason) &&
+        summaryResult.reason.response?.status === 403;
+      const lbIs403 =
+        lbResult.status === "rejected" &&
+        axios.isAxiosError(lbResult.reason) &&
+        lbResult.reason.response?.status === 403;
+
+      if (summaryIs403 || lbIs403) {
+        setNoConsent(true);
+      } else if (
+        summaryResult.status === "rejected" &&
+        lbResult.status === "rejected"
+      ) {
+        setError("Failed to load gamification data");
+      }
+
       setLoading(false);
     };
     load();
@@ -77,7 +95,7 @@ export default function Gamification() {
     );
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading || membersLoading) return <p>Loading...</p>;
 
   if (noConsent) {
     return (

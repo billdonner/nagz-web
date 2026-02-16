@@ -8,7 +8,7 @@ import axios from "axios";
 
 export default function KidView() {
   const { userId, logout } = useAuth();
-  const { getName, members } = useMembers();
+  const { getName, members, loading: membersLoading } = useMembers();
   const [searchParams] = useSearchParams();
   const viewUserId = searchParams.get("user") ?? userId;
   const isOwnView = viewUserId === userId;
@@ -115,7 +115,7 @@ export default function KidView() {
     );
   }
 
-  if (loading) return <p>Loading nags...</p>;
+  if (loading || membersLoading) return <p>Loading nags...</p>;
 
   const filtered = filter
     ? nags.filter((n) => n.status === filter)
