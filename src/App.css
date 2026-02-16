@@ -406,6 +406,22 @@ th {
   line-height: 1.4;
 }
 
+/* Excuses */
+.excuse-list {
+  margin-bottom: 0.75rem;
+}
+
+.excuse-item {
+  font-size: 0.85rem;
+  color: #b45309;
+  padding: 0.3rem 0;
+  line-height: 1.4;
+}
+
+.excuse-label {
+  font-weight: 600;
+}
+
 /* Error */
 .error {
   color: #ef4444;

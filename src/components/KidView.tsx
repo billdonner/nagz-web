@@ -15,6 +15,7 @@ export default function KidView() {
   const familyId = localStorage.getItem("nagz_family_id");
   const myRole = members.find((m) => m.user_id === userId)?.role;
   const [nags, setNags] = useState<NagResponse[]>([]);
+  const [excuses, setExcuses] = useState<Record<string, { summary: string; at: string }[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("open");
@@ -32,7 +33,26 @@ export default function KidView() {
         method: "GET",
         params: { family_id: familyId },
       });
-      setNags(data.filter((n) => n.recipient_id === viewUserId));
+      const userNags = data.filter((n) => n.recipient_id === viewUserId);
+      setNags(userNags);
+
+      // Fetch excuses for all nags in parallel
+      const excuseMap: Record<string, { summary: string; at: string }[]> = {};
+      const results = await Promise.allSettled(
+        userNags.map((n) =>
+          customInstance<{ summary: string; at: string }[]>({
+            url: `/api/v1/nags/${n.id}/excuses`,
+            method: "GET",
+          })
+        )
+      );
+      for (let i = 0; i < userNags.length; i++) {
+        const r = results[i];
+        if (r.status === "fulfilled" && r.value.length > 0) {
+          excuseMap[userNags[i].id] = r.value;
+        }
+      }
+      setExcuses(excuseMap);
     } catch {
       setError("Failed to load nags");
     }
@@ -76,6 +96,7 @@ export default function KidView() {
       });
       setExcuseNagId(null);
       setExcuseText("");
+      await loadNags();
     } catch (err) {
       if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
         setError(err.response.data.error.message);
@@ -162,6 +183,15 @@ export default function KidView() {
                 </div>
                 {nag.description && (
                   <p className="card-description">{nag.description}</p>
+                )}
+                {excuses[nag.id] && (
+                  <div className="excuse-list">
+                    {excuses[nag.id].map((ex, i) => (
+                      <div key={i} className="excuse-item">
+                        <span className="excuse-label">Excuse:</span> {ex.summary}
+                      </div>
+                    ))}
+                  </div>
                 )}
                 {isOpen && (
                   <div className="card-actions">
