@@ -12,6 +12,7 @@ import IncentiveRules from "./components/IncentiveRules";
 import Reports from "./components/Reports";
 import Deliveries from "./components/Deliveries";
 import Safety from "./components/Safety";
+import { VersionProvider } from "./version";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -155,11 +156,13 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <MembersProvider>
-          <AppRoutes />
-        </MembersProvider>
-      </AuthProvider>
+      <VersionProvider>
+        <AuthProvider>
+          <MembersProvider>
+            <AppRoutes />
+          </MembersProvider>
+        </AuthProvider>
+      </VersionProvider>
     </BrowserRouter>
   );
 }
