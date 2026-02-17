@@ -17,6 +17,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/** Route restricted to guardians only (admin features). */
 function GuardianRoute({ children }: { children: React.ReactNode }) {
   const { token, userId } = useAuth();
   const { members } = useMembers();
@@ -26,11 +27,21 @@ function GuardianRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/** Route for users who can create nags (guardians + participants). */
+function NagCreatorRoute({ children }: { children: React.ReactNode }) {
+  const { token, userId } = useAuth();
+  const { members } = useMembers();
+  if (!token) return <Navigate to="/login" replace />;
+  const role = members.find((m) => m.user_id === userId)?.role;
+  if (role && role === "child") return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 function HomeRedirect() {
   const { userId } = useAuth();
   const { members } = useMembers();
   const role = members.find((m) => m.user_id === userId)?.role;
-  if (role === "guardian") return <FamilyDashboard />;
+  if (role === "guardian" || role === "participant") return <FamilyDashboard />;
   return <KidView />;
 }
 
@@ -63,17 +74,17 @@ function AppRoutes() {
         <Route
           path="/nags"
           element={
-            <GuardianRoute>
+            <NagCreatorRoute>
               <NagList />
-            </GuardianRoute>
+            </NagCreatorRoute>
           }
         />
         <Route
           path="/create-nag"
           element={
-            <GuardianRoute>
+            <NagCreatorRoute>
               <CreateNag />
-            </GuardianRoute>
+            </NagCreatorRoute>
           }
         />
         <Route

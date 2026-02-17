@@ -17,6 +17,8 @@ export default function FamilyDashboard() {
   const [error, setError] = useState("");
   const [manualFamilyId, setManualFamilyId] = useState("");
   const [nagCounts, setNagCounts] = useState<Record<string, number>>({});
+  const myRole = members.find((m) => m.user_id === userId)?.role;
+  const isAdmin = myRole === "guardian";
 
   // Create nag modal
   const [createNagRecipient, setCreateNagRecipient] = useState<string | null>(null);
@@ -154,8 +156,8 @@ export default function FamilyDashboard() {
         <div className="header-actions">
           <Link to="/nags">Nagz</Link>
           <Link to="/leaderboard">Leaderboard</Link>
-          <Link to="/consents">Consents</Link>
-          <Link to="/incentive-rules">Incentives</Link>
+          {isAdmin && <Link to="/consents">Consents</Link>}
+          {isAdmin && <Link to="/incentive-rules">Incentives</Link>}
           <span className="logged-in-as">{getName(userId!)}</span>
           <button onClick={logout} className="link-button">
             Logout
@@ -164,7 +166,7 @@ export default function FamilyDashboard() {
       </div>
 
       <p className="page-hint">
-        Tap a name to view their nagz. Tap the count to create one for them. * = guardian.
+        Tap a name to view their nagz. Tap the count to create one for them.
       </p>
 
       {members.length > 0 && (
@@ -192,8 +194,8 @@ export default function FamilyDashboard() {
                         className="link-button"
                         onClick={() => navigate(`/kid?user=${m.user_id}`)}
                       >
-                        {m.role === "guardian" && "* "}
                         {m.display_name ?? m.user_id.slice(0, 8)}
+                        {m.role !== "child" && ` (${m.role})`}
                       </button>
                     </td>
                     <td>
@@ -214,7 +216,7 @@ export default function FamilyDashboard() {
                       </button>
                     </td>
                     <td>
-                      {m.role === "child" && (
+                      {isAdmin && m.role !== "guardian" && (
                         <button
                           className="link-button"
                           style={{ color: "#ef4444" }}
@@ -269,7 +271,7 @@ export default function FamilyDashboard() {
         </div>
       )}
 
-      {showAddForm ? (
+      {isAdmin && (showAddForm ? (
         <form onSubmit={handleAddMember} className="form add-member-form">
           <h3>Add Member</h3>
           <label>
@@ -287,6 +289,7 @@ export default function FamilyDashboard() {
             Role
             <select value={newRole} onChange={(e) => setNewRole(e.target.value)}>
               <option value="child">Child</option>
+              <option value="participant">Participant</option>
               <option value="guardian">Guardian</option>
             </select>
           </label>
@@ -315,7 +318,7 @@ export default function FamilyDashboard() {
         >
           + Add family member
         </button>
-      )}
+      ))}
     </div>
   );
 }

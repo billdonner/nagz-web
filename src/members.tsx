@@ -13,7 +13,7 @@ export interface Member {
   user_id: string;
   display_name: string | null;
   family_id: string;
-  role: "guardian" | "child";
+  role: "guardian" | "participant" | "child";
   status: string;
   joined_at: string;
 }

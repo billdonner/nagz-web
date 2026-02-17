@@ -11,5 +11,6 @@ export type FamilyRole = typeof FamilyRole[keyof typeof FamilyRole];
 
 export const FamilyRole = {
   guardian: 'guardian',
+  participant: 'participant',
   child: 'child',
 } as const;

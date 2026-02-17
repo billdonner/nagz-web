@@ -191,8 +191,8 @@ export default function KidView() {
         <h2>{getName(viewUserId!)}'s Nagz</h2>
         <div className="header-actions">
           <span className="logged-in-as">{getName(userId!)}</span>
-          {myRole === "guardian" && <Link to="/nags">Nagz</Link>}
-          {myRole === "guardian" && <Link to="/">Family</Link>}
+          {myRole !== "child" && <Link to="/nags">Nagz</Link>}
+          {myRole !== "child" && <Link to="/">Family</Link>}
           <Link to="/leaderboard">Leaderboard</Link>
           <button onClick={logout} className="link-button">Logout</button>
         </div>
@@ -200,9 +200,9 @@ export default function KidView() {
 
       <p className="page-hint">
         {isOwnView
-          ? myRole === "guardian"
-            ? "Your nagz. Use the Family page to see all members and create nagz."
-            : "These are your nagz. Mark them complete when done, or submit an excuse if you can't finish."
+          ? myRole === "child"
+            ? "These are your nagz. Mark them complete when done, or submit an excuse if you can't finish."
+            : "Your nagz. Use the Family page to see all members and create nagz."
           : `Viewing ${getName(viewUserId!)}'s nagz. Only they can mark them complete or submit excuses.`}
       </p>
 

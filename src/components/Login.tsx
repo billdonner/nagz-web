@@ -29,7 +29,6 @@ export default function Login() {
             }}
           >
             <span className="login-user-name">
-              {u.role === "guardian" && "* "}
               {u.name}
             </span>
             <span className="login-user-role">{u.role}</span>

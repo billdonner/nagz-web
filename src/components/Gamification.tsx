@@ -158,7 +158,7 @@ export default function Gamification() {
       <div className="header">
         <h2>Leaderboard</h2>
         <div className="header-actions">
-          {myRole === "guardian" ? (
+          {myRole !== "child" ? (
             <Link to="/">Family</Link>
           ) : (
             <Link to="/kid">My Nagz</Link>
