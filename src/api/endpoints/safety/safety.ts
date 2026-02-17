@@ -10,7 +10,9 @@ import type {
   AbuseReportResponse,
   BlockCreate,
   BlockResponse,
-  BlockUpdate
+  BlockUpdate,
+  ListBlocksApiV1BlocksGetParams,
+  PaginatedResponseBlockResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -41,6 +43,19 @@ const getAbuseReportApiV1AbuseReportsReportIdGet = (
  ) => {
       return customInstance<AbuseReportResponse>(
       {url: `/api/v1/abuse-reports/${reportId}`, method: 'GET'
+    },
+      );
+    }
+  /**
+ * GET /blocks — list blocks created by the current user.
+ * @summary List Blocks
+ */
+const listBlocksApiV1BlocksGet = (
+    params?: ListBlocksApiV1BlocksGetParams,
+ ) => {
+      return customInstance<PaginatedResponseBlockResponse>(
+      {url: `/api/v1/blocks`, method: 'GET',
+        params
     },
       );
     }
@@ -85,9 +100,10 @@ const suspendRelationshipApiV1RelationshipsRelationshipIdSuspendPost = (
     },
       );
     }
-  return {createAbuseReportApiV1AbuseReportsPost,getAbuseReportApiV1AbuseReportsReportIdGet,createBlockApiV1BlocksPost,updateBlockApiV1BlocksBlockIdPatch,suspendRelationshipApiV1RelationshipsRelationshipIdSuspendPost}};
+  return {createAbuseReportApiV1AbuseReportsPost,getAbuseReportApiV1AbuseReportsReportIdGet,listBlocksApiV1BlocksGet,createBlockApiV1BlocksPost,updateBlockApiV1BlocksBlockIdPatch,suspendRelationshipApiV1RelationshipsRelationshipIdSuspendPost}};
 export type CreateAbuseReportApiV1AbuseReportsPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSafety>['createAbuseReportApiV1AbuseReportsPost']>>>
 export type GetAbuseReportApiV1AbuseReportsReportIdGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSafety>['getAbuseReportApiV1AbuseReportsReportIdGet']>>>
+export type ListBlocksApiV1BlocksGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSafety>['listBlocksApiV1BlocksGet']>>>
 export type CreateBlockApiV1BlocksPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSafety>['createBlockApiV1BlocksPost']>>>
 export type UpdateBlockApiV1BlocksBlockIdPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSafety>['updateBlockApiV1BlocksBlockIdPatch']>>>
 export type SuspendRelationshipApiV1RelationshipsRelationshipIdSuspendPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getSafety>['suspendRelationshipApiV1RelationshipsRelationshipIdSuspendPost']>>>
