@@ -10,7 +10,7 @@ interface VersionInfo {
   minClientVersion: string;
 }
 
-type VersionStatus =
+export type VersionStatus =
   | { kind: "unknown" }
   | { kind: "compatible" }
   | { kind: "update_recommended"; serverAPI: string; clientAPI: string }
@@ -29,19 +29,19 @@ const VersionContext = createContext<VersionCtx>({
   dismissWarning: () => {},
 });
 
-function parseVersion(s: string): [number, number, number] {
+export function parseVersion(s: string): [number, number, number] {
   const parts = s.split(".").map(Number);
   return [parts[0] ?? 0, parts[1] ?? 0, parts[2] ?? 0];
 }
 
-function compareVersions(a: [number, number, number], b: [number, number, number]): number {
+export function compareVersions(a: [number, number, number], b: [number, number, number]): number {
   for (let i = 0; i < 3; i++) {
     if (a[i] !== b[i]) return a[i] - b[i];
   }
   return 0;
 }
 
-function evaluate(serverAPI: string, minClient: string): VersionStatus {
+export function evaluate(serverAPI: string, minClient: string): VersionStatus {
   const client = parseVersion(CLIENT_API_VERSION);
   const server = parseVersion(serverAPI);
   const minimum = parseVersion(minClient);
