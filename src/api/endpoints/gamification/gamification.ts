@@ -6,10 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 import type {
-  GamificationEventResponse,
   GetLeaderboardApiV1GamificationLeaderboardGetParams,
   GetSummaryApiV1GamificationSummaryGetParams,
-  ListEventsApiV1GamificationEventsGetParams
+  ListEventsApiV1GamificationEventsGetParams,
+  PaginatedResponseGamificationEventResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -50,7 +50,7 @@ const getLeaderboardApiV1GamificationLeaderboardGet = (
 const listEventsApiV1GamificationEventsGet = (
     params: ListEventsApiV1GamificationEventsGetParams,
  ) => {
-      return customInstance<GamificationEventResponse[]>(
+      return customInstance<PaginatedResponseGamificationEventResponse>(
       {url: `/api/v1/gamification/events`, method: 'GET',
         params
     },

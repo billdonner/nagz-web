@@ -6,12 +6,13 @@
  * OpenAPI spec version: 0.1.0
  */
 import type {
-  IncentiveEventResponse,
   IncentiveRuleCreate,
   IncentiveRuleResponse,
   IncentiveRuleUpdate,
   ListIncentiveEventsApiV1IncentiveEventsGetParams,
-  ListIncentiveRulesApiV1IncentiveRulesGetParams
+  ListIncentiveRulesApiV1IncentiveRulesGetParams,
+  PaginatedResponseIncentiveEventResponse,
+  PaginatedResponseIncentiveRuleResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -26,7 +27,7 @@ import { customInstance } from '../../axios-instance';
 const listIncentiveRulesApiV1IncentiveRulesGet = (
     params: ListIncentiveRulesApiV1IncentiveRulesGetParams,
  ) => {
-      return customInstance<IncentiveRuleResponse[]>(
+      return customInstance<PaginatedResponseIncentiveRuleResponse>(
       {url: `/api/v1/incentive-rules`, method: 'GET',
         params
     },
@@ -68,7 +69,7 @@ const updateIncentiveRuleApiV1IncentiveRulesRuleIdPatch = (
 const listIncentiveEventsApiV1IncentiveEventsGet = (
     params: ListIncentiveEventsApiV1IncentiveEventsGetParams,
  ) => {
-      return customInstance<IncentiveEventResponse[]>(
+      return customInstance<PaginatedResponseIncentiveEventResponse>(
       {url: `/api/v1/incentive-events`, method: 'GET',
         params
     },

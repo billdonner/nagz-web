@@ -6,8 +6,8 @@
  * OpenAPI spec version: 0.1.0
  */
 import type {
-  DeliveryResponse,
-  ListDeliveriesApiV1DeliveriesGetParams
+  ListDeliveriesApiV1DeliveriesGetParams,
+  PaginatedResponseDeliveryResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -22,7 +22,7 @@ import { customInstance } from '../../axios-instance';
 const listDeliveriesApiV1DeliveriesGet = (
     params: ListDeliveriesApiV1DeliveriesGetParams,
  ) => {
-      return customInstance<DeliveryResponse[]>(
+      return customInstance<PaginatedResponseDeliveryResponse>(
       {url: `/api/v1/deliveries`, method: 'GET',
         params
     },

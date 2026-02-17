@@ -9,10 +9,12 @@ import type {
   FamilyCreate,
   FamilyResponse,
   JoinRequest,
+  ListMembersApiV1FamiliesFamilyIdMembersGetParams,
   MemberAdd,
   MemberCreateAndAdd,
   MemberDetail,
-  MemberResponse
+  MemberResponse,
+  PaginatedResponseMemberDetail
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -47,7 +49,21 @@ const getFamilyApiV1FamiliesFamilyIdGet = (
       );
     }
   /**
- * POST /families/{familyId}/join — member invite flow.
+ * POST /families/join — join a family using only an invite code.
+ * @summary Join Family By Code
+ */
+const joinFamilyByCodeApiV1FamiliesJoinPost = (
+    joinRequest: JoinRequest,
+ ) => {
+      return customInstance<MemberResponse>(
+      {url: `/api/v1/families/join`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: joinRequest
+    },
+      );
+    }
+  /**
+ * POST /families/{familyId}/join — member invite flow (legacy).
  * @summary Join Family
  */
 const joinFamilyApiV1FamiliesFamilyIdJoinPost = (
@@ -82,9 +98,11 @@ const addMemberApiV1FamiliesFamilyIdMembersPost = (
  */
 const listMembersApiV1FamiliesFamilyIdMembersGet = (
     familyId: string,
+    params?: ListMembersApiV1FamiliesFamilyIdMembersGetParams,
  ) => {
-      return customInstance<MemberDetail[]>(
-      {url: `/api/v1/families/${familyId}/members`, method: 'GET'
+      return customInstance<PaginatedResponseMemberDetail>(
+      {url: `/api/v1/families/${familyId}/members`, method: 'GET',
+        params
     },
       );
     }
@@ -116,9 +134,10 @@ const removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete = (
     },
       );
     }
-  return {createFamilyApiV1FamiliesPost,getFamilyApiV1FamiliesFamilyIdGet,joinFamilyApiV1FamiliesFamilyIdJoinPost,addMemberApiV1FamiliesFamilyIdMembersPost,listMembersApiV1FamiliesFamilyIdMembersGet,createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost,removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete}};
+  return {createFamilyApiV1FamiliesPost,getFamilyApiV1FamiliesFamilyIdGet,joinFamilyByCodeApiV1FamiliesJoinPost,joinFamilyApiV1FamiliesFamilyIdJoinPost,addMemberApiV1FamiliesFamilyIdMembersPost,listMembersApiV1FamiliesFamilyIdMembersGet,createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost,removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete}};
 export type CreateFamilyApiV1FamiliesPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['createFamilyApiV1FamiliesPost']>>>
 export type GetFamilyApiV1FamiliesFamilyIdGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['getFamilyApiV1FamiliesFamilyIdGet']>>>
+export type JoinFamilyByCodeApiV1FamiliesJoinPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['joinFamilyByCodeApiV1FamiliesJoinPost']>>>
 export type JoinFamilyApiV1FamiliesFamilyIdJoinPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['joinFamilyApiV1FamiliesFamilyIdJoinPost']>>>
 export type AddMemberApiV1FamiliesFamilyIdMembersPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['addMemberApiV1FamiliesFamilyIdMembersPost']>>>
 export type ListMembersApiV1FamiliesFamilyIdMembersGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['listMembersApiV1FamiliesFamilyIdMembersGet']>>>

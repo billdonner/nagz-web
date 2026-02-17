@@ -8,4 +8,13 @@
 
 export type ListDeliveriesApiV1DeliveriesGetParams = {
 nag_id: string;
+/**
+ * @minimum 1
+ * @maximum 200
+ */
+limit?: number;
+/**
+ * @minimum 0
+ */
+offset?: number;
 };

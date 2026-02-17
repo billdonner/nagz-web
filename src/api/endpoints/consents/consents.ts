@@ -9,7 +9,8 @@ import type {
   ConsentCreate,
   ConsentResponse,
   ConsentUpdate,
-  ListConsentsApiV1ConsentsGetParams
+  ListConsentsApiV1ConsentsGetParams,
+  PaginatedResponseConsentResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -24,7 +25,7 @@ import { customInstance } from '../../axios-instance';
 const listConsentsApiV1ConsentsGet = (
     params: ListConsentsApiV1ConsentsGetParams,
  ) => {
-      return customInstance<ConsentResponse[]>(
+      return customInstance<PaginatedResponseConsentResponse>(
       {url: `/api/v1/consents`, method: 'GET',
         params
     },

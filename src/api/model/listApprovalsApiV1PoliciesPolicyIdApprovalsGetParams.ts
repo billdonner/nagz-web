@@ -6,9 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type ListNagsApiV1NagsGetParams = {
-family_id: string;
-state?: string | null;
+export type ListApprovalsApiV1PoliciesPolicyIdApprovalsGetParams = {
 /**
  * @minimum 1
  * @maximum 200

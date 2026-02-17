@@ -9,4 +9,13 @@
 export type ListEventsApiV1GamificationEventsGetParams = {
 user_id: string;
 family_id?: string | null;
+/**
+ * @minimum 1
+ * @maximum 200
+ */
+limit?: number;
+/**
+ * @minimum 0
+ */
+offset?: number;
 };

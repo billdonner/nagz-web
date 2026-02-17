@@ -6,9 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface FamilyResponse {
-  family_id: string;
-  name: string;
-  invite_code: string;
-  created_at: string;
+export interface LoginRequest {
+  email: string;
+  password: string;
 }

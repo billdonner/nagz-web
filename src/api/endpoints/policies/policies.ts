@@ -8,6 +8,8 @@
 import type {
   ApprovalCreate,
   ApprovalResponse,
+  ListApprovalsApiV1PoliciesPolicyIdApprovalsGetParams,
+  PaginatedResponseApprovalResponse,
   PolicyResponse,
   PolicyUpdate
 } from '../../model';
@@ -65,9 +67,11 @@ const createApprovalApiV1PoliciesPolicyIdApprovalsPost = (
  */
 const listApprovalsApiV1PoliciesPolicyIdApprovalsGet = (
     policyId: string,
+    params?: ListApprovalsApiV1PoliciesPolicyIdApprovalsGetParams,
  ) => {
-      return customInstance<ApprovalResponse[]>(
-      {url: `/api/v1/policies/${policyId}/approvals`, method: 'GET'
+      return customInstance<PaginatedResponseApprovalResponse>(
+      {url: `/api/v1/policies/${policyId}/approvals`, method: 'GET',
+        params
     },
       );
     }

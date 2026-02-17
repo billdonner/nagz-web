@@ -7,11 +7,13 @@
  */
 import type {
   ExcuseCreate,
+  ListExcusesApiV1NagsNagIdExcusesGetParams,
   ListNagsApiV1NagsGetParams,
   NagCreate,
   NagResponse,
   NagStatusUpdate,
-  NagUpdate
+  NagUpdate,
+  PaginatedResponseNagResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -40,7 +42,7 @@ const createNagApiV1NagsPost = (
 const listNagsApiV1NagsGet = (
     params: ListNagsApiV1NagsGetParams,
  ) => {
-      return customInstance<NagResponse[]>(
+      return customInstance<PaginatedResponseNagResponse>(
       {url: `/api/v1/nags`, method: 'GET',
         params
     },
@@ -109,9 +111,11 @@ const submitExcuseApiV1NagsNagIdExcusesPost = (
  */
 const listExcusesApiV1NagsNagIdExcusesGet = (
     nagId: string,
+    params?: ListExcusesApiV1NagsNagIdExcusesGetParams,
  ) => {
       return customInstance<unknown>(
-      {url: `/api/v1/nags/${nagId}/excuses`, method: 'GET'
+      {url: `/api/v1/nags/${nagId}/excuses`, method: 'GET',
+        params
     },
       );
     }
