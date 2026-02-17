@@ -8,6 +8,8 @@ interface PreferenceData {
     quiet_hours_enabled?: boolean;
     quiet_hours_start?: string;
     quiet_hours_end?: string;
+    notification_frequency?: string;
+    delivery_channel?: string;
     background_color?: string;
     tone?: string;
   };
@@ -43,6 +45,8 @@ export function MemberSettings({
   const [quietHoursEnabled, setQuietHoursEnabled] = useState(false);
   const [quietHoursStart, setQuietHoursStart] = useState("22:00");
   const [quietHoursEnd, setQuietHoursEnd] = useState("07:00");
+  const [notificationFrequency, setNotificationFrequency] = useState("always");
+  const [deliveryChannel, setDeliveryChannel] = useState("push");
   const [backgroundColor, setBackgroundColor] = useState("#f9fafb");
   const [tone, setTone] = useState("friendly");
   const [loading, setLoading] = useState(true);
@@ -62,6 +66,8 @@ export function MemberSettings({
         setQuietHoursEnabled(p.quiet_hours_enabled ?? false);
         setQuietHoursStart(p.quiet_hours_start ?? "22:00");
         setQuietHoursEnd(p.quiet_hours_end ?? "07:00");
+        setNotificationFrequency(p.notification_frequency ?? "always");
+        setDeliveryChannel(p.delivery_channel ?? "push");
         setBackgroundColor(p.background_color ?? "#f9fafb");
         setTone(p.tone ?? "friendly");
       } catch {
@@ -86,6 +92,8 @@ export function MemberSettings({
             quiet_hours_enabled: quietHoursEnabled,
             quiet_hours_start: quietHoursStart,
             quiet_hours_end: quietHoursEnd,
+            notification_frequency: notificationFrequency,
+            delivery_channel: deliveryChannel,
             background_color: backgroundColor,
             tone,
           },
@@ -155,6 +163,30 @@ export function MemberSettings({
                 </label>
               </div>
             )}
+
+            <label>
+              Notification Frequency
+              <select
+                value={notificationFrequency}
+                onChange={(e) => setNotificationFrequency(e.target.value)}
+              >
+                <option value="always">Always</option>
+                <option value="once_per_phase">Once per phase</option>
+                <option value="daily_digest">Daily digest</option>
+              </select>
+            </label>
+
+            <label>
+              Delivery Channel
+              <select
+                value={deliveryChannel}
+                onChange={(e) => setDeliveryChannel(e.target.value)}
+              >
+                <option value="push">Push</option>
+                <option value="sms">SMS</option>
+                <option value="both">Both</option>
+              </select>
+            </label>
 
             <label>
               Background Color
