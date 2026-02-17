@@ -2,8 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
-import { customInstance } from "../api/axios-instance";
-import axios from "axios";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 
 export default function Safety() {
   const { userId, logout } = useAuth();
@@ -36,11 +35,7 @@ export default function Safety() {
       setReportTarget(null);
       setReportReason("");
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.error?.message ?? "Failed to submit report.");
-      } else {
-        setError("Failed to submit report.");
-      }
+      setError(extractErrorMessage(err, "Failed to submit report."));
     }
     setSubmitting(false);
   };
@@ -58,11 +53,7 @@ export default function Safety() {
       });
       setSuccess(`${getName(targetId)} has been blocked.`);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.error?.message ?? "Failed to block member.");
-      } else {
-        setError("Failed to block member.");
-      }
+      setError(extractErrorMessage(err, "Failed to block member."));
     }
   };
 
@@ -77,11 +68,7 @@ export default function Safety() {
       });
       logout();
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.error?.message ?? "Failed to delete account.");
-      } else {
-        setError("Failed to delete account.");
-      }
+      setError(extractErrorMessage(err, "Failed to delete account."));
     }
     setDeleting(false);
     setShowDeleteConfirm(false);

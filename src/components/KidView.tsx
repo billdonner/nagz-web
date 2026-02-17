@@ -2,9 +2,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
-import { customInstance } from "../api/axios-instance";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
-import axios from "axios";
 
 export default function KidView() {
   const { userId, logout } = useAuth();
@@ -74,8 +73,8 @@ export default function KidView() {
         }
       }
       setEscalations(escMap);
-    } catch {
-      setError("Failed to load nagz");
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to load nagz"));
     }
     setLoading(false);
   };
@@ -95,11 +94,7 @@ export default function KidView() {
       });
       await loadNags();
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
-        setError(err.response.data.error.message);
-      } else {
-        setError("Failed to mark nag as complete");
-      }
+      setError(extractErrorMessage(err, "Failed to mark nag as complete"));
     }
   };
 
@@ -112,11 +107,7 @@ export default function KidView() {
       });
       setEscalations((prev) => ({ ...prev, [nagId]: result }));
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
-        setError(err.response.data.error.message);
-      } else {
-        setError("Failed to recompute escalation");
-      }
+      setError(extractErrorMessage(err, "Failed to recompute escalation"));
     }
     setRecomputing(null);
   };
@@ -137,11 +128,7 @@ export default function KidView() {
       setExcuseText("");
       await loadNags();
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
-        setError(err.response.data.error.message);
-      } else {
-        setError("Failed to submit excuse");
-      }
+      setError(extractErrorMessage(err, "Failed to submit excuse"));
     }
     setSubmitting(false);
   };

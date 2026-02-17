@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
-import { customInstance } from "../api/axios-instance";
-import axios from "axios";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 
 interface IncentiveRule {
   id: string;
@@ -43,8 +42,8 @@ export default function IncentiveRules() {
         params: { family_id: familyId },
       });
       setRules(data);
-    } catch {
-      setError("Failed to load incentive rules");
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to load incentive rules"));
     }
     setLoading(false);
   }, [familyId]);
@@ -75,13 +74,7 @@ export default function IncentiveRules() {
       setActionAmount(50);
       await load();
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          err.response?.data?.error?.message ?? "Failed to create rule"
-        );
-      } else {
-        setError("Failed to create rule");
-      }
+      setError(extractErrorMessage(err, "Failed to create rule"));
     }
     setCreating(false);
   };

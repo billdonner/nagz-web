@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { customInstance } from "../api/axios-instance";
-import axios from "axios";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 
 interface PreferenceData {
   prefs_json: {
@@ -101,13 +100,7 @@ export function MemberSettings({
       });
       onSaved();
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const msg =
-          err.response?.data?.detail ?? err.response?.data?.error?.message;
-        setError(msg ?? "Failed to save preferences.");
-      } else {
-        setError("Failed to save preferences.");
-      }
+      setError(extractErrorMessage(err, "Failed to save preferences."));
     }
     setSaving(false);
   };

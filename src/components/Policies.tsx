@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
-import { customInstance } from "../api/axios-instance";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import type { PolicyResponse } from "../api/model/policyResponse";
 import type { PaginatedResponsePolicyResponse } from "../api/model/paginatedResponsePolicyResponse";
-import axios from "axios";
 
 interface ApprovalResponse {
   id: string;
@@ -45,8 +44,8 @@ export default function Policies() {
         params: { family_id: familyId },
       });
       setPolicies(data.items);
-    } catch {
-      setError("Failed to load policies");
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to load policies"));
     }
     setLoading(false);
   };
@@ -76,9 +75,7 @@ export default function Policies() {
       setApprovalComment("");
       await loadApprovals(detailPolicy.id);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.error?.message ?? "Failed to approve");
-      }
+      setError(extractErrorMessage(err, "Failed to approve"));
     }
     setSubmitting(false);
   };

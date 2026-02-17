@@ -14,6 +14,7 @@ import Deliveries from "./components/Deliveries";
 import Safety from "./components/Safety";
 import Policies from "./components/Policies";
 import { VersionProvider } from "./version";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -164,14 +165,16 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <VersionProvider>
-        <AuthProvider>
-          <MembersProvider>
-            <AppRoutes />
-          </MembersProvider>
-        </AuthProvider>
-      </VersionProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <VersionProvider>
+          <AuthProvider>
+            <MembersProvider>
+              <AppRoutes />
+            </MembersProvider>
+          </AuthProvider>
+        </VersionProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

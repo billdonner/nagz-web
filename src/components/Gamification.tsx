@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
-import { customInstance } from "../api/axios-instance";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import axios from "axios";
 
 interface GamificationSummary {
@@ -96,7 +96,7 @@ export default function Gamification() {
       summaryResult.status === "rejected" &&
       lbResult.status === "rejected"
     ) {
-      setError("Failed to load gamification data");
+      setError(extractErrorMessage(summaryResult.reason, "Failed to load gamification data"));
     }
 
     setLoading(false);

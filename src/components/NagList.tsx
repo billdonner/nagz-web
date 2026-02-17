@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
-import { customInstance } from "../api/axios-instance";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import { useMembers } from "../members";
 import type { NagResponse } from "../api/model";
-import axios from "axios";
 import { CreateNagModal } from "./CreateNag";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -57,8 +56,8 @@ export default function NagList() {
         params,
       });
       setNags(data);
-    } catch {
-      setError("Failed to load nagz");
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to load nagz"));
     }
     setLoading(false);
   };
@@ -95,9 +94,7 @@ export default function NagList() {
       });
       setDetailEscalation(esc);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setEditError(err.response?.data?.error?.message ?? "Failed to recompute");
-      }
+      setEditError(extractErrorMessage(err, "Failed to recompute"));
     }
     setRecomputing(false);
   };
@@ -149,11 +146,7 @@ export default function NagList() {
       setDetailNag(null);
       await loadNags();
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setEditError(err.response?.data?.error?.message ?? "Failed to update nag");
-      } else {
-        setEditError("Failed to update nag");
-      }
+      setEditError(extractErrorMessage(err, "Failed to update nag"));
     }
     setSaving(false);
   };

@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { customInstance } from "../api/axios-instance";
-import axios from "axios";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import { NagCategory, DoneDefinition } from "../api/model";
 import { useMembers } from "../members";
 import type { NagCreate, NagResponse } from "../api/model";
@@ -61,13 +60,7 @@ export function CreateNagModal({
       });
       onCreated();
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const msg =
-          err.response?.data?.detail ?? err.response?.data?.error?.message;
-        setError(msg ?? "Failed to create nag.");
-      } else {
-        setError("Failed to create nag.");
-      }
+      setError(extractErrorMessage(err, "Failed to create nag."));
     }
     setSubmitting(false);
   };

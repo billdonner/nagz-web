@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
-import { customInstance } from "../api/axios-instance";
-import axios from "axios";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 
 interface ConsentItem {
   id: string;
@@ -54,8 +53,8 @@ export default function Consents() {
         params: { family_id: familyId },
       });
       setConsents(data);
-    } catch {
-      setError("Failed to load consents");
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to load consents"));
     }
     setLoading(false);
   }, [familyId]);
@@ -77,13 +76,7 @@ export default function Consents() {
       });
       await load();
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          err.response?.data?.error?.message ?? "Failed to grant consent"
-        );
-      } else {
-        setError("Failed to grant consent");
-      }
+      setError(extractErrorMessage(err, "Failed to grant consent"));
     }
     setUpdating(false);
   };
@@ -100,13 +93,7 @@ export default function Consents() {
       });
       await load();
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          err.response?.data?.error?.message ?? "Failed to revoke consent"
-        );
-      } else {
-        setError("Failed to revoke consent");
-      }
+      setError(extractErrorMessage(err, "Failed to revoke consent"));
     }
     setUpdating(false);
   };

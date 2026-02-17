@@ -2,9 +2,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
-import { customInstance } from "../api/axios-instance";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
-import axios from "axios";
 import { CreateNagModal } from "./CreateNag";
 import { MemberSettings } from "./MemberSettings";
 
@@ -53,8 +52,8 @@ export default function FamilyDashboard() {
       }
       setNagCounts(counts);
 
-    } catch {
-      setError("Could not access family. Check the family ID.");
+    } catch (err) {
+      setError(extractErrorMessage(err, "Could not access family. Check the family ID."));
     }
     setLoading(false);
   };
@@ -86,13 +85,7 @@ export default function FamilyDashboard() {
       reloadMembers();
       await loadFamily(familyId);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const msg =
-          err.response?.data?.detail ?? err.response?.data?.error?.message;
-        setAddError(msg ?? "Failed to add member.");
-      } else {
-        setAddError("Failed to add member.");
-      }
+      setAddError(extractErrorMessage(err, "Failed to add member."));
     }
     setAdding(false);
   };
@@ -109,11 +102,7 @@ export default function FamilyDashboard() {
       reloadMembers();
       await loadFamily(familyId);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.error?.message ?? "Failed to remove member.");
-      } else {
-        setError("Failed to remove member.");
-      }
+      setError(extractErrorMessage(err, "Failed to remove member."));
     }
     setRemoving(null);
   };
