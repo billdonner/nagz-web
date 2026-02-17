@@ -31,6 +31,7 @@ export function CreateNagModal({
     return tomorrow.toISOString().slice(0, 16);
   });
   const [description, setDescription] = useState("");
+  const [recurrence, setRecurrence] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -50,6 +51,7 @@ export function CreateNagModal({
         done_definition: doneDefinition as NagCreate["done_definition"],
         due_at: new Date(dueAt).toISOString(),
         description: description.trim() || undefined,
+        recurrence: (recurrence || undefined) as NagCreate["recurrence"],
       };
       await customInstance<NagResponse>({
         url: "/api/v1/nags",
@@ -127,6 +129,16 @@ export function CreateNagModal({
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
             />
+          </label>
+
+          <label>
+            Repeat
+            <select value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+              <option value="">None (one-time)</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
           </label>
 
           <label>

@@ -298,6 +298,12 @@ export default function NagList() {
               <dd>{detailNag.done_definition}</dd>
               <dt>Strategy</dt>
               <dd>{detailNag.strategy_template}</dd>
+              {detailNag.recurrence && (
+                <>
+                  <dt>Repeats</dt>
+                  <dd>{detailNag.recurrence.charAt(0).toUpperCase() + detailNag.recurrence.slice(1)}</dd>
+                </>
+              )}
               {detailEscalation && (
                 <>
                   <dt>Escalation</dt>

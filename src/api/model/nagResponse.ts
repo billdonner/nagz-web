@@ -8,6 +8,7 @@
 import type { DoneDefinition } from './doneDefinition';
 import type { NagCategory } from './nagCategory';
 import type { NagStatus } from './nagStatus';
+import type { Recurrence } from './recurrence';
 import type { StrategyTemplate } from './strategyTemplate';
 
 export interface NagResponse {
@@ -20,6 +21,7 @@ export interface NagResponse {
   done_definition: DoneDefinition;
   description?: string | null;
   strategy_template: StrategyTemplate;
+  recurrence?: Recurrence | null;
   status: NagStatus;
   created_at: string;
 }

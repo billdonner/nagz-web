@@ -4307,6 +4307,16 @@
               }
             ],
             "title": "Policy Id"
+          },
+          "recurrence": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Recurrence"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -4365,6 +4375,16 @@
           },
           "strategy_template": {
             "$ref": "#/components/schemas/StrategyTemplate"
+          },
+          "recurrence": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Recurrence"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "status": {
             "$ref": "#/components/schemas/NagStatus"
@@ -4910,6 +4930,15 @@
           "prefs_json"
         ],
         "title": "PreferenceUpdate"
+      },
+      "Recurrence": {
+        "type": "string",
+        "enum": [
+          "daily",
+          "weekly",
+          "monthly"
+        ],
+        "title": "Recurrence"
       },
       "RefreshRequest": {
         "properties": {

@@ -98,6 +98,7 @@ export * from './preferenceResponse';
 export * from './preferenceResponsePrefsJson';
 export * from './preferenceUpdate';
 export * from './preferenceUpdatePrefsJson';
+export * from './recurrence';
 export * from './refreshRequest';
 export * from './signupRequest';
 export * from './strategyTemplate';

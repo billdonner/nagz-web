@@ -7,6 +7,7 @@
  */
 import type { DoneDefinition } from './doneDefinition';
 import type { NagCategory } from './nagCategory';
+import type { Recurrence } from './recurrence';
 import type { StrategyTemplate } from './strategyTemplate';
 
 export interface NagCreate {
@@ -18,4 +19,5 @@ export interface NagCreate {
   description?: string | null;
   strategy_template?: StrategyTemplate;
   policy_id?: string | null;
+  recurrence?: Recurrence | null;
 }
