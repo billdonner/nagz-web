@@ -6,6 +6,8 @@
  * OpenAPI spec version: 0.2.0
  */
 
-export type GetPreferencesApiV1PreferencesGetParams = {
-family_id: string;
-};
+export interface VersionResponse {
+  server_version: string;
+  api_version: string;
+  min_client_version: string;
+}

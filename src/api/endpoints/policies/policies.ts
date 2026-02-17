@@ -3,13 +3,15 @@
  * Do not edit manually.
  * Nagz API
  * Family-oriented AI-mediated nagging system
- * OpenAPI spec version: 0.1.0
+ * OpenAPI spec version: 0.2.0
  */
 import type {
   ApprovalCreate,
   ApprovalResponse,
   ListApprovalsApiV1PoliciesPolicyIdApprovalsGetParams,
+  ListPoliciesApiV1PoliciesGetParams,
   PaginatedResponseApprovalResponse,
+  PaginatedResponsePolicyResponse,
   PolicyResponse,
   PolicyUpdate
 } from '../../model';
@@ -20,6 +22,19 @@ import { customInstance } from '../../axios-instance';
 
   export const getPolicies = () => {
 /**
+ * GET /policies?family_id={familyId} — guardian_only.
+ * @summary List Policies
+ */
+const listPoliciesApiV1PoliciesGet = (
+    params: ListPoliciesApiV1PoliciesGetParams,
+ ) => {
+      return customInstance<PaginatedResponsePolicyResponse>(
+      {url: `/api/v1/policies`, method: 'GET',
+        params
+    },
+      );
+    }
+  /**
  * GET /policies/{policyId} — guardian_only.
  * @summary Get Policy
  */
@@ -75,7 +90,8 @@ const listApprovalsApiV1PoliciesPolicyIdApprovalsGet = (
     },
       );
     }
-  return {getPolicyApiV1PoliciesPolicyIdGet,updatePolicyApiV1PoliciesPolicyIdPatch,createApprovalApiV1PoliciesPolicyIdApprovalsPost,listApprovalsApiV1PoliciesPolicyIdApprovalsGet}};
+  return {listPoliciesApiV1PoliciesGet,getPolicyApiV1PoliciesPolicyIdGet,updatePolicyApiV1PoliciesPolicyIdPatch,createApprovalApiV1PoliciesPolicyIdApprovalsPost,listApprovalsApiV1PoliciesPolicyIdApprovalsGet}};
+export type ListPoliciesApiV1PoliciesGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPolicies>['listPoliciesApiV1PoliciesGet']>>>
 export type GetPolicyApiV1PoliciesPolicyIdGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPolicies>['getPolicyApiV1PoliciesPolicyIdGet']>>>
 export type UpdatePolicyApiV1PoliciesPolicyIdPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPolicies>['updatePolicyApiV1PoliciesPolicyIdPatch']>>>
 export type CreateApprovalApiV1PoliciesPolicyIdApprovalsPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPolicies>['createApprovalApiV1PoliciesPolicyIdApprovalsPost']>>>

@@ -12,6 +12,7 @@ import IncentiveRules from "./components/IncentiveRules";
 import Reports from "./components/Reports";
 import Deliveries from "./components/Deliveries";
 import Safety from "./components/Safety";
+import Policies from "./components/Policies";
 import { VersionProvider } from "./version";
 import "./App.css";
 
@@ -136,6 +137,14 @@ function AppRoutes() {
           element={
             <GuardianRoute>
               <Deliveries />
+            </GuardianRoute>
+          }
+        />
+        <Route
+          path="/policies"
+          element={
+            <GuardianRoute>
+              <Policies />
             </GuardianRoute>
           }
         />

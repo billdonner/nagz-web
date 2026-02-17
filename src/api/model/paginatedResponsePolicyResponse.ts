@@ -5,10 +5,10 @@
  * Family-oriented AI-mediated nagging system
  * OpenAPI spec version: 0.2.0
  */
-import type { ApprovalResponse } from './approvalResponse';
+import type { PolicyResponse } from './policyResponse';
 
-export interface PaginatedResponseApprovalResponse {
-  items: ApprovalResponse[];
+export interface PaginatedResponsePolicyResponse {
+  items: PolicyResponse[];
   total: number;
   limit: number;
   offset: number;

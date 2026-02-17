@@ -6,6 +6,15 @@
  * OpenAPI spec version: 0.2.0
  */
 
-export type GetPreferencesApiV1PreferencesGetParams = {
+export type ListPoliciesApiV1PoliciesGetParams = {
 family_id: string;
+/**
+ * @minimum 1
+ * @maximum 200
+ */
+limit?: number;
+/**
+ * @minimum 0
+ */
+offset?: number;
 };
