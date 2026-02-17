@@ -31,6 +31,10 @@ export default function NagList() {
   const [showCreate, setShowCreate] = useState(false);
   const { getName, loading: membersLoading } = useMembers();
 
+  // Escalation state
+  const [detailEscalation, setDetailEscalation] = useState<{ current_phase: string } | null>(null);
+  const [recomputing, setRecomputing] = useState(false);
+
   // Edit nag state
   const [editing, setEditing] = useState(false);
   const [editDueAt, setEditDueAt] = useState("");
@@ -61,6 +65,52 @@ export default function NagList() {
   useEffect(() => {
     loadNags();
   }, [familyId, filter]);
+
+  useEffect(() => {
+    if (!detailNag || detailNag.status !== "open") {
+      setDetailEscalation(null);
+      return;
+    }
+    (async () => {
+      try {
+        const esc = await customInstance<{ current_phase: string }>({
+          url: `/api/v1/nags/${detailNag.id}/escalation`,
+          method: "GET",
+        });
+        setDetailEscalation(esc);
+      } catch {
+        setDetailEscalation(null);
+      }
+    })();
+  }, [detailNag?.id]);
+
+  const recomputeEscalation = async () => {
+    if (!detailNag) return;
+    setRecomputing(true);
+    try {
+      const esc = await customInstance<{ current_phase: string }>({
+        url: `/api/v1/nags/${detailNag.id}/escalation/recompute`,
+        method: "POST",
+      });
+      setDetailEscalation(esc);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setEditError(err.response?.data?.error?.message ?? "Failed to recompute");
+      }
+    }
+    setRecomputing(false);
+  };
+
+  const formatPhase = (p: string) => {
+    const map: Record<string, string> = {
+      phase_0_initial: "Created",
+      phase_1_due_soon: "Due Soon",
+      phase_2_overdue_soft: "Overdue",
+      phase_3_overdue_bounded_pushback: "Escalated",
+      phase_4_guardian_review: "Guardian Review",
+    };
+    return map[p] ?? p;
+  };
 
   const startEditing = (nag: NagResponse) => {
     setEditing(true);
@@ -247,6 +297,24 @@ export default function NagList() {
               <dd>{detailNag.done_definition}</dd>
               <dt>Strategy</dt>
               <dd>{detailNag.strategy_template}</dd>
+              {detailEscalation && (
+                <>
+                  <dt>Escalation</dt>
+                  <dd>
+                    <span className="badge" style={{ marginRight: "0.5rem" }}>
+                      {formatPhase(detailEscalation.current_phase)}
+                    </span>
+                    <button
+                      className="link-button"
+                      style={{ fontSize: "0.8rem" }}
+                      onClick={recomputeEscalation}
+                      disabled={recomputing}
+                    >
+                      {recomputing ? "..." : "Recompute"}
+                    </button>
+                  </dd>
+                </>
+              )}
             </dl>
             {editing ? (
               <div className="form" style={{ marginTop: "1rem" }}>

@@ -16,6 +16,8 @@ export default function KidView() {
   const myRole = members.find((m) => m.user_id === userId)?.role;
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [excuses, setExcuses] = useState<Record<string, { summary: string; at: string }[]>>({});
+  const [escalations, setEscalations] = useState<Record<string, { current_phase: string; computed_at: string }>>({});
+  const [recomputing, setRecomputing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("open");
@@ -53,6 +55,25 @@ export default function KidView() {
         }
       }
       setExcuses(excuseMap);
+
+      // Fetch escalation for open nags
+      const openNags = userNags.filter((n) => n.status === "open");
+      const escResults = await Promise.allSettled(
+        openNags.map((n) =>
+          customInstance<{ current_phase: string; computed_at: string }>({
+            url: `/api/v1/nags/${n.id}/escalation`,
+            method: "GET",
+          })
+        )
+      );
+      const escMap: Record<string, { current_phase: string; computed_at: string }> = {};
+      for (let i = 0; i < openNags.length; i++) {
+        const r = escResults[i];
+        if (r.status === "fulfilled") {
+          escMap[openNags[i].id] = r.value;
+        }
+      }
+      setEscalations(escMap);
     } catch {
       setError("Failed to load nagz");
     }
@@ -80,6 +101,24 @@ export default function KidView() {
         setError("Failed to mark nag as complete");
       }
     }
+  };
+
+  const recomputeEscalation = async (nagId: string) => {
+    setRecomputing(nagId);
+    try {
+      const result = await customInstance<{ current_phase: string; computed_at: string }>({
+        url: `/api/v1/nags/${nagId}/escalation/recompute`,
+        method: "POST",
+      });
+      setEscalations((prev) => ({ ...prev, [nagId]: result }));
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.error?.message) {
+        setError(err.response.data.error.message);
+      } else {
+        setError("Failed to recompute escalation");
+      }
+    }
+    setRecomputing(null);
   };
 
   const submitExcuse = async (e: FormEvent) => {
@@ -123,6 +162,28 @@ export default function KidView() {
 
   const statusLabel = (s: string) =>
     s.startsWith("cancelled") ? "cancelled" : s;
+
+  const formatPhase = (p: string) => {
+    const map: Record<string, string> = {
+      phase_0_initial: "Created",
+      phase_1_due_soon: "Due Soon",
+      phase_2_overdue_soft: "Overdue",
+      phase_3_overdue_bounded_pushback: "Escalated",
+      phase_4_guardian_review: "Guardian Review",
+    };
+    return map[p] ?? p;
+  };
+
+  const escalationColor = (p: string) => {
+    const map: Record<string, string> = {
+      phase_0_initial: "#6b7280",
+      phase_1_due_soon: "#eab308",
+      phase_2_overdue_soft: "#f97316",
+      phase_3_overdue_bounded_pushback: "#ef4444",
+      phase_4_guardian_review: "#7c3aed",
+    };
+    return map[p] ?? "#6b7280";
+  };
 
   return (
     <div>
@@ -183,6 +244,23 @@ export default function KidView() {
                     Due: {new Date(nag.due_at).toLocaleString()}
                   </span>
                 </div>
+                {escalations[nag.id] && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
+                    <span className="badge" style={{ backgroundColor: escalationColor(escalations[nag.id].current_phase) }}>
+                      {formatPhase(escalations[nag.id].current_phase)}
+                    </span>
+                    {myRole === "guardian" && (
+                      <button
+                        className="link-button"
+                        style={{ fontSize: "0.8rem" }}
+                        onClick={() => recomputeEscalation(nag.id)}
+                        disabled={recomputing === nag.id}
+                      >
+                        {recomputing === nag.id ? "..." : "Recompute"}
+                      </button>
+                    )}
+                  </div>
+                )}
                 {nag.description && (
                   <p className="card-description">{nag.description}</p>
                 )}
