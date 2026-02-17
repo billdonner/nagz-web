@@ -5,6 +5,9 @@ import axios from "axios";
 interface PreferenceData {
   prefs_json: {
     gamification_enabled?: boolean;
+    quiet_hours_enabled?: boolean;
+    quiet_hours_start?: string;
+    quiet_hours_end?: string;
     background_color?: string;
     tone?: string;
   };
@@ -37,6 +40,9 @@ export function MemberSettings({
   onSaved,
 }: MemberSettingsProps) {
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
+  const [quietHoursEnabled, setQuietHoursEnabled] = useState(false);
+  const [quietHoursStart, setQuietHoursStart] = useState("22:00");
+  const [quietHoursEnd, setQuietHoursEnd] = useState("07:00");
   const [backgroundColor, setBackgroundColor] = useState("#f9fafb");
   const [tone, setTone] = useState("friendly");
   const [loading, setLoading] = useState(true);
@@ -53,6 +59,9 @@ export function MemberSettings({
         });
         const p = data.prefs_json;
         setGamificationEnabled(p.gamification_enabled ?? false);
+        setQuietHoursEnabled(p.quiet_hours_enabled ?? false);
+        setQuietHoursStart(p.quiet_hours_start ?? "22:00");
+        setQuietHoursEnd(p.quiet_hours_end ?? "07:00");
         setBackgroundColor(p.background_color ?? "#f9fafb");
         setTone(p.tone ?? "friendly");
       } catch {
@@ -74,6 +83,9 @@ export function MemberSettings({
         data: {
           prefs_json: {
             gamification_enabled: gamificationEnabled,
+            quiet_hours_enabled: quietHoursEnabled,
+            quiet_hours_start: quietHoursStart,
+            quiet_hours_end: quietHoursEnd,
             background_color: backgroundColor,
             tone,
           },
@@ -111,6 +123,38 @@ export function MemberSettings({
                 Gamification enabled
               </label>
             </div>
+
+            <div className="toggle-row">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={quietHoursEnabled}
+                  onChange={(e) => setQuietHoursEnabled(e.target.checked)}
+                />
+                Quiet hours
+              </label>
+            </div>
+
+            {quietHoursEnabled && (
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <label style={{ flex: 1 }}>
+                  Start
+                  <input
+                    type="time"
+                    value={quietHoursStart}
+                    onChange={(e) => setQuietHoursStart(e.target.value)}
+                  />
+                </label>
+                <label style={{ flex: 1 }}>
+                  End
+                  <input
+                    type="time"
+                    value={quietHoursEnd}
+                    onChange={(e) => setQuietHoursEnd(e.target.value)}
+                  />
+                </label>
+              </div>
+            )}
 
             <label>
               Background Color

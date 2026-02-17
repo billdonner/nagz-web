@@ -4,6 +4,7 @@ import { useAuth } from "../auth";
 import { customInstance } from "../api/axios-instance";
 import { useMembers } from "../members";
 import type { NagResponse } from "../api/model";
+import axios from "axios";
 import { CreateNagModal } from "./CreateNag";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -12,6 +13,13 @@ const STATUS_COLORS: Record<string, string> = {
   missed: "#ef4444",
   cancelled_relationship_change: "#6b7280",
 };
+
+const CATEGORIES = ["chores", "meds", "homework", "appointments", "other"];
+const DONE_DEFS = [
+  { value: "ack_only", label: "Acknowledge" },
+  { value: "binary_check", label: "Check Off" },
+  { value: "binary_with_note", label: "Check Off + Note" },
+];
 
 export default function NagList() {
   const { userId, logout } = useAuth();
@@ -22,6 +30,14 @@ export default function NagList() {
   const [detailNag, setDetailNag] = useState<NagResponse | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const { getName, loading: membersLoading } = useMembers();
+
+  // Edit nag state
+  const [editing, setEditing] = useState(false);
+  const [editDueAt, setEditDueAt] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editDoneDef, setEditDoneDef] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState("");
 
   const familyId = localStorage.getItem("nagz_family_id");
 
@@ -45,6 +61,51 @@ export default function NagList() {
   useEffect(() => {
     loadNags();
   }, [familyId, filter]);
+
+  const startEditing = (nag: NagResponse) => {
+    setEditing(true);
+    setEditDueAt(nag.due_at.slice(0, 16)); // datetime-local format
+    setEditCategory(nag.category);
+    setEditDoneDef(nag.done_definition);
+    setEditError("");
+  };
+
+  const saveEdit = async () => {
+    if (!detailNag) return;
+    setSaving(true);
+    setEditError("");
+    const updates: Record<string, unknown> = {};
+    if (editDueAt !== detailNag.due_at.slice(0, 16)) {
+      updates.due_at = new Date(editDueAt).toISOString();
+    }
+    if (editCategory !== detailNag.category) updates.category = editCategory;
+    if (editDoneDef !== detailNag.done_definition) updates.done_definition = editDoneDef;
+
+    if (Object.keys(updates).length === 0) {
+      setEditing(false);
+      setSaving(false);
+      return;
+    }
+
+    try {
+      await customInstance<NagResponse>({
+        url: `/api/v1/nags/${detailNag.id}`,
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        data: updates,
+      });
+      setEditing(false);
+      setDetailNag(null);
+      await loadNags();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setEditError(err.response?.data?.error?.message ?? "Failed to update nag");
+      } else {
+        setEditError("Failed to update nag");
+      }
+    }
+    setSaving(false);
+  };
 
   if (!familyId) {
     return (
@@ -187,19 +248,62 @@ export default function NagList() {
               <dt>Strategy</dt>
               <dd>{detailNag.strategy_template}</dd>
             </dl>
-            <div className="card-actions">
-              <button
-                onClick={() => {
-                  setDetailNag(null);
-                  setShowCreate(true);
-                }}
-              >
-                Create Nagz
-              </button>
-              <button className="btn-secondary" onClick={() => setDetailNag(null)}>
-                Close
-              </button>
-            </div>
+            {editing ? (
+              <div className="form" style={{ marginTop: "1rem" }}>
+                <label>
+                  Due Date
+                  <input
+                    type="datetime-local"
+                    value={editDueAt}
+                    onChange={(e) => setEditDueAt(e.target.value)}
+                  />
+                </label>
+                <label>
+                  Category
+                  <select value={editCategory} onChange={(e) => setEditCategory(e.target.value)}>
+                    {CATEGORIES.map((c) => (
+                      <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Completion Type
+                  <select value={editDoneDef} onChange={(e) => setEditDoneDef(e.target.value)}>
+                    {DONE_DEFS.map((d) => (
+                      <option key={d.value} value={d.value}>{d.label}</option>
+                    ))}
+                  </select>
+                </label>
+                {editError && <p className="error">{editError}</p>}
+                <div className="card-actions">
+                  <button onClick={saveEdit} disabled={saving}>
+                    {saving ? "Saving..." : "Save"}
+                  </button>
+                  <button className="btn-secondary" onClick={() => setEditing(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="card-actions">
+                {detailNag.status === "open" && (
+                  <button onClick={() => startEditing(detailNag)}>
+                    Edit Nag
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setDetailNag(null);
+                    setShowCreate(true);
+                  }}
+                >
+                  Create Nagz
+                </button>
+                <button className="btn-secondary" onClick={() => { setDetailNag(null); setEditing(false); }}>
+                  Close
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -21,6 +21,7 @@ export interface Member {
 interface MembersCtx {
   members: Member[];
   familyName: string | null;
+  inviteCode: string | null;
   nameMap: Record<string, string>;
   getName: (userId: string) => string;
   loading: boolean;
@@ -30,6 +31,7 @@ interface MembersCtx {
 const MembersContext = createContext<MembersCtx>({
   members: [],
   familyName: null,
+  inviteCode: null,
   nameMap: {},
   getName: (id) => id.slice(0, 8) + "...",
   loading: true,
@@ -40,6 +42,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
   const { token } = useAuth();
   const [members, setMembers] = useState<Member[]>([]);
   const [familyName, setFamilyName] = useState<string | null>(null);
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [nameMap, setNameMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
@@ -55,13 +58,14 @@ export function MembersProvider({ children }: { children: ReactNode }) {
           url: `/api/v1/families/${familyId}/members`,
           method: "GET",
         }),
-        customInstance<{ family_id: string; name: string }>({
+        customInstance<{ family_id: string; name: string; invite_code: string }>({
           url: `/api/v1/families/${familyId}`,
           method: "GET",
         }),
       ]);
       setMembers(data);
       setFamilyName(family.name);
+      setInviteCode(family.invite_code ?? null);
       const map: Record<string, string> = {};
       for (const m of data) {
         map[m.user_id] = m.display_name ?? m.user_id.slice(0, 8);
@@ -84,7 +88,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
 
   return (
     <MembersContext.Provider
-      value={{ members, familyName, nameMap, getName, loading, reload: load }}
+      value={{ members, familyName, inviteCode, nameMap, getName, loading, reload: load }}
     >
       {children}
     </MembersContext.Provider>

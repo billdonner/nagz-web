@@ -11,7 +11,7 @@ import { MemberSettings } from "./MemberSettings";
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
   const navigate = useNavigate();
-  const { members, familyName, getName, reload: reloadMembers } = useMembers();
+  const { members, familyName, inviteCode, getName, reload: reloadMembers } = useMembers();
   const [familyId, setFamilyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,6 +29,7 @@ export default function FamilyDashboard() {
   const [newRole, setNewRole] = useState<string>("child");
   const [addError, setAddError] = useState("");
   const [adding, setAdding] = useState(false);
+  const [removing, setRemoving] = useState<string | null>(null);
 
   const loadFamily = async (fid: string) => {
     setLoading(true);
@@ -94,6 +95,27 @@ export default function FamilyDashboard() {
     setAdding(false);
   };
 
+  const handleRemoveMember = async (memberId: string, memberName: string) => {
+    if (!familyId) return;
+    if (!confirm(`Remove ${memberName} from the family? Their open nags will be cancelled.`)) return;
+    setRemoving(memberId);
+    try {
+      await customInstance<unknown>({
+        url: `/api/v1/families/${familyId}/members/${memberId}`,
+        method: "DELETE",
+      });
+      reloadMembers();
+      await loadFamily(familyId);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.error?.message ?? "Failed to remove member.");
+      } else {
+        setError("Failed to remove member.");
+      }
+    }
+    setRemoving(null);
+  };
+
   if (loading) return <p>Loading...</p>;
 
   if (!familyId) {
@@ -132,6 +154,8 @@ export default function FamilyDashboard() {
         <div className="header-actions">
           <Link to="/nags">Nagz</Link>
           <Link to="/leaderboard">Leaderboard</Link>
+          <Link to="/consents">Consents</Link>
+          <Link to="/incentive-rules">Incentives</Link>
           <span className="logged-in-as">{getName(userId!)}</span>
           <button onClick={logout} className="link-button">
             Logout
@@ -152,6 +176,7 @@ export default function FamilyDashboard() {
                 <th>Name</th>
                 <th>Nagz</th>
                 <th>Settings</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -188,6 +213,18 @@ export default function FamilyDashboard() {
                         Settings
                       </button>
                     </td>
+                    <td>
+                      {m.role === "child" && (
+                        <button
+                          className="link-button"
+                          style={{ color: "#ef4444" }}
+                          onClick={() => handleRemoveMember(m.user_id, m.display_name ?? m.user_id.slice(0, 8))}
+                          disabled={removing === m.user_id}
+                        >
+                          {removing === m.user_id ? "..." : "Remove"}
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 );
               })}
@@ -216,6 +253,20 @@ export default function FamilyDashboard() {
           onClose={() => setSettingsMemberId(null)}
           onSaved={() => setSettingsMemberId(null)}
         />
+      )}
+
+      {inviteCode && (
+        <div className="invite-code-section" style={{ margin: "1rem 0", padding: "0.75rem 1rem", background: "#f0f9ff", borderRadius: "8px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <span style={{ fontWeight: 600 }}>Invite Code:</span>
+          <code style={{ fontFamily: "monospace", fontSize: "1.1rem", letterSpacing: "0.05em" }}>{inviteCode}</code>
+          <button
+            className="link-button"
+            onClick={() => navigator.clipboard.writeText(inviteCode)}
+            title="Copy to clipboard"
+          >
+            Copy
+          </button>
+        </div>
       )}
 
       {showAddForm ? (

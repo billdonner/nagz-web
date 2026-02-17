@@ -7,6 +7,8 @@ import NagList from "./components/NagList";
 import CreateNag from "./components/CreateNag";
 import KidView from "./components/KidView";
 import Gamification from "./components/Gamification";
+import Consents from "./components/Consents";
+import IncentiveRules from "./components/IncentiveRules";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -88,6 +90,22 @@ function AppRoutes() {
             <ProtectedRoute>
               <Gamification />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/consents"
+          element={
+            <ProtectedRoute>
+              <Consents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/incentive-rules"
+          element={
+            <GuardianRoute>
+              <IncentiveRules />
+            </GuardianRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
