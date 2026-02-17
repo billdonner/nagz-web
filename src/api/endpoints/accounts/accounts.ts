@@ -30,6 +30,18 @@ const createAccountApiV1AccountsPost = (
       );
     }
   /**
+ * POST /accounts/export — export all personal data for the current user.
+ * @summary Export Account Data
+ */
+const exportAccountDataApiV1AccountsExportPost = (
+    
+ ) => {
+      return customInstance<unknown>(
+      {url: `/api/v1/accounts/export`, method: 'POST'
+    },
+      );
+    }
+  /**
  * DELETE /accounts/{userId} — self_or_guardian with policy rules.
  * @summary Delete Account
  */
@@ -41,6 +53,7 @@ const deleteAccountApiV1AccountsUserIdDelete = (
     },
       );
     }
-  return {createAccountApiV1AccountsPost,deleteAccountApiV1AccountsUserIdDelete}};
+  return {createAccountApiV1AccountsPost,exportAccountDataApiV1AccountsExportPost,deleteAccountApiV1AccountsUserIdDelete}};
 export type CreateAccountApiV1AccountsPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAccounts>['createAccountApiV1AccountsPost']>>>
+export type ExportAccountDataApiV1AccountsExportPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAccounts>['exportAccountDataApiV1AccountsExportPost']>>>
 export type DeleteAccountApiV1AccountsUserIdDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAccounts>['deleteAccountApiV1AccountsUserIdDelete']>>>

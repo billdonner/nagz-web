@@ -55,6 +55,7 @@ export * from './incentiveRuleUpdate';
 export * from './incentiveRuleUpdateAction';
 export * from './incentiveRuleUpdateCondition';
 export * from './joinRequest';
+export * from './legalDocument';
 export * from './listApprovalsApiV1PoliciesPolicyIdApprovalsGetParams';
 export * from './listBlocksApiV1BlocksGetParams';
 export * from './listConsentsApiV1ConsentsGetParams';

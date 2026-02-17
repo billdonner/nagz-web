@@ -3081,6 +3081,47 @@
         }
       }
     },
+    "/api/v1/accounts/export": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Export Account Data",
+        "description": "POST /accounts/export \u2014 export all personal data for the current user.",
+        "operationId": "export_account_data_api_v1_accounts_export_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/accounts/{user_id}": {
       "delete": {
         "tags": [
@@ -3263,6 +3304,50 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/legal/privacy-policy": {
+      "get": {
+        "tags": [
+          "legal"
+        ],
+        "summary": "Get Privacy Policy",
+        "description": "GET /legal/privacy-policy \u2014 returns the current privacy policy. No auth required.",
+        "operationId": "get_privacy_policy_api_v1_legal_privacy_policy_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalDocument"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/legal/terms-of-service": {
+      "get": {
+        "tags": [
+          "legal"
+        ],
+        "summary": "Get Terms Of Service",
+        "description": "GET /legal/terms-of-service \u2014 returns the current terms of service. No auth required.",
+        "operationId": "get_terms_of_service_api_v1_legal_terms_of_service_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalDocument"
                 }
               }
             }
@@ -4166,6 +4251,34 @@
           "invite_code"
         ],
         "title": "JoinRequest"
+      },
+      "LegalDocument": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "effective_date": {
+            "type": "string",
+            "title": "Effective Date"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "version",
+          "effective_date",
+          "content"
+        ],
+        "title": "LegalDocument"
       },
       "LoginRequest": {
         "properties": {
