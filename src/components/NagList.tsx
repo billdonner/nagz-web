@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { customInstance } from "../api/axios-instance";
 import { useMembers } from "../members";
@@ -23,6 +23,7 @@ const DONE_DEFS = [
 
 export default function NagList() {
   const { userId, logout } = useAuth();
+  const navigate = useNavigate();
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -366,6 +367,12 @@ export default function NagList() {
                   }}
                 >
                   Create Nagz
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => navigate(`/deliveries?nag_id=${detailNag.id}`)}
+                >
+                  Deliveries
                 </button>
                 <button className="btn-secondary" onClick={() => { setDetailNag(null); setEditing(false); }}>
                   Close

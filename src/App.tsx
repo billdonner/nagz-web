@@ -9,6 +9,9 @@ import KidView from "./components/KidView";
 import Gamification from "./components/Gamification";
 import Consents from "./components/Consents";
 import IncentiveRules from "./components/IncentiveRules";
+import Reports from "./components/Reports";
+import Deliveries from "./components/Deliveries";
+import Safety from "./components/Safety";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -117,6 +120,30 @@ function AppRoutes() {
             <GuardianRoute>
               <IncentiveRules />
             </GuardianRoute>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <GuardianRoute>
+              <Reports />
+            </GuardianRoute>
+          }
+        />
+        <Route
+          path="/deliveries"
+          element={
+            <GuardianRoute>
+              <Deliveries />
+            </GuardianRoute>
+          }
+        />
+        <Route
+          path="/safety"
+          element={
+            <ProtectedRoute>
+              <Safety />
+            </ProtectedRoute>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
