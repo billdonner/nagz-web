@@ -411,6 +411,15 @@ tr:hover td {
   white-space: nowrap;
 }
 
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--color-primary);
+}
+
 /* ===== Modal ===== */
 .modal-overlay {
   position: fixed;

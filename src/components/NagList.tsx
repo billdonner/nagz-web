@@ -27,6 +27,8 @@ export default function NagList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("");
+  const [sortCol, setSortCol] = useState<"category" | "status" | "to" | "from" | "due">("due");
+  const [sortAsc, setSortAsc] = useState(true);
   const [detailNag, setDetailNag] = useState<NagResponse | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const { getName, loading: membersLoading } = useMembers();
@@ -167,6 +169,26 @@ export default function NagList() {
   const statusLabel = (s: string) =>
     s.startsWith("cancelled") ? "cancelled" : s;
 
+  const toggleSort = (col: typeof sortCol) => {
+    if (sortCol === col) setSortAsc(!sortAsc);
+    else { setSortCol(col); setSortAsc(true); }
+  };
+
+  const sortIndicator = (col: typeof sortCol) =>
+    sortCol === col ? (sortAsc ? " \u25B2" : " \u25BC") : "";
+
+  const sortedNags = [...nags].sort((a, b) => {
+    let cmp = 0;
+    switch (sortCol) {
+      case "category": cmp = a.category.localeCompare(b.category); break;
+      case "status": cmp = a.status.localeCompare(b.status); break;
+      case "to": cmp = getName(a.recipient_id).localeCompare(getName(b.recipient_id)); break;
+      case "from": cmp = getName(a.creator_id).localeCompare(getName(b.creator_id)); break;
+      case "due": cmp = new Date(a.due_at).getTime() - new Date(b.due_at).getTime(); break;
+    }
+    return sortAsc ? cmp : -cmp;
+  });
+
   return (
     <div>
       <div className="header">
@@ -199,15 +221,15 @@ export default function NagList() {
         <table className="compact-table">
           <thead>
             <tr>
-              <th>Nag</th>
-              <th>Status</th>
-              <th>To</th>
-              <th>From</th>
-              <th>Due</th>
+              <th className="sortable" onClick={() => toggleSort("category")}>Nag{sortIndicator("category")}</th>
+              <th className="sortable" onClick={() => toggleSort("status")}>Status{sortIndicator("status")}</th>
+              <th className="sortable" onClick={() => toggleSort("to")}>To{sortIndicator("to")}</th>
+              <th className="sortable" onClick={() => toggleSort("from")}>From{sortIndicator("from")}</th>
+              <th className="sortable" onClick={() => toggleSort("due")}>Due{sortIndicator("due")}</th>
             </tr>
           </thead>
           <tbody>
-            {nags.map((nag) => (
+            {sortedNags.map((nag) => (
               <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
                 <td>
                   <span className="nag-cat">{nag.category}</span>
