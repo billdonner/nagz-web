@@ -3311,6 +3311,380 @@
         }
       }
     },
+    "/api/v1/ai/summarize-excuse": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Summarize Excuse",
+        "operationId": "summarize_excuse_api_v1_ai_summarize_excuse_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExcuseSummaryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExcuseSummaryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/select-tone": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Select Tone",
+        "operationId": "select_tone_api_v1_ai_select_tone_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToneSelectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToneSelectResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/coaching": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Coaching",
+        "operationId": "coaching_api_v1_ai_coaching_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoachingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoachingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/patterns": {
+      "get": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Patterns",
+        "operationId": "patterns_api_v1_ai_patterns_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "family_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatternsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/digest": {
+      "get": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Digest",
+        "operationId": "digest_api_v1_ai_digest_get",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DigestResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/predict-completion": {
+      "get": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Predict Completion",
+        "operationId": "predict_completion_api_v1_ai_predict_completion_get",
+        "parameters": [
+          {
+            "name": "nag_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Nag Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictCompletionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/push-back": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Push Back",
+        "operationId": "push_back_api_v1_ai_push_back_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushBackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushBackResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/legal/privacy-policy": {
       "get": {
         "tags": [
@@ -3358,6 +3732,15 @@
   },
   "components": {
     "schemas": {
+      "AITone": {
+        "type": "string",
+        "enum": [
+          "neutral",
+          "supportive",
+          "firm"
+        ],
+        "title": "AITone"
+      },
       "AbuseReportCreate": {
         "properties": {
           "target_id": {
@@ -3663,6 +4046,67 @@
         ],
         "title": "BlockUpdate"
       },
+      "CoachingRequest": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id"
+        ],
+        "title": "CoachingRequest"
+      },
+      "CoachingResponse": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "tip": {
+            "type": "string",
+            "title": "Tip"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "scenario": {
+            "type": "string",
+            "title": "Scenario"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id",
+          "tip",
+          "category",
+          "scenario"
+        ],
+        "title": "CoachingResponse"
+      },
+      "CompletionFactor": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "title": "CompletionFactor"
+      },
       "ConsentCreate": {
         "properties": {
           "family_id": {
@@ -3879,6 +4323,82 @@
         ],
         "title": "DeviceTokenResponse"
       },
+      "DigestResponse": {
+        "properties": {
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Period Start"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Period End"
+          },
+          "summary_text": {
+            "type": "string",
+            "title": "Summary Text"
+          },
+          "member_summaries": {
+            "items": {
+              "$ref": "#/components/schemas/MemberSummary"
+            },
+            "type": "array",
+            "title": "Member Summaries"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/DigestTotals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "family_id",
+          "period_start",
+          "period_end",
+          "summary_text",
+          "member_summaries",
+          "totals"
+        ],
+        "title": "DigestResponse"
+      },
+      "DigestTotals": {
+        "properties": {
+          "total_nags": {
+            "type": "integer",
+            "title": "Total Nags"
+          },
+          "completed": {
+            "type": "integer",
+            "title": "Completed"
+          },
+          "missed": {
+            "type": "integer",
+            "title": "Missed"
+          },
+          "open": {
+            "type": "integer",
+            "title": "Open"
+          },
+          "completion_rate": {
+            "type": "number",
+            "title": "Completion Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_nags",
+          "completed",
+          "missed",
+          "open",
+          "completion_rate"
+        ],
+        "title": "DigestTotals"
+      },
       "DoneDefinition": {
         "type": "string",
         "enum": [
@@ -3929,6 +4449,18 @@
         ],
         "title": "EscalationResponse"
       },
+      "ExcuseCategory": {
+        "type": "string",
+        "enum": [
+          "forgot",
+          "time_conflict",
+          "unclear_instructions",
+          "lacking_resources",
+          "refused",
+          "other"
+        ],
+        "title": "ExcuseCategory"
+      },
       "ExcuseCreate": {
         "properties": {
           "text": {
@@ -3952,6 +4484,55 @@
           "text"
         ],
         "title": "ExcuseCreate"
+      },
+      "ExcuseSummaryRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text"
+          },
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text",
+          "nag_id"
+        ],
+        "title": "ExcuseSummaryRequest"
+      },
+      "ExcuseSummaryResponse": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ExcuseCategory"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id",
+          "summary",
+          "category",
+          "confidence"
+        ],
+        "title": "ExcuseSummaryResponse"
       },
       "FamilyCreate": {
         "properties": {
@@ -4239,6 +4820,24 @@
         "type": "object",
         "title": "IncentiveRuleUpdate"
       },
+      "InsightItem": {
+        "properties": {
+          "day_of_week": {
+            "type": "string",
+            "title": "Day Of Week"
+          },
+          "miss_count": {
+            "type": "integer",
+            "title": "Miss Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "day_of_week",
+          "miss_count"
+        ],
+        "title": "InsightItem"
+      },
       "JoinRequest": {
         "properties": {
           "invite_code": {
@@ -4412,6 +5011,52 @@
           "joined_at"
         ],
         "title": "MemberResponse"
+      },
+      "MemberSummary": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "total_nags": {
+            "type": "integer",
+            "title": "Total Nags"
+          },
+          "completed": {
+            "type": "integer",
+            "title": "Completed"
+          },
+          "missed": {
+            "type": "integer",
+            "title": "Missed"
+          },
+          "completion_rate": {
+            "type": "number",
+            "title": "Completion Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "display_name",
+          "total_nags",
+          "completed",
+          "missed",
+          "completion_rate"
+        ],
+        "title": "MemberSummary"
       },
       "MembershipStatus": {
         "type": "string",
@@ -4996,6 +5641,40 @@
         ],
         "title": "PaginatedResponse[PolicyResponse]"
       },
+      "PatternsResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "insights": {
+            "items": {
+              "$ref": "#/components/schemas/InsightItem"
+            },
+            "type": "array",
+            "title": "Insights"
+          },
+          "analyzed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Analyzed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "family_id",
+          "insights",
+          "analyzed_at"
+        ],
+        "title": "PatternsResponse"
+      },
       "PolicyResponse": {
         "properties": {
           "id": {
@@ -5080,6 +5759,46 @@
         "type": "object",
         "title": "PolicyUpdate"
       },
+      "PredictCompletionResponse": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "likelihood": {
+            "type": "number",
+            "title": "Likelihood"
+          },
+          "suggested_reminder_time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suggested Reminder Time"
+          },
+          "factors": {
+            "items": {
+              "$ref": "#/components/schemas/CompletionFactor"
+            },
+            "type": "array",
+            "title": "Factors"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id",
+          "likelihood",
+          "suggested_reminder_time",
+          "factors"
+        ],
+        "title": "PredictCompletionResponse"
+      },
       "PreferenceResponse": {
         "properties": {
           "user_id": {
@@ -5135,6 +5854,67 @@
           "prefs_json"
         ],
         "title": "PreferenceUpdate"
+      },
+      "PushBackRequest": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id"
+        ],
+        "title": "PushBackRequest"
+      },
+      "PushBackResponse": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "should_push_back": {
+            "type": "boolean",
+            "title": "Should Push Back"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "tone": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AITone"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id",
+          "should_push_back",
+          "message",
+          "tone",
+          "reason"
+        ],
+        "title": "PushBackResponse"
       },
       "Recurrence": {
         "type": "string",
@@ -5193,6 +5973,53 @@
           "friendly_reminder"
         ],
         "title": "StrategyTemplate"
+      },
+      "ToneSelectRequest": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id"
+        ],
+        "title": "ToneSelectRequest"
+      },
+      "ToneSelectResponse": {
+        "properties": {
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "tone": {
+            "$ref": "#/components/schemas/AITone"
+          },
+          "miss_count_7d": {
+            "type": "integer",
+            "title": "Miss Count 7D"
+          },
+          "streak": {
+            "type": "integer",
+            "title": "Streak"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nag_id",
+          "tone",
+          "miss_count_7d",
+          "streak",
+          "reason"
+        ],
+        "title": "ToneSelectResponse"
       },
       "ValidationError": {
         "properties": {
