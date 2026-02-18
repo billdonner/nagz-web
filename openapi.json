@@ -3685,6 +3685,76 @@
         }
       }
     },
+    "/api/v1/sync/events": {
+      "get": {
+        "tags": [
+          "sync"
+        ],
+        "summary": "Sync Events",
+        "description": "Incremental sync endpoint for iOS local event cache.\n\nReturns nags, nag_events, ai_mediation_events, and gamification_events\nthat were created/updated since the given timestamp for the specified family.",
+        "operationId": "sync_events_api_v1_sync_events_get",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/legal/privacy-policy": {
       "get": {
         "tags": [
@@ -5973,6 +6043,254 @@
           "friendly_reminder"
         ],
         "title": "StrategyTemplate"
+      },
+      "SyncResponse": {
+        "properties": {
+          "nags": {
+            "items": {
+              "$ref": "#/components/schemas/SyncedNag"
+            },
+            "type": "array",
+            "title": "Nags"
+          },
+          "nag_events": {
+            "items": {
+              "$ref": "#/components/schemas/SyncedNagEvent"
+            },
+            "type": "array",
+            "title": "Nag Events"
+          },
+          "ai_mediation_events": {
+            "items": {
+              "$ref": "#/components/schemas/SyncedAIMediationEvent"
+            },
+            "type": "array",
+            "title": "Ai Mediation Events"
+          },
+          "gamification_events": {
+            "items": {
+              "$ref": "#/components/schemas/SyncedGamificationEvent"
+            },
+            "type": "array",
+            "title": "Gamification Events"
+          },
+          "server_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Server Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nags",
+          "nag_events",
+          "ai_mediation_events",
+          "gamification_events",
+          "server_time"
+        ],
+        "title": "SyncResponse"
+      },
+      "SyncedAIMediationEvent": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "prompt_type": {
+            "type": "string",
+            "title": "Prompt Type"
+          },
+          "tone": {
+            "type": "string",
+            "title": "Tone"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nag_id",
+          "prompt_type",
+          "tone",
+          "summary",
+          "at"
+        ],
+        "title": "SyncedAIMediationEvent"
+      },
+      "SyncedGamificationEvent": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "delta_points": {
+            "type": "integer",
+            "title": "Delta Points"
+          },
+          "streak_delta": {
+            "type": "integer",
+            "title": "Streak Delta"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "family_id",
+          "user_id",
+          "event_type",
+          "delta_points",
+          "streak_delta",
+          "at"
+        ],
+        "title": "SyncedGamificationEvent"
+      },
+      "SyncedNag": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "creator_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Creator Id"
+          },
+          "recipient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Recipient Id"
+          },
+          "due_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Due At"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "done_definition": {
+            "type": "string",
+            "title": "Done Definition"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "family_id",
+          "creator_id",
+          "recipient_id",
+          "due_at",
+          "category",
+          "done_definition",
+          "description",
+          "status",
+          "created_at"
+        ],
+        "title": "SyncedNag"
+      },
+      "SyncedNagEvent": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "actor_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Actor Id"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nag_id",
+          "event_type",
+          "actor_id",
+          "at",
+          "payload"
+        ],
+        "title": "SyncedNagEvent"
       },
       "ToneSelectRequest": {
         "properties": {
