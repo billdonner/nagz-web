@@ -48,6 +48,22 @@ When the server API changes:
 1. Regenerate `openapi.json` in nagzerver and copy it here
 2. Run `npm run api:generate` to update the TypeScript client in `src/api/`
 
+## AI Features
+
+The web client uses **server-side AI endpoints** for all AI features (no on-device processing). The iOS app handles AI on-device when possible via Apple Intelligence; the web client always calls the server.
+
+| Feature | Endpoint | Description |
+|---------|----------|-------------|
+| Excuse summarization | `POST /ai/summarize-excuse` | Categorize and summarize excuse text |
+| Tone selection | `POST /ai/select-tone` | Choose escalation tone based on history |
+| Coaching tips | `POST /ai/coaching` | Motivational tips for nag recipients |
+| Behavioral patterns | `GET /ai/patterns` | Detect miss patterns (day-of-week, etc.) |
+| Weekly digest | `GET /ai/digest` | Family completion summary |
+| Completion prediction | `GET /ai/predict-completion` | Likelihood + optimal reminder time |
+| Push-back evaluation | `POST /ai/push-back` | Evaluate whether to push back on excuses |
+
+All AI endpoints require `ai_mediation` consent and the `ai_server_enabled` user preference. V1 uses deterministic heuristics; upgradable to LLM without API changes.
+
 ## Architecture
 
 - `AuthProvider` wraps the app, stores JWT in localStorage
