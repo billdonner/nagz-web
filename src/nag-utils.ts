@@ -1,3 +1,9 @@
+/** Number of characters to show when truncating a UUID for display. */
+export const UUID_DISPLAY_LENGTH = 8;
+
+/** Dev token prefix used in dev auth mode. */
+export const DEV_TOKEN_PREFIX = "dev:";
+
 export const STATUS_COLORS: Record<string, string> = {
   open: "#3b82f6",
   completed: "#22c55e",

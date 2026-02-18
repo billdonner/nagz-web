@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
+import { UUID_DISPLAY_LENGTH } from "../nag-utils";
 
 export default function Safety() {
   const { userId, logout } = useAuth();
@@ -124,7 +125,7 @@ export default function Safety() {
               onClick={() => setReportTarget(m.user_id)}
               style={{ display: "block", marginBottom: "0.5rem" }}
             >
-              Report {m.display_name ?? m.user_id.slice(0, 8)}
+              Report {m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH)}
             </button>
           ))}
         </div>
@@ -139,7 +140,7 @@ export default function Safety() {
             style={{ display: "block", marginBottom: "0.5rem", color: "#ef4444" }}
             onClick={() => handleBlock(m.user_id)}
           >
-            Block {m.display_name ?? m.user_id.slice(0, 8)}
+            Block {m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH)}
           </button>
         ))}
       </div>

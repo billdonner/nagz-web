@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import { NagCategory, DoneDefinition } from "../api/model";
 import { useMembers } from "../members";
+import { UUID_DISPLAY_LENGTH } from "../nag-utils";
 import type { NagCreate, NagResponse } from "../api/model";
 
 interface CreateNagModalProps {
@@ -81,7 +82,7 @@ export function CreateNagModal({
               <option value="">-- select a family member --</option>
               {members.map((m) => (
                 <option key={m.user_id} value={m.user_id}>
-                  {m.display_name ?? m.user_id.slice(0, 8)} ({m.role})
+                  {m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH)} ({m.role})
                 </option>
               ))}
             </select>

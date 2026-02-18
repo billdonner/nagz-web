@@ -4,6 +4,7 @@ import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
+import { UUID_DISPLAY_LENGTH } from "../nag-utils";
 import { CreateNagModal } from "./CreateNag";
 import { MemberSettings } from "./MemberSettings";
 
@@ -203,7 +204,7 @@ export default function FamilyDashboard() {
                         className="link-button"
                         onClick={() => navigate(`/kid?user=${m.user_id}`)}
                       >
-                        {m.display_name ?? m.user_id.slice(0, 8)}
+                        {m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH)}
                         {m.role !== "child" && ` (${m.role})`}
                       </button>
                     </td>
@@ -230,7 +231,7 @@ export default function FamilyDashboard() {
                           <button
                             className="link-button"
                             style={{ color: "#f97316" }}
-                            onClick={() => handleSuspendRelationship(m.user_id, m.display_name ?? m.user_id.slice(0, 8))}
+                            onClick={() => handleSuspendRelationship(m.user_id, m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH))}
                           >
                             Suspend
                           </button>
@@ -238,7 +239,7 @@ export default function FamilyDashboard() {
                             <button
                               className="link-button"
                               style={{ color: "#ef4444" }}
-                              onClick={() => handleRemoveMember(m.user_id, m.display_name ?? m.user_id.slice(0, 8))}
+                              onClick={() => handleRemoveMember(m.user_id, m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH))}
                               disabled={removing === m.user_id}
                             >
                               {removing === m.user_id ? "..." : "Remove"}

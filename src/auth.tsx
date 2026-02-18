@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+import { DEV_TOKEN_PREFIX } from "./nag-utils";
 
 const TOKEN_KEY = "nagz_token";
 
@@ -26,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => getStoredToken()
   );
 
-  const userId = token?.startsWith("dev:") ? token.slice(4) : null;
+  const userId = token?.startsWith(DEV_TOKEN_PREFIX) ? token.slice(DEV_TOKEN_PREFIX.length) : null;
 
   const login = useCallback((t: string) => {
     sessionStorage.setItem(TOKEN_KEY, t);

@@ -8,6 +8,7 @@ import {
 } from "react";
 import { customInstance } from "./api/axios-instance";
 import { useAuth } from "./auth";
+import { UUID_DISPLAY_LENGTH } from "./nag-utils";
 
 export interface Member {
   user_id: string;
@@ -33,7 +34,7 @@ const MembersContext = createContext<MembersCtx>({
   familyName: null,
   inviteCode: null,
   nameMap: {},
-  getName: (id) => id.slice(0, 8) + "...",
+  getName: (id) => id.slice(0, UUID_DISPLAY_LENGTH) + "...",
   loading: true,
   reload: () => {},
 });
@@ -69,7 +70,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
       setInviteCode(family.invite_code ?? null);
       const map: Record<string, string> = {};
       for (const m of data) {
-        map[m.user_id] = m.display_name ?? m.user_id.slice(0, 8);
+        map[m.user_id] = m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH);
       }
       setNameMap(map);
     } catch {
@@ -83,7 +84,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
   }, [load, token]);
 
   const getName = useCallback(
-    (userId: string) => nameMap[userId] ?? userId.slice(0, 8) + "...",
+    (userId: string) => nameMap[userId] ?? userId.slice(0, UUID_DISPLAY_LENGTH) + "...",
     [nameMap]
   );
 
