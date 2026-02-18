@@ -168,7 +168,7 @@ export default function FamilyDashboard() {
           {isAdmin && <Link to="/incentive-rules">Incentives</Link>}
           {isAdmin && <Link to="/policies">Policies</Link>}
           <Link to="/safety">Safety</Link>
-          <span className="logged-in-as">{getName(userId!)}</span>
+          <span className="logged-in-as">{getName(userId ?? "")}</span>
           <button onClick={logout} className="link-button">
             Logout
           </button>

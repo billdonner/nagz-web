@@ -127,7 +127,7 @@ export default function Gamification() {
           <h2>Leaderboard</h2>
           <div className="header-actions">
             <Link to="/">Family</Link>
-            <span className="logged-in-as">{getName(userId!)}</span>
+            <span className="logged-in-as">{getName(userId ?? "")}</span>
             <button onClick={logout} className="link-button">Logout</button>
           </div>
         </div>
@@ -163,7 +163,7 @@ export default function Gamification() {
           ) : (
             <Link to="/kid">My Nagz</Link>
           )}
-          <span className="logged-in-as">{getName(userId!)}</span>
+          <span className="logged-in-as">{getName(userId ?? "")}</span>
           <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>

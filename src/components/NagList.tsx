@@ -73,17 +73,19 @@ export default function NagList() {
       setDetailEscalation(null);
       return;
     }
+    let cancelled = false;
     (async () => {
       try {
         const esc = await customInstance<{ current_phase: string }>({
           url: `/api/v1/nags/${detailNag.id}/escalation`,
           method: "GET",
         });
-        setDetailEscalation(esc);
+        if (!cancelled) setDetailEscalation(esc);
       } catch {
-        setDetailEscalation(null);
+        if (!cancelled) setDetailEscalation(null);
       }
     })();
+    return () => { cancelled = true; };
   }, [detailNag?.id]);
 
   const recomputeEscalation = async () => {
@@ -196,7 +198,7 @@ export default function NagList() {
         <div className="header-actions">
           <Link to="/">Family</Link>
           <Link to="/leaderboard">Leaderboard</Link>
-          <span className="logged-in-as">{getName(userId!)}</span>
+          <span className="logged-in-as">{getName(userId ?? "")}</span>
           <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>

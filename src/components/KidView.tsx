@@ -85,7 +85,14 @@ export default function KidView() {
   };
 
   useEffect(() => {
-    loadNags();
+    let cancelled = false;
+    const doLoad = async () => {
+      if (!familyId) return;
+      await loadNags();
+    };
+    doLoad();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [familyId, viewUserId]);
 
   const markComplete = async (nagId: string) => {
@@ -200,9 +207,9 @@ export default function KidView() {
   return (
     <div>
       <div className="header">
-        <h2>{getName(viewUserId!)}'s Nagz</h2>
+        <h2>{getName(viewUserId ?? "")}'s Nagz</h2>
         <div className="header-actions">
-          <span className="logged-in-as">{getName(userId!)}</span>
+          <span className="logged-in-as">{getName(userId ?? "")}</span>
           {myRole !== "child" && <Link to="/nags">Nagz</Link>}
           {myRole !== "child" && <Link to="/">Family</Link>}
           <Link to="/leaderboard">Leaderboard</Link>
@@ -215,13 +222,13 @@ export default function KidView() {
           ? myRole === "child"
             ? "These are your nagz. Mark them complete when done, or submit an excuse if you can't finish."
             : "Your nagz. Use the Family page to see all members and create nagz."
-          : `Viewing ${getName(viewUserId!)}'s nagz. Only they can mark them complete or submit excuses.`}
+          : `Viewing ${getName(viewUserId ?? "")}'s nagz. Only they can mark them complete or submit excuses.`}
       </p>
 
       {myRole !== "child" && familyId && (
         <div style={{ marginBottom: "1rem" }}>
           <button className="btn-create" onClick={() => setShowCreateNag(true)}>
-            + Create Nag for {getName(viewUserId!)}
+            + Create Nag for {getName(viewUserId ?? "")}
           </button>
         </div>
       )}

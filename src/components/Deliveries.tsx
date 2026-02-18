@@ -30,6 +30,7 @@ export default function Deliveries() {
 
   useEffect(() => {
     if (!nagId) return;
+    let cancelled = false;
     (async () => {
       try {
         const data = await customInstance<{ items: Delivery[] }>({
@@ -37,12 +38,13 @@ export default function Deliveries() {
           method: "GET",
           params: { nag_id: nagId },
         });
-        setDeliveries(data.items);
+        if (!cancelled) setDeliveries(data.items);
       } catch {
-        setError("Failed to load deliveries");
+        if (!cancelled) setError("Failed to load deliveries");
       }
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     })();
+    return () => { cancelled = true; };
   }, [nagId]);
 
   if (!nagId) return <p>No nag specified. <Link to="/nags">Go to nagz</Link></p>;
@@ -55,7 +57,7 @@ export default function Deliveries() {
         <div className="header-actions">
           <Link to="/nags">Nagz</Link>
           <Link to="/">Family</Link>
-          <span className="logged-in-as">{getName(userId!)}</span>
+          <span className="logged-in-as">{getName(userId ?? "")}</span>
           <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>

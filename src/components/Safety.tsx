@@ -80,7 +80,7 @@ export default function Safety() {
         <h2>Safety & Account</h2>
         <div className="header-actions">
           <Link to="/">Family</Link>
-          <span className="logged-in-as">{getName(userId!)}</span>
+          <span className="logged-in-as">{getName(userId ?? "")}</span>
           <button onClick={logout} className="link-button">Logout</button>
         </div>
       </div>

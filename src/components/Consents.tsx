@@ -114,7 +114,7 @@ export default function Consents() {
         <h2>Consents</h2>
         <div className="header-actions">
           <Link to="/">Family</Link>
-          <span className="logged-in-as">{getName(userId!)}</span>
+          <span className="logged-in-as">{getName(userId ?? "")}</span>
           <button onClick={logout} className="link-button">
             Logout
           </button>

@@ -52,14 +52,14 @@ export function extractErrorMessage(err: unknown, fallback = "Something went wro
 }
 
 export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
-  const source = Axios.CancelToken.source();
+  const controller = new AbortController();
   const promise = AXIOS_INSTANCE({
     ...config,
-    cancelToken: source.token,
+    signal: controller.signal,
   }).then(({ data }) => data);
 
   // @ts-expect-error — attach cancel for react-query
-  promise.cancel = () => source.cancel("Query was cancelled");
+  promise.cancel = () => controller.abort();
 
   return promise;
 };
