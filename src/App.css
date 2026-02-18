@@ -378,6 +378,39 @@ tr:hover td {
   font-weight: 400;
 }
 
+/* ===== Compact table (NagList) ===== */
+.compact-table th,
+.compact-table td {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.compact-table th {
+  padding: 0.35rem 0.75rem;
+}
+
+.nag-cat {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.nag-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.due-cell {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
 /* ===== Modal ===== */
 .modal-overlay {
   position: fixed;

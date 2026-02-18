@@ -179,77 +179,48 @@ export default function NagList() {
         </div>
       </div>
 
-      <p className="page-hint">
-        All nagz across the family. Use the filters to show only open, completed, or missed nagz.
-      </p>
-
       <div className="filters">
-        <button
-          className={!filter ? "active" : ""}
-          onClick={() => setFilter("")}
-        >
-          All
-        </button>
-        <button
-          className={filter === "open" ? "active" : ""}
-          onClick={() => setFilter("open")}
-        >
-          Open
-        </button>
-        <button
-          className={filter === "completed" ? "active" : ""}
-          onClick={() => setFilter("completed")}
-        >
-          Completed
-        </button>
-        <button
-          className={filter === "missed" ? "active" : ""}
-          onClick={() => setFilter("missed")}
-        >
-          Missed
-        </button>
+        {[
+          { key: "", label: "All" },
+          { key: "open", label: "Open" },
+          { key: "completed", label: "Done" },
+          { key: "missed", label: "Missed" },
+        ].map((f) => (
+          <button key={f.key} className={filter === f.key ? "active" : ""} onClick={() => setFilter(f.key)}>
+            {f.label}
+          </button>
+        ))}
+        <button className="btn-create" style={{ marginLeft: "auto" }} onClick={() => setShowCreate(true)}>+ New Nag</button>
       </div>
 
       {nags.length === 0 ? (
         <p>No nagz found.</p>
       ) : (
-        <table>
+        <table className="compact-table">
           <thead>
             <tr>
-              <th>Category</th>
+              <th>Nag</th>
               <th>Status</th>
-              <th>Recipient</th>
+              <th>To</th>
               <th>From</th>
               <th>Due</th>
             </tr>
           </thead>
           <tbody>
             {nags.map((nag) => (
-              <tr key={nag.id}>
+              <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
                 <td>
-                  <button
-                    className="link-button"
-                    onClick={() => setDetailNag(nag)}
-                  >
-                    {nag.category}
-                  </button>
-                  {nag.description && (
-                    <div className="nag-description">{nag.description}</div>
-                  )}
+                  <span className="nag-cat">{nag.category}</span>
+                  {nag.description && <span className="nag-desc">{nag.description}</span>}
                 </td>
                 <td>
-                  <span
-                    className="badge"
-                    style={{
-                      backgroundColor: STATUS_COLORS[nag.status] ?? "#6b7280",
-                    }}
-                  >
+                  <span className={`badge badge-${statusLabel(nag.status)}`}>
                     {statusLabel(nag.status)}
                   </span>
                 </td>
                 <td>{getName(nag.recipient_id)}</td>
                 <td>{getName(nag.creator_id)}</td>
-                <td>{new Date(nag.due_at).toLocaleString()}</td>
+                <td className="due-cell">{new Date(nag.due_at).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>
