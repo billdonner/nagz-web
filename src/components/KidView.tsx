@@ -29,19 +29,19 @@ export default function KidView() {
   const loadNags = async () => {
     if (!familyId) return;
     try {
-      const data = await customInstance<NagResponse[]>({
+      const resp = await customInstance<{ items: NagResponse[]; total: number }>({
         url: "/api/v1/nags",
         method: "GET",
         params: { family_id: familyId },
       });
-      const userNags = data.filter((n) => n.recipient_id === viewUserId);
+      const userNags = (resp.items ?? []).filter((n) => n.recipient_id === viewUserId);
       setNags(userNags);
 
       // Fetch excuses for all nags in parallel
       const excuseMap: Record<string, { summary: string; at: string }[]> = {};
       const results = await Promise.allSettled(
         userNags.map((n) =>
-          customInstance<{ summary: string; at: string }[]>({
+          customInstance<{ items: { summary: string; at: string }[] }>({
             url: `/api/v1/nags/${n.id}/excuses`,
             method: "GET",
           })
@@ -49,8 +49,8 @@ export default function KidView() {
       );
       for (let i = 0; i < userNags.length; i++) {
         const r = results[i];
-        if (r.status === "fulfilled" && r.value.length > 0) {
-          excuseMap[userNags[i].id] = r.value;
+        if (r.status === "fulfilled" && (r.value.items ?? []).length > 0) {
+          excuseMap[userNags[i].id] = r.value.items;
         }
       }
       setExcuses(excuseMap);

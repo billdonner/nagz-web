@@ -36,12 +36,12 @@ export default function IncentiveRules() {
     if (!familyId) return;
     setError("");
     try {
-      const data = await customInstance<IncentiveRule[]>({
+      const resp = await customInstance<{ items: IncentiveRule[]; total: number }>({
         url: "/api/v1/incentive-rules",
         method: "GET",
         params: { family_id: familyId },
       });
-      setRules(data);
+      setRules(resp.items ?? []);
     } catch (err) {
       setError(extractErrorMessage(err, "Failed to load incentive rules"));
     }

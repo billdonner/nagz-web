@@ -36,11 +36,12 @@ export default function FamilyDashboard() {
     setLoading(true);
     setError("");
     try {
-      const nags = await customInstance<NagResponse[]>({
+      const nagsResp = await customInstance<{ items: NagResponse[]; total: number }>({
         url: "/api/v1/nags",
         method: "GET",
         params: { family_id: fid },
       });
+      const nags = nagsResp.items ?? [];
       setFamilyId(fid);
       localStorage.setItem("nagz_family_id", fid);
       reloadMembers();

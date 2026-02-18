@@ -64,7 +64,7 @@ export default function Gamification() {
         method: "GET",
         params: { family_id: familyId },
       }),
-      customInstance<GamificationEventItem[]>({
+      customInstance<{ items: GamificationEventItem[]; total: number }>({
         url: "/api/v1/gamification/events",
         method: "GET",
         params: { user_id: userId, family_id: familyId },
@@ -78,7 +78,7 @@ export default function Gamification() {
       setLeaderboard(lbResult.value.leaderboard);
     }
     if (eventsResult.status === "fulfilled") {
-      setEvents(eventsResult.value);
+      setEvents(eventsResult.value.items ?? []);
     }
 
     const summaryIs403 =

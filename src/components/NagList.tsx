@@ -50,12 +50,12 @@ export default function NagList() {
     try {
       const params: Record<string, string> = { family_id: familyId };
       if (filter) params.state = filter;
-      const data = await customInstance<NagResponse[]>({
+      const resp = await customInstance<{ items: NagResponse[]; total: number }>({
         url: "/api/v1/nags",
         method: "GET",
         params,
       });
-      setNags(data);
+      setNags(resp.items ?? []);
     } catch (err) {
       setError(extractErrorMessage(err, "Failed to load nagz"));
     }

@@ -47,12 +47,12 @@ export default function Consents() {
     if (!familyId) return;
     setError("");
     try {
-      const data = await customInstance<ConsentItem[]>({
+      const resp = await customInstance<{ items: ConsentItem[]; total: number }>({
         url: "/api/v1/consents",
         method: "GET",
         params: { family_id: familyId },
       });
-      setConsents(data);
+      setConsents(resp.items ?? []);
     } catch (err) {
       setError(extractErrorMessage(err, "Failed to load consents"));
     }
