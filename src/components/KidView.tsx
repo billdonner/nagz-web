@@ -4,6 +4,7 @@ import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import type { NagResponse } from "../api/model";
+import { CreateNagModal } from "./CreateNag";
 
 export default function KidView() {
   const { userId, logout } = useAuth();
@@ -20,6 +21,9 @@ export default function KidView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<string>("open");
+
+  // Create nag modal state
+  const [showCreateNag, setShowCreateNag] = useState(false);
 
   // Excuse modal state
   const [excuseNagId, setExcuseNagId] = useState<string | null>(null);
@@ -193,6 +197,14 @@ export default function KidView() {
           : `Viewing ${getName(viewUserId!)}'s nagz. Only they can mark them complete or submit excuses.`}
       </p>
 
+      {myRole !== "child" && familyId && (
+        <div style={{ marginBottom: "1rem" }}>
+          <button className="btn-create" onClick={() => setShowCreateNag(true)}>
+            + Create Nag for {getName(viewUserId!)}
+          </button>
+        </div>
+      )}
+
       <div className="filters">
         {["", "open", "completed", "missed"].map((f) => (
           <button
@@ -325,6 +337,18 @@ export default function KidView() {
             </form>
           </div>
         </div>
+      )}
+
+      {showCreateNag && familyId && (
+        <CreateNagModal
+          familyId={familyId}
+          recipientId={viewUserId ?? undefined}
+          onClose={() => setShowCreateNag(false)}
+          onCreated={() => {
+            setShowCreateNag(false);
+            loadNags();
+          }}
+        />
       )}
     </div>
   );
