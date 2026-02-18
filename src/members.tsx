@@ -53,8 +53,8 @@ export function MembersProvider({ children }: { children: ReactNode }) {
       return;
     }
     try {
-      const [data, family] = await Promise.all([
-        customInstance<Member[]>({
+      const [membersResp, family] = await Promise.all([
+        customInstance<{ items: Member[]; total: number }>({
           url: `/api/v1/families/${familyId}/members`,
           method: "GET",
         }),
@@ -63,6 +63,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
           method: "GET",
         }),
       ]);
+      const data = membersResp.items ?? [];
       setMembers(data);
       setFamilyName(family.name);
       setInviteCode(family.invite_code ?? null);
