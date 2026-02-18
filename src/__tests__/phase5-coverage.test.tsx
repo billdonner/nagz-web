@@ -481,7 +481,7 @@ describe("Reports", () => {
     expect(screen.getByText("75%")).toBeDefined();
   });
 
-  it("shows 'No report data' when neither metrics nor weekly available", async () => {
+  it("shows error when neither metrics nor weekly available", async () => {
     store["nagz_family_id"] = "fam-1";
     (customInstance as Mock).mockImplementation((config: { url: string }) => {
       if (config.url.includes("/members")) return Promise.resolve({ items: [], total: 0 });
@@ -494,7 +494,7 @@ describe("Reports", () => {
       </Providers>
     );
     await waitFor(() => {
-      expect(screen.getByText("No report data available yet.")).toBeDefined();
+      expect(screen.getByText("Failed to load reports")).toBeDefined();
     });
   });
 });

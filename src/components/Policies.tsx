@@ -148,7 +148,7 @@ export default function Policies() {
                   </span>
                 </td>
                 <td>
-                  {(p.owners as string[]).map((o) => getName(o)).join(", ")}
+                  {(p.owners as readonly string[]).map((o) => getName(o)).join(", ")}
                 </td>
               </tr>
             ))}
@@ -173,7 +173,7 @@ export default function Policies() {
                 </span>
               </dd>
               <dt>Owners</dt>
-              <dd>{(detailPolicy.owners as string[]).map((o) => getName(o)).join(", ")}</dd>
+              <dd>{(detailPolicy.owners as readonly string[]).map((o) => getName(o)).join(", ")}</dd>
             </dl>
 
             <h4 style={{ marginTop: "1rem" }}>Approvals ({approvals.length})</h4>

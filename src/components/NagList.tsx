@@ -3,22 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import { useMembers } from "../members";
+import { CATEGORIES, DONE_DEFS, formatPhase, statusLabel } from "../nag-utils";
 import type { NagResponse } from "../api/model";
 import { CreateNagModal } from "./CreateNag";
-
-const STATUS_COLORS: Record<string, string> = {
-  open: "#3b82f6",
-  completed: "#22c55e",
-  missed: "#ef4444",
-  cancelled_relationship_change: "#6b7280",
-};
-
-const CATEGORIES = ["chores", "meds", "homework", "appointments", "other"];
-const DONE_DEFS = [
-  { value: "ack_only", label: "Acknowledge" },
-  { value: "binary_check", label: "Check Off" },
-  { value: "binary_with_note", label: "Check Off + Note" },
-];
 
 export default function NagList() {
   const { userId, logout } = useAuth();
@@ -49,6 +36,7 @@ export default function NagList() {
 
   const loadNags = async () => {
     if (!familyId) return;
+    setError("");
     try {
       const params: Record<string, string> = { family_id: familyId };
       if (filter) params.state = filter;
@@ -101,17 +89,6 @@ export default function NagList() {
       setEditError(extractErrorMessage(err, "Failed to recompute"));
     }
     setRecomputing(false);
-  };
-
-  const formatPhase = (p: string) => {
-    const map: Record<string, string> = {
-      phase_0_initial: "Created",
-      phase_1_due_soon: "Due Soon",
-      phase_2_overdue_soft: "Overdue",
-      phase_3_overdue_bounded_pushback: "Escalated",
-      phase_4_guardian_review: "Guardian Review",
-    };
-    return map[p] ?? p;
   };
 
   const startEditing = (nag: NagResponse) => {
@@ -167,9 +144,6 @@ export default function NagList() {
 
   if (loading || membersLoading) return <p>Loading nagz...</p>;
   if (error) return <p className="error">{error}</p>;
-
-  const statusLabel = (s: string) =>
-    s.startsWith("cancelled") ? "cancelled" : s;
 
   const toggleSort = (col: typeof sortCol) => {
     if (sortCol === col) setSortAsc(!sortAsc);

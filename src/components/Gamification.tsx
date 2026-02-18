@@ -231,7 +231,7 @@ export default function Gamification() {
             {recentEvents.map((ev) => (
               <div key={ev.id} className="activity-item">
                 <span className="activity-type">{formatEventType(ev.event_type)}</span>
-                <span className="activity-points">+{ev.delta_points} pts</span>
+                <span className="activity-points">{ev.delta_points >= 0 ? "+" : ""}{ev.delta_points} pts</span>
                 <span className="activity-time">
                   {new Date(ev.at).toLocaleDateString()}
                 </span>

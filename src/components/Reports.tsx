@@ -32,22 +32,21 @@ export default function Reports() {
   useEffect(() => {
     if (!familyId) return;
     (async () => {
-      try {
-        const [w, m] = await Promise.allSettled([
-          customInstance<WeeklyReport>({
-            url: "/api/v1/reports/family/weekly",
-            method: "GET",
-            params: { family_id: familyId },
-          }),
-          customInstance<FamilyMetrics>({
-            url: "/api/v1/reports/family/metrics",
-            method: "GET",
-            params: { family_id: familyId },
-          }),
-        ]);
-        if (w.status === "fulfilled") setWeekly(w.value);
-        if (m.status === "fulfilled") setMetrics(m.value);
-      } catch {
+      const [w, m] = await Promise.allSettled([
+        customInstance<WeeklyReport>({
+          url: "/api/v1/reports/family/weekly",
+          method: "GET",
+          params: { family_id: familyId },
+        }),
+        customInstance<FamilyMetrics>({
+          url: "/api/v1/reports/family/metrics",
+          method: "GET",
+          params: { family_id: familyId },
+        }),
+      ]);
+      if (w.status === "fulfilled") setWeekly(w.value);
+      if (m.status === "fulfilled") setMetrics(m.value);
+      if (w.status === "rejected" && m.status === "rejected") {
         setError("Failed to load reports");
       }
       setLoading(false);

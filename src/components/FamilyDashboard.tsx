@@ -113,13 +113,12 @@ export default function FamilyDashboard() {
     setError("");
     try {
       // Find the relationship between current user and target
-      const resp = await customInstance<{ id: string }>({
+      await customInstance<{ id: string }>({
         url: `/api/v1/relationships/${memberId}/suspend`,
         method: "POST",
       });
       setError("");
       alert(`Relationship with ${memberName} has been suspended.`);
-      void resp;
     } catch (err) {
       setError(extractErrorMessage(err, "Failed to suspend relationship."));
     }
@@ -284,7 +283,7 @@ export default function FamilyDashboard() {
           <code style={{ fontFamily: "monospace", fontSize: "1.1rem", letterSpacing: "0.05em" }}>{inviteCode}</code>
           <button
             className="link-button"
-            onClick={() => navigator.clipboard.writeText(inviteCode)}
+            onClick={() => navigator.clipboard.writeText(inviteCode).catch(() => {})}
             title="Copy to clipboard"
           >
             Copy

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
+import { formatPhase, statusLabel } from "../nag-utils";
 import type { NagResponse } from "../api/model";
 import { CreateNagModal } from "./CreateNag";
 
@@ -33,6 +34,7 @@ export default function KidView() {
 
   const loadNags = async () => {
     if (!familyId) return;
+    setError("");
     try {
       const resp = await customInstance<{ items: NagResponse[]; total: number }>({
         url: "/api/v1/nags",
@@ -178,20 +180,6 @@ export default function KidView() {
   const filtered = filter
     ? nags.filter((n) => n.status === filter)
     : nags;
-
-  const statusLabel = (s: string) =>
-    s.startsWith("cancelled") ? "cancelled" : s;
-
-  const formatPhase = (p: string) => {
-    const map: Record<string, string> = {
-      phase_0_initial: "Created",
-      phase_1_due_soon: "Due Soon",
-      phase_2_overdue_soft: "Overdue",
-      phase_3_overdue_bounded_pushback: "Escalated",
-      phase_4_guardian_review: "Guardian Review",
-    };
-    return map[p] ?? p;
-  };
 
   const escalationColor = (p: string) => {
     const map: Record<string, string> = {
