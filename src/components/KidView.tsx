@@ -29,6 +29,7 @@ export default function KidView() {
   const [excuseNagId, setExcuseNagId] = useState<string | null>(null);
   const [excuseText, setExcuseText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [snoozing, setSnoozing] = useState<string | null>(null);
 
   const loadNags = async () => {
     if (!familyId) return;
@@ -114,6 +115,26 @@ export default function KidView() {
       setError(extractErrorMessage(err, "Failed to recompute escalation"));
     }
     setRecomputing(null);
+  };
+
+  const snoozeNag = async (nagId: string, minutes: number) => {
+    setSnoozing(nagId);
+    setError("");
+    try {
+      const nag = nags.find((n) => n.id === nagId);
+      if (!nag) return;
+      const newDue = new Date(new Date(nag.due_at).getTime() + minutes * 60_000).toISOString();
+      await customInstance<NagResponse>({
+        url: `/api/v1/nags/${nagId}`,
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        data: { due_at: newDue },
+      });
+      await loadNags();
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to snooze nag"));
+    }
+    setSnoozing(null);
   };
 
   const submitExcuse = async (e: FormEvent) => {
@@ -290,6 +311,14 @@ export default function KidView() {
                           onClick={() => setExcuseNagId(nag.id)}
                         >
                           Submit Excuse
+                        </button>
+                        <button
+                          className="btn-secondary"
+                          onClick={() => snoozeNag(nag.id, 15)}
+                          disabled={snoozing === nag.id}
+                          title="Snooze for 15 minutes"
+                        >
+                          {snoozing === nag.id ? "..." : "Snooze 15m"}
                         </button>
                       </>
                     ) : (

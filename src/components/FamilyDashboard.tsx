@@ -108,6 +108,23 @@ export default function FamilyDashboard() {
     setRemoving(null);
   };
 
+  const handleSuspendRelationship = async (memberId: string, memberName: string) => {
+    if (!confirm(`Suspend relationship with ${memberName}? They won't be able to create or receive nags.`)) return;
+    setError("");
+    try {
+      // Find the relationship between current user and target
+      const resp = await customInstance<{ id: string }>({
+        url: `/api/v1/relationships/${memberId}/suspend`,
+        method: "POST",
+      });
+      setError("");
+      alert(`Relationship with ${memberName} has been suspended.`);
+      void resp;
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to suspend relationship."));
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
 
   if (!familyId) {
@@ -209,15 +226,26 @@ export default function FamilyDashboard() {
                       </button>
                     </td>
                     <td>
-                      {isAdmin && m.role !== "guardian" && (
-                        <button
-                          className="link-button"
-                          style={{ color: "#ef4444" }}
-                          onClick={() => handleRemoveMember(m.user_id, m.display_name ?? m.user_id.slice(0, 8))}
-                          disabled={removing === m.user_id}
-                        >
-                          {removing === m.user_id ? "..." : "Remove"}
-                        </button>
+                      {isAdmin && m.user_id !== userId && (
+                        <span style={{ display: "flex", gap: "0.5rem" }}>
+                          <button
+                            className="link-button"
+                            style={{ color: "#f97316" }}
+                            onClick={() => handleSuspendRelationship(m.user_id, m.display_name ?? m.user_id.slice(0, 8))}
+                          >
+                            Suspend
+                          </button>
+                          {m.role !== "guardian" && (
+                            <button
+                              className="link-button"
+                              style={{ color: "#ef4444" }}
+                              onClick={() => handleRemoveMember(m.user_id, m.display_name ?? m.user_id.slice(0, 8))}
+                              disabled={removing === m.user_id}
+                            >
+                              {removing === m.user_id ? "..." : "Remove"}
+                            </button>
+                          )}
+                        </span>
                       )}
                     </td>
                   </tr>
