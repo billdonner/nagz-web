@@ -28,12 +28,12 @@ After any change to UI behavior or features:
 ## Architecture
 - `ErrorBoundary` — React class component wrapping the entire app
 - `extractErrorMessage()` — utility in `axios-instance.ts` for consistent error handling
-- Axios response interceptor auto-logs out on 401
+- Axios response interceptor dispatches `nagz:unauthorized` event on 401 (AuthProvider listens and logs out via React state)
 - 30s timeout on all API requests
-- `AuthProvider` wraps the app, stores JWT in localStorage
+- `AuthProvider` wraps the app, stores JWT in sessionStorage (not localStorage)
 - `VersionProvider` checks API compatibility on mount
 
 ## Testing Notes
 - vitest with jsdom environment (configured in vite.config.ts)
-- Use `vi.stubGlobal("localStorage", mock)` for localStorage mocking
+- Use `vi.stubGlobal("sessionStorage", mock)` for auth token mocking, `vi.stubGlobal("localStorage", mock)` for familyId
 - Test files go in `src/__tests__/`

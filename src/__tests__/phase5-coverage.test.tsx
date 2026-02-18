@@ -19,6 +19,18 @@ const localStorageMock = {
 };
 vi.stubGlobal("localStorage", localStorageMock);
 
+// Auth token now uses sessionStorage
+const sessionStore: Record<string, string> = {};
+const sessionStorageMock = {
+  getItem: vi.fn((key: string) => sessionStore[key] ?? null),
+  setItem: vi.fn((key: string, value: string) => { sessionStore[key] = value; }),
+  removeItem: vi.fn((key: string) => { delete sessionStore[key]; }),
+  clear: vi.fn(() => { Object.keys(sessionStore).forEach(k => delete sessionStore[k]); }),
+  length: 0,
+  key: vi.fn(() => null),
+};
+vi.stubGlobal("sessionStorage", sessionStorageMock);
+
 vi.mock("../api/axios-instance", () => ({
   customInstance: vi.fn(),
   extractErrorMessage: (_err: unknown, fallback = "Something went wrong.") => fallback,
@@ -35,6 +47,7 @@ import { customInstance } from "../api/axios-instance";
 
 beforeEach(() => {
   Object.keys(store).forEach(k => delete store[k]);
+  Object.keys(sessionStore).forEach(k => delete sessionStore[k]);
   vi.clearAllMocks();
 });
 
@@ -62,7 +75,7 @@ import Gamification from "../components/Gamification";
 
 describe("Gamification", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No family selected' when no family_id", () => {
@@ -181,7 +194,7 @@ import Consents from "../components/Consents";
 
 describe("Consents", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No family selected' when no family_id", () => {
@@ -251,7 +264,7 @@ import Safety from "../components/Safety";
 
 describe("Safety", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
     store["nagz_family_id"] = "fam-1";
   });
 
@@ -346,7 +359,7 @@ import Policies from "../components/Policies";
 
 describe("Policies", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No family selected' without family_id", () => {
@@ -418,7 +431,7 @@ import Reports from "../components/Reports";
 
 describe("Reports", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No family selected' without family_id", () => {
@@ -494,7 +507,7 @@ import Deliveries from "../components/Deliveries";
 
 describe("Deliveries", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No nag specified' without nag_id query param", () => {
@@ -569,7 +582,7 @@ import IncentiveRules from "../components/IncentiveRules";
 
 describe("IncentiveRules", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No family selected' without family_id", () => {
@@ -656,7 +669,7 @@ import { MemberSettings } from "../components/MemberSettings";
 
 describe("MemberSettings", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
     store["nagz_family_id"] = "fam-1";
   });
 

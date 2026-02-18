@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+
+const TOKEN_KEY = "nagz_token";
+
+/** Read the auth token from session storage. */
+export function getStoredToken(): string | null {
+  return sessionStorage.getItem(TOKEN_KEY);
+}
 
 interface AuthCtx {
   token: string | null;
@@ -16,20 +23,27 @@ const AuthContext = createContext<AuthCtx>({
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(
-    () => localStorage.getItem("nagz_token")
+    () => getStoredToken()
   );
 
   const userId = token?.startsWith("dev:") ? token.slice(4) : null;
 
   const login = useCallback((t: string) => {
-    localStorage.setItem("nagz_token", t);
+    sessionStorage.setItem(TOKEN_KEY, t);
     setToken(t);
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem("nagz_token");
+    sessionStorage.removeItem(TOKEN_KEY);
     setToken(null);
   }, []);
+
+  // Listen for 401 unauthorized events from the axios interceptor
+  useEffect(() => {
+    const handler = () => logout();
+    window.addEventListener("nagz:unauthorized", handler);
+    return () => window.removeEventListener("nagz:unauthorized", handler);
+  }, [logout]);
 
   return (
     <AuthContext.Provider value={{ token, userId, login, logout }}>

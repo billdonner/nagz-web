@@ -19,6 +19,18 @@ const localStorageMock = {
 };
 vi.stubGlobal("localStorage", localStorageMock);
 
+// Auth token now uses sessionStorage
+const sessionStore: Record<string, string> = {};
+const sessionStorageMock = {
+  getItem: vi.fn((key: string) => sessionStore[key] ?? null),
+  setItem: vi.fn((key: string, value: string) => { sessionStore[key] = value; }),
+  removeItem: vi.fn((key: string) => { delete sessionStore[key]; }),
+  clear: vi.fn(() => { Object.keys(sessionStore).forEach(k => delete sessionStore[k]); }),
+  length: 0,
+  key: vi.fn(() => null),
+};
+vi.stubGlobal("sessionStorage", sessionStorageMock);
+
 // Mock customInstance from axios-instance
 vi.mock("../api/axios-instance", () => ({
   customInstance: vi.fn(),
@@ -38,6 +50,7 @@ import { customInstance } from "../api/axios-instance";
 // Reset helpers between tests
 beforeEach(() => {
   Object.keys(store).forEach(k => delete store[k]);
+  Object.keys(sessionStore).forEach(k => delete sessionStore[k]);
   vi.clearAllMocks();
 });
 
@@ -112,7 +125,7 @@ describe("Route Protection", () => {
   });
 
   it("authenticated user on /login is redirected away", () => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
     renderApp(["/login"]);
     // Should NOT see the login page
@@ -148,12 +161,12 @@ describe("Login Component", () => {
     expect(childLabels.length).toBe(3); // George, Teddy, Will
   });
 
-  it("clicking a dev user sets token in localStorage", async () => {
+  it("clicking a dev user sets token in sessionStorage", async () => {
     renderApp(["/login"]);
     act(() => {
       screen.getByText("Andrew").click();
     });
-    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+    expect(sessionStorageMock.setItem).toHaveBeenCalledWith(
       "nagz_token",
       "dev:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
     );
@@ -287,7 +300,7 @@ import NagList from "../components/NagList";
 
 describe("NagList", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No family selected' when no family_id in localStorage", () => {
@@ -463,7 +476,7 @@ import FamilyDashboard from "../components/FamilyDashboard";
 
 describe("FamilyDashboard", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows family ID prompt when no family_id in localStorage", async () => {
@@ -557,7 +570,7 @@ describe("FamilyDashboard", () => {
 
   it("non-guardian does NOT see admin links", async () => {
     store["nagz_family_id"] = "fam-1";
-    store["nagz_token"] = "dev:user-2";
+    sessionStore["nagz_token"] = "dev:user-2";
     const members: Member[] = [
       { user_id: "user-2", display_name: "Bob", family_id: "fam-1", role: "child", status: "active", joined_at: "2026-01-01T00:00:00Z" },
     ];
@@ -659,7 +672,7 @@ import KidView from "../components/KidView";
 
 describe("KidView", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("shows 'No family selected' when no family_id", () => {
@@ -831,7 +844,7 @@ import { CreateNagModal } from "../components/CreateNag";
 
 describe("CreateNagModal", () => {
   beforeEach(() => {
-    store["nagz_token"] = "dev:user-1";
+    sessionStore["nagz_token"] = "dev:user-1";
   });
 
   it("renders the create form with required fields", () => {

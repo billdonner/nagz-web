@@ -2,9 +2,9 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import { AuthProvider, useAuth } from "../auth";
 
-// Mock localStorage
+// Mock sessionStorage (auth token now uses sessionStorage)
 const store: Record<string, string> = {};
-const localStorageMock = {
+const sessionStorageMock = {
   getItem: vi.fn((key: string) => store[key] ?? null),
   setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
   removeItem: vi.fn((key: string) => { delete store[key]; }),
@@ -12,7 +12,7 @@ const localStorageMock = {
   length: 0,
   key: vi.fn(() => null),
 };
-vi.stubGlobal("localStorage", localStorageMock);
+vi.stubGlobal("sessionStorage", sessionStorageMock);
 
 function TestConsumer() {
   const { token, userId, login, logout } = useAuth();
@@ -32,7 +32,7 @@ describe("AuthProvider", () => {
     vi.clearAllMocks();
   });
 
-  it("starts with null token when nothing in localStorage", () => {
+  it("starts with null token when nothing in sessionStorage", () => {
     render(
       <AuthProvider>
         <TestConsumer />
@@ -42,7 +42,7 @@ describe("AuthProvider", () => {
     expect(screen.getByTestId("userId").textContent).toBe("null");
   });
 
-  it("restores token from localStorage", () => {
+  it("restores token from sessionStorage", () => {
     store["nagz_token"] = "dev:user-1";
     render(
       <AuthProvider>
@@ -64,7 +64,7 @@ describe("AuthProvider", () => {
     });
     expect(screen.getByTestId("token").textContent).toBe("dev:abc-123");
     expect(screen.getByTestId("userId").textContent).toBe("abc-123");
-    expect(localStorageMock.setItem).toHaveBeenCalledWith("nagz_token", "dev:abc-123");
+    expect(sessionStorageMock.setItem).toHaveBeenCalledWith("nagz_token", "dev:abc-123");
   });
 
   it("logout clears token", () => {
@@ -78,6 +78,21 @@ describe("AuthProvider", () => {
       screen.getByText("Logout").click();
     });
     expect(screen.getByTestId("token").textContent).toBe("null");
-    expect(localStorageMock.removeItem).toHaveBeenCalledWith("nagz_token");
+    expect(sessionStorageMock.removeItem).toHaveBeenCalledWith("nagz_token");
+  });
+
+  it("handles nagz:unauthorized event by logging out", () => {
+    store["nagz_token"] = "dev:user-1";
+    render(
+      <AuthProvider>
+        <TestConsumer />
+      </AuthProvider>
+    );
+    expect(screen.getByTestId("token").textContent).toBe("dev:user-1");
+    act(() => {
+      window.dispatchEvent(new Event("nagz:unauthorized"));
+    });
+    expect(screen.getByTestId("token").textContent).toBe("null");
+    expect(sessionStorageMock.removeItem).toHaveBeenCalledWith("nagz_token");
   });
 });

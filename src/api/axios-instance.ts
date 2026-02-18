@@ -1,4 +1,5 @@
 import Axios, { type AxiosRequestConfig } from "axios";
+import { getStoredToken } from "../auth";
 
 export const AXIOS_INSTANCE = Axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:8001",
@@ -6,20 +7,22 @@ export const AXIOS_INSTANCE = Axios.create({
 });
 
 AXIOS_INSTANCE.interceptors.request.use((config) => {
-  const token = localStorage.getItem("nagz_token");
+  const token = getStoredToken();
   if (token) {
     config.headers.authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-// Auto-logout on 401 Unauthorized
+// Auto-logout on 401 — dispatch event for AuthProvider instead of hard redirect
+let handlingUnauthorized = false;
 AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (Axios.isAxiosError(error) && error.response?.status === 401) {
-      localStorage.removeItem("nagz_token");
-      window.location.href = "/";
+    if (Axios.isAxiosError(error) && error.response?.status === 401 && !handlingUnauthorized) {
+      handlingUnauthorized = true;
+      window.dispatchEvent(new Event("nagz:unauthorized"));
+      setTimeout(() => { handlingUnauthorized = false; }, 100);
     }
     return Promise.reject(error);
   }
