@@ -38,7 +38,7 @@ npm run dev            # Start dev server
 npm run build          # Production build
 npm run lint           # ESLint
 npm run api:generate   # Regenerate TypeScript API client from openapi.json
-npx vitest run         # Run tests
+npx vitest run         # Run tests (105)
 ```
 
 ## API Client Workflow
