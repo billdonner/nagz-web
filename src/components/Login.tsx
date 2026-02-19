@@ -2,16 +2,20 @@ import { useState } from "react";
 import { useAuth } from "../auth";
 import { customInstance } from "../api/axios-instance";
 
-// Dev-only credentials — only available in development builds
-const DEV_FAMILY_ID = "93803dda-64e6-491c-b460-02ab3b72c465";
+// Dev-only credentials — tree-shaken out of production builds
+const DEV_FAMILY_ID = import.meta.env.DEV
+  ? "93803dda-64e6-491c-b460-02ab3b72c465"
+  : "";
 
-const DEV_USERS = [
-  { name: "Andrew", role: "guardian", token: "dev:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" },
-  { name: "Katherine", role: "guardian", token: "dev:bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" },
-  { name: "George", role: "child", token: "dev:cccccccc-cccc-cccc-cccc-cccccccccccc" },
-  { name: "Teddy", role: "child", token: "dev:dddddddd-dddd-dddd-dddd-dddddddddddd" },
-  { name: "Will", role: "child", token: "dev:eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee" },
-];
+const DEV_USERS = import.meta.env.DEV
+  ? [
+      { name: "Andrew", role: "guardian", token: "dev:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" },
+      { name: "Katherine", role: "guardian", token: "dev:bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" },
+      { name: "George", role: "child", token: "dev:cccccccc-cccc-cccc-cccc-cccccccccccc" },
+      { name: "Teddy", role: "child", token: "dev:dddddddd-dddd-dddd-dddd-dddddddddddd" },
+      { name: "Will", role: "child", token: "dev:eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee" },
+    ]
+  : [];
 
 function DevLogin() {
   const { login } = useAuth();

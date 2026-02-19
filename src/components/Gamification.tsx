@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth";
 import { useMembers } from "../members";
+import Axios from "axios";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
-import axios from "axios";
 
 interface GamificationSummary {
   family_id: string;
@@ -100,11 +100,11 @@ export default function Gamification() {
 
     const summaryIs403 =
       summaryResult.status === "rejected" &&
-      axios.isAxiosError(summaryResult.reason) &&
+      Axios.isAxiosError(summaryResult.reason) &&
       summaryResult.reason.response?.status === 403;
     const lbIs403 =
       lbResult.status === "rejected" &&
-      axios.isAxiosError(lbResult.reason) &&
+      Axios.isAxiosError(lbResult.reason) &&
       lbResult.reason.response?.status === 403;
 
     if (summaryIs403 || lbIs403) {

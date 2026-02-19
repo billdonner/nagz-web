@@ -91,13 +91,8 @@ export default function KidView() {
   };
 
   useEffect(() => {
-    let cancelled = false;
-    const doLoad = async () => {
-      if (!familyId) return;
-      await loadNags();
-    };
-    doLoad();
-    return () => { cancelled = true; };
+    if (!familyId) return;
+    loadNags();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [familyId, viewUserId]);
 
@@ -152,7 +147,8 @@ export default function KidView() {
     try {
       const nag = nags.find((n) => n.id === nagId);
       if (!nag) return;
-      const newDue = new Date(new Date(nag.due_at).getTime() + minutes * 60_000).toISOString();
+      const base = Math.max(new Date(nag.due_at).getTime(), Date.now());
+      const newDue = new Date(base + minutes * 60_000).toISOString();
       await customInstance<NagResponse>({
         url: `/api/v1/nags/${nagId}`,
         method: "PATCH",
