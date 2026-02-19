@@ -30,14 +30,14 @@ const createAccountApiV1AccountsPost = (
       );
     }
   /**
- * POST /accounts/export — export all personal data for the current user.
+ * GET /accounts/export — export all personal data (GDPR/CCPA).
  * @summary Export Account Data
  */
-const exportAccountDataApiV1AccountsExportPost = (
+const exportAccountDataApiV1AccountsExportGet = (
     
  ) => {
       return customInstance<unknown>(
-      {url: `/api/v1/accounts/export`, method: 'POST'
+      {url: `/api/v1/accounts/export`, method: 'GET'
     },
       );
     }
@@ -53,7 +53,7 @@ const deleteAccountApiV1AccountsUserIdDelete = (
     },
       );
     }
-  return {createAccountApiV1AccountsPost,exportAccountDataApiV1AccountsExportPost,deleteAccountApiV1AccountsUserIdDelete}};
+  return {createAccountApiV1AccountsPost,exportAccountDataApiV1AccountsExportGet,deleteAccountApiV1AccountsUserIdDelete}};
 export type CreateAccountApiV1AccountsPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAccounts>['createAccountApiV1AccountsPost']>>>
-export type ExportAccountDataApiV1AccountsExportPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAccounts>['exportAccountDataApiV1AccountsExportPost']>>>
+export type ExportAccountDataApiV1AccountsExportGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAccounts>['exportAccountDataApiV1AccountsExportGet']>>>
 export type DeleteAccountApiV1AccountsUserIdDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAccounts>['deleteAccountApiV1AccountsUserIdDelete']>>>

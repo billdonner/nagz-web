@@ -1282,7 +1282,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ExcuseResponse"
+                }
               }
             }
           },
@@ -1354,7 +1356,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse_ExcuseResponse_"
+                }
               }
             }
           },
@@ -1430,7 +1434,7 @@
           "escalation"
         ],
         "summary": "Recompute Escalation",
-        "description": "POST /nags/{nagId}/escalation/recompute \u2014 creator_or_guardian.",
+        "description": "POST /nags/{nagId}/escalation/recompute \u2014 creator_or_guardian. Delegates to get_escalation.",
         "operationId": "recompute_escalation_api_v1_nags__nag_id__escalation_recompute_post",
         "parameters": [
           {
@@ -2180,7 +2184,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/GamificationSummary"
+                }
               }
             }
           },
@@ -2231,7 +2237,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderboardResponse"
+                }
               }
             }
           },
@@ -2324,6 +2332,73 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedResponse_GamificationEventResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/gamification/badges": {
+      "get": {
+        "tags": [
+          "gamification"
+        ],
+        "summary": "List Badges",
+        "description": "GET /gamification/badges?user_id={userId}&family_id={familyId} \u2014 member.",
+        "operationId": "list_badges_api_v1_gamification_badges_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "family_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BadgeResponse"
+                  },
+                  "title": "Response List Badges Api V1 Gamification Badges Get"
                 }
               }
             }
@@ -2630,7 +2705,7 @@
           "safety"
         ],
         "summary": "Suspend Relationship",
-        "description": "POST /relationships/{relationshipId}/suspend \u2014 guardian_only.",
+        "description": "POST /relationships/{relationshipId}/suspend \u2014 party_only.",
         "operationId": "suspend_relationship_api_v1_relationships__relationship_id__suspend_post",
         "parameters": [
           {
@@ -2658,7 +2733,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/RelationshipResponse"
+                }
               }
             }
           },
@@ -3082,13 +3159,13 @@
       }
     },
     "/api/v1/accounts/export": {
-      "post": {
+      "get": {
         "tags": [
           "accounts"
         ],
         "summary": "Export Account Data",
-        "description": "POST /accounts/export \u2014 export all personal data for the current user.",
-        "operationId": "export_account_data_api_v1_accounts_export_post",
+        "description": "GET /accounts/export \u2014 export all personal data (GDPR/CCPA).",
+        "operationId": "export_account_data_api_v1_accounts_export_get",
         "parameters": [
           {
             "name": "authorization",
@@ -3209,7 +3286,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/WeeklyReportResponse"
+                }
               }
             }
           },
@@ -3294,7 +3373,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyMetricsResponse"
+                }
               }
             }
           },
@@ -3798,6 +3879,28 @@
           }
         }
       }
+    },
+    "/api/v1/metrics": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Get Metrics",
+        "description": "GET /metrics \u2014 operational metrics for monitoring dashboards. No auth.",
+        "operationId": "get_metrics_api_v1_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3820,6 +3923,8 @@
           },
           "reason": {
             "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
             "title": "Reason"
           }
         },
@@ -4051,6 +4156,54 @@
           "user"
         ],
         "title": "AuthResponse"
+      },
+      "BadgeResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "badge_type": {
+            "$ref": "#/components/schemas/BadgeType"
+          },
+          "earned_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Earned At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "family_id",
+          "badge_type",
+          "earned_at"
+        ],
+        "title": "BadgeResponse"
+      },
+      "BadgeType": {
+        "type": "string",
+        "enum": [
+          "first_completion",
+          "streak_3",
+          "streak_7",
+          "streak_30",
+          "perfect_week",
+          "century_club"
+        ],
+        "title": "BadgeType"
       },
       "BlockCreate": {
         "properties": {
@@ -4535,6 +4688,8 @@
         "properties": {
           "text": {
             "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
             "title": "Text"
           },
           "category": {
@@ -4554,6 +4709,43 @@
           "text"
         ],
         "title": "ExcuseCreate"
+      },
+      "ExcuseResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "nag_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Nag Id"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "nag_id",
+          "summary"
+        ],
+        "title": "ExcuseResponse"
       },
       "ExcuseSummaryRequest": {
         "properties": {
@@ -4608,6 +4800,8 @@
         "properties": {
           "name": {
             "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
             "title": "Name"
           }
         },
@@ -4616,6 +4810,66 @@
           "name"
         ],
         "title": "FamilyCreate"
+      },
+      "FamilyMetricsResponse": {
+        "properties": {
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "from_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Date"
+          },
+          "to_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To Date"
+          },
+          "total_nags": {
+            "type": "integer",
+            "title": "Total Nags"
+          },
+          "completed": {
+            "type": "integer",
+            "title": "Completed"
+          },
+          "missed": {
+            "type": "integer",
+            "title": "Missed"
+          },
+          "completion_rate": {
+            "type": "number",
+            "title": "Completion Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "family_id",
+          "from_date",
+          "to_date",
+          "total_nags",
+          "completed",
+          "missed",
+          "completion_rate"
+        ],
+        "title": "FamilyMetricsResponse"
       },
       "FamilyResponse": {
         "properties": {
@@ -4702,6 +4956,41 @@
           "at"
         ],
         "title": "GamificationEventResponse"
+      },
+      "GamificationSummary": {
+        "properties": {
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "total_points": {
+            "type": "integer",
+            "title": "Total Points"
+          },
+          "current_streak": {
+            "type": "integer",
+            "title": "Current Streak"
+          },
+          "event_count": {
+            "type": "integer",
+            "title": "Event Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "family_id",
+          "user_id",
+          "total_points",
+          "current_streak",
+          "event_count"
+        ],
+        "title": "GamificationSummary"
       },
       "HTTPValidationError": {
         "properties": {
@@ -4921,6 +5210,52 @@
         ],
         "title": "JoinRequest"
       },
+      "LeaderboardEntry": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "total_points": {
+            "type": "integer",
+            "title": "Total Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "total_points"
+        ],
+        "title": "LeaderboardEntry"
+      },
+      "LeaderboardResponse": {
+        "properties": {
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "period_start": {
+            "type": "string",
+            "title": "Period Start"
+          },
+          "leaderboard": {
+            "items": {
+              "$ref": "#/components/schemas/LeaderboardEntry"
+            },
+            "type": "array",
+            "title": "Leaderboard"
+          }
+        },
+        "type": "object",
+        "required": [
+          "family_id",
+          "period_start",
+          "leaderboard"
+        ],
+        "title": "LeaderboardResponse"
+      },
       "LegalDocument": {
         "properties": {
           "title": {
@@ -4953,10 +5288,12 @@
         "properties": {
           "email": {
             "type": "string",
+            "format": "email",
             "title": "Email"
           },
           "password": {
             "type": "string",
+            "minLength": 1,
             "title": "Password"
           }
         },
@@ -4989,6 +5326,8 @@
         "properties": {
           "display_name": {
             "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
             "title": "Display Name"
           },
           "role": {
@@ -5136,6 +5475,93 @@
         ],
         "title": "MembershipStatus"
       },
+      "Metric": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Value"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "warn_above": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warn Above"
+          },
+          "warn_below": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warn Below"
+          },
+          "sparkline_history": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sparkline History"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "value",
+          "unit"
+        ],
+        "title": "Metric"
+      },
+      "MetricsResponse": {
+        "properties": {
+          "metrics": {
+            "items": {
+              "$ref": "#/components/schemas/Metric"
+            },
+            "type": "array",
+            "title": "Metrics"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metrics"
+        ],
+        "title": "MetricsResponse"
+      },
       "NagCategory": {
         "type": "string",
         "enum": [
@@ -5173,7 +5599,8 @@
           "description": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "maxLength": 2000
               },
               {
                 "type": "null"
@@ -5274,6 +5701,18 @@
                 "type": "null"
               }
             ]
+          },
+          "parent_nag_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Nag Id"
           },
           "status": {
             "$ref": "#/components/schemas/NagStatus"
@@ -5524,6 +5963,37 @@
           "offset"
         ],
         "title": "PaginatedResponse[DeviceTokenResponse]"
+      },
+      "PaginatedResponse_ExcuseResponse_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ExcuseResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "PaginatedResponse[ExcuseResponse]"
       },
       "PaginatedResponse_GamificationEventResponse_": {
         "properties": {
@@ -6008,14 +6478,56 @@
         ],
         "title": "RefreshRequest"
       },
+      "RelationshipResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "party_a": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Party A"
+          },
+          "party_b": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Party B"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RelationshipStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "party_a",
+          "party_b",
+          "status"
+        ],
+        "title": "RelationshipResponse"
+      },
+      "RelationshipStatus": {
+        "type": "string",
+        "enum": [
+          "active",
+          "suspended",
+          "revoked"
+        ],
+        "title": "RelationshipStatus"
+      },
       "SignupRequest": {
         "properties": {
           "email": {
             "type": "string",
+            "format": "email",
             "title": "Email"
           },
           "password": {
             "type": "string",
+            "maxLength": 128,
+            "minLength": 8,
             "title": "Password"
           },
           "display_name": {
@@ -6028,6 +6540,18 @@
               }
             ],
             "title": "Display Name"
+          },
+          "date_of_birth": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Of Birth"
           }
         },
         "type": "object",
@@ -6401,6 +6925,32 @@
           "min_client_version"
         ],
         "title": "VersionResponse"
+      },
+      "WeeklyReportResponse": {
+        "properties": {
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Period Start"
+          },
+          "metrics": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metrics"
+          }
+        },
+        "type": "object",
+        "required": [
+          "family_id",
+          "period_start",
+          "metrics"
+        ],
+        "title": "WeeklyReportResponse"
       }
     }
   }

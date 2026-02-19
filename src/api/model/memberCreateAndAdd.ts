@@ -8,6 +8,10 @@
 import type { FamilyRole } from './familyRole';
 
 export interface MemberCreateAndAdd {
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
   display_name: string;
   role: FamilyRole;
 }

@@ -6,8 +6,12 @@
  * OpenAPI spec version: 0.2.0
  */
 import type {
+  BadgeResponse,
+  GamificationSummary,
   GetLeaderboardApiV1GamificationLeaderboardGetParams,
   GetSummaryApiV1GamificationSummaryGetParams,
+  LeaderboardResponse,
+  ListBadgesApiV1GamificationBadgesGetParams,
   ListEventsApiV1GamificationEventsGetParams,
   PaginatedResponseGamificationEventResponse
 } from '../../model';
@@ -24,7 +28,7 @@ import { customInstance } from '../../axios-instance';
 const getSummaryApiV1GamificationSummaryGet = (
     params: GetSummaryApiV1GamificationSummaryGetParams,
  ) => {
-      return customInstance<unknown>(
+      return customInstance<GamificationSummary>(
       {url: `/api/v1/gamification/summary`, method: 'GET',
         params
     },
@@ -37,7 +41,7 @@ const getSummaryApiV1GamificationSummaryGet = (
 const getLeaderboardApiV1GamificationLeaderboardGet = (
     params: GetLeaderboardApiV1GamificationLeaderboardGetParams,
  ) => {
-      return customInstance<unknown>(
+      return customInstance<LeaderboardResponse>(
       {url: `/api/v1/gamification/leaderboard`, method: 'GET',
         params
     },
@@ -56,7 +60,21 @@ const listEventsApiV1GamificationEventsGet = (
     },
       );
     }
-  return {getSummaryApiV1GamificationSummaryGet,getLeaderboardApiV1GamificationLeaderboardGet,listEventsApiV1GamificationEventsGet}};
+  /**
+ * GET /gamification/badges?user_id={userId}&family_id={familyId} — member.
+ * @summary List Badges
+ */
+const listBadgesApiV1GamificationBadgesGet = (
+    params: ListBadgesApiV1GamificationBadgesGetParams,
+ ) => {
+      return customInstance<BadgeResponse[]>(
+      {url: `/api/v1/gamification/badges`, method: 'GET',
+        params
+    },
+      );
+    }
+  return {getSummaryApiV1GamificationSummaryGet,getLeaderboardApiV1GamificationLeaderboardGet,listEventsApiV1GamificationEventsGet,listBadgesApiV1GamificationBadgesGet}};
 export type GetSummaryApiV1GamificationSummaryGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getGamification>['getSummaryApiV1GamificationSummaryGet']>>>
 export type GetLeaderboardApiV1GamificationLeaderboardGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getGamification>['getLeaderboardApiV1GamificationLeaderboardGet']>>>
 export type ListEventsApiV1GamificationEventsGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getGamification>['listEventsApiV1GamificationEventsGet']>>>
+export type ListBadgesApiV1GamificationBadgesGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getGamification>['listBadgesApiV1GamificationBadgesGet']>>>

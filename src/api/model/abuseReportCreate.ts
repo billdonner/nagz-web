@@ -8,5 +8,9 @@
 
 export interface AbuseReportCreate {
   target_id: string;
+  /**
+   * @minLength 1
+   * @maxLength 2000
+   */
   reason: string;
 }

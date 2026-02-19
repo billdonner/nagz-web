@@ -8,6 +8,11 @@
 
 export interface SignupRequest {
   email: string;
+  /**
+   * @minLength 8
+   * @maxLength 128
+   */
   password: string;
   display_name?: string | null;
+  date_of_birth?: string | null;
 }

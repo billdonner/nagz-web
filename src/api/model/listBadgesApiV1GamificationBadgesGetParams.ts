@@ -6,10 +6,7 @@
  * OpenAPI spec version: 0.2.0
  */
 
-export interface FamilyCreate {
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-}
+export type ListBadgesApiV1GamificationBadgesGetParams = {
+user_id: string;
+family_id: string;
+};

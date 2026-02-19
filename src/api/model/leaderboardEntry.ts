@@ -6,10 +6,7 @@
  * OpenAPI spec version: 0.2.0
  */
 
-export interface FamilyCreate {
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
+export interface LeaderboardEntry {
+  user_id: string;
+  total_points: number;
 }

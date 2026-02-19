@@ -7,6 +7,10 @@
  */
 
 export interface ExcuseCreate {
+  /**
+   * @minLength 1
+   * @maxLength 2000
+   */
   text: string;
   category?: string | null;
 }

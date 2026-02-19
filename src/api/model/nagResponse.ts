@@ -22,6 +22,7 @@ export interface NagResponse {
   description?: string | null;
   strategy_template: StrategyTemplate;
   recurrence?: Recurrence | null;
+  parent_nag_id?: string | null;
   status: NagStatus;
   created_at: string;
 }

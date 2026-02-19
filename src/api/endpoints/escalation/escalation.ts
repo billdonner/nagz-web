@@ -27,7 +27,7 @@ const getEscalationApiV1NagsNagIdEscalationGet = (
       );
     }
   /**
- * POST /nags/{nagId}/escalation/recompute — creator_or_guardian.
+ * POST /nags/{nagId}/escalation/recompute — creator_or_guardian. Delegates to get_escalation.
  * @summary Recompute Escalation
  */
 const recomputeEscalationApiV1NagsNagIdEscalationRecomputePost = (

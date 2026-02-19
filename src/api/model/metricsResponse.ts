@@ -5,11 +5,8 @@
  * Family-oriented AI-mediated nagging system
  * OpenAPI spec version: 0.2.0
  */
+import type { Metric } from './metric';
 
-export interface FamilyCreate {
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
+export interface MetricsResponse {
+  metrics: Metric[];
 }

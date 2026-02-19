@@ -12,7 +12,8 @@ import type {
   BlockResponse,
   BlockUpdate,
   ListBlocksApiV1BlocksGetParams,
-  PaginatedResponseBlockResponse
+  PaginatedResponseBlockResponse,
+  RelationshipResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -89,13 +90,13 @@ const updateBlockApiV1BlocksBlockIdPatch = (
       );
     }
   /**
- * POST /relationships/{relationshipId}/suspend — guardian_only.
+ * POST /relationships/{relationshipId}/suspend — party_only.
  * @summary Suspend Relationship
  */
 const suspendRelationshipApiV1RelationshipsRelationshipIdSuspendPost = (
     relationshipId: string,
  ) => {
-      return customInstance<unknown>(
+      return customInstance<RelationshipResponse>(
       {url: `/api/v1/relationships/${relationshipId}/suspend`, method: 'POST'
     },
       );

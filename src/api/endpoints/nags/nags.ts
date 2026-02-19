@@ -7,12 +7,14 @@
  */
 import type {
   ExcuseCreate,
+  ExcuseResponse,
   ListExcusesApiV1NagsNagIdExcusesGetParams,
   ListNagsApiV1NagsGetParams,
   NagCreate,
   NagResponse,
   NagStatusUpdate,
   NagUpdate,
+  PaginatedResponseExcuseResponse,
   PaginatedResponseNagResponse
 } from '../../model';
 
@@ -98,7 +100,7 @@ const submitExcuseApiV1NagsNagIdExcusesPost = (
     nagId: string,
     excuseCreate: ExcuseCreate,
  ) => {
-      return customInstance<unknown>(
+      return customInstance<ExcuseResponse>(
       {url: `/api/v1/nags/${nagId}/excuses`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: excuseCreate
@@ -113,7 +115,7 @@ const listExcusesApiV1NagsNagIdExcusesGet = (
     nagId: string,
     params?: ListExcusesApiV1NagsNagIdExcusesGetParams,
  ) => {
-      return customInstance<unknown>(
+      return customInstance<PaginatedResponseExcuseResponse>(
       {url: `/api/v1/nags/${nagId}/excuses`, method: 'GET',
         params
     },

@@ -6,8 +6,10 @@
  * OpenAPI spec version: 0.2.0
  */
 import type {
+  FamilyMetricsResponse,
   GetFamilyMetricsApiV1ReportsFamilyMetricsGetParams,
-  GetWeeklyReportApiV1ReportsFamilyWeeklyGetParams
+  GetWeeklyReportApiV1ReportsFamilyWeeklyGetParams,
+  WeeklyReportResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -22,7 +24,7 @@ import { customInstance } from '../../axios-instance';
 const getWeeklyReportApiV1ReportsFamilyWeeklyGet = (
     params: GetWeeklyReportApiV1ReportsFamilyWeeklyGetParams,
  ) => {
-      return customInstance<unknown>(
+      return customInstance<WeeklyReportResponse>(
       {url: `/api/v1/reports/family/weekly`, method: 'GET',
         params
     },
@@ -35,7 +37,7 @@ const getWeeklyReportApiV1ReportsFamilyWeeklyGet = (
 const getFamilyMetricsApiV1ReportsFamilyMetricsGet = (
     params: GetFamilyMetricsApiV1ReportsFamilyMetricsGetParams,
  ) => {
-      return customInstance<unknown>(
+      return customInstance<FamilyMetricsResponse>(
       {url: `/api/v1/reports/family/metrics`, method: 'GET',
         params
     },
