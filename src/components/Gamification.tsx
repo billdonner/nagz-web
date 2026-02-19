@@ -34,6 +34,14 @@ interface GamificationEventItem {
   at: string;
 }
 
+interface BadgeItem {
+  id: string;
+  user_id: string;
+  family_id: string;
+  badge_type: string;
+  earned_at: string;
+}
+
 export default function Gamification() {
   const { userId, logout } = useAuth();
   const { getName, members, familyName, loading: membersLoading } = useMembers();
@@ -43,6 +51,7 @@ export default function Gamification() {
   const [summary, setSummary] = useState<GamificationSummary | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [events, setEvents] = useState<GamificationEventItem[]>([]);
+  const [badges, setBadges] = useState<BadgeItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [noConsent, setNoConsent] = useState(false);
   const [error, setError] = useState("");
@@ -53,7 +62,7 @@ export default function Gamification() {
     setError("");
     setNoConsent(false);
 
-    const [summaryResult, lbResult, eventsResult] = await Promise.allSettled([
+    const [summaryResult, lbResult, eventsResult, badgesResult] = await Promise.allSettled([
       customInstance<GamificationSummary>({
         url: "/api/v1/gamification/summary",
         method: "GET",
@@ -69,6 +78,11 @@ export default function Gamification() {
         method: "GET",
         params: { user_id: userId, family_id: familyId },
       }),
+      customInstance<BadgeItem[]>({
+        url: "/api/v1/gamification/badges",
+        method: "GET",
+        params: { user_id: userId, family_id: familyId },
+      }),
     ]);
 
     if (summaryResult.status === "fulfilled") {
@@ -79,6 +93,9 @@ export default function Gamification() {
     }
     if (eventsResult.status === "fulfilled") {
       setEvents(eventsResult.value.items ?? []);
+    }
+    if (badgesResult.status === "fulfilled") {
+      setBadges(badgesResult.value ?? []);
     }
 
     const summaryIs403 =
@@ -142,6 +159,22 @@ export default function Gamification() {
       </div>
     );
   }
+
+  const badgeEmoji = (t: string) => {
+    const map: Record<string, string> = {
+      first_completion: "\ud83c\udfaf", streak_3: "\ud83d\udd25", streak_7: "\u26a1",
+      streak_30: "\ud83d\udc8e", perfect_week: "\ud83c\udf1f", century_club: "\ud83d\udcaf",
+    };
+    return map[t] ?? "\ud83c\udfc5";
+  };
+
+  const badgeLabel = (t: string) => {
+    const map: Record<string, string> = {
+      first_completion: "First Completion", streak_3: "3-Day Streak", streak_7: "7-Day Streak",
+      streak_30: "30-Day Streak", perfect_week: "Perfect Week", century_club: "Century Club",
+    };
+    return map[t] ?? t.replace(/_/g, " ");
+  };
 
   const formatEventType = (t: string) => {
     if (t === "nag_completed") return "Completed a nag";
@@ -222,6 +255,20 @@ export default function Gamification() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {badges.length > 0 && (
+        <div className="activity-feed">
+          <h3>Badges</h3>
+          <div className="activity-list">
+            {badges.map((b) => (
+              <div key={b.id} className="activity-item">
+                <span className="activity-type">{badgeEmoji(b.badge_type)} {badgeLabel(b.badge_type)}</span>
+                <span className="activity-time">{new Date(b.earned_at).toLocaleDateString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {recentEvents.length > 0 && (

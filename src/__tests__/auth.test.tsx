@@ -14,6 +14,17 @@ const sessionStorageMock = {
 };
 vi.stubGlobal("sessionStorage", sessionStorageMock);
 
+const localStore: Record<string, string> = {};
+const localStorageMock = {
+  getItem: vi.fn((key: string) => localStore[key] ?? null),
+  setItem: vi.fn((key: string, value: string) => { localStore[key] = value; }),
+  removeItem: vi.fn((key: string) => { delete localStore[key]; }),
+  clear: vi.fn(() => { Object.keys(localStore).forEach(k => delete localStore[k]); }),
+  length: 0,
+  key: vi.fn(() => null),
+};
+vi.stubGlobal("localStorage", localStorageMock);
+
 function TestConsumer() {
   const { token, userId, login, logout } = useAuth();
   return (
@@ -29,6 +40,7 @@ function TestConsumer() {
 describe("AuthProvider", () => {
   beforeEach(() => {
     Object.keys(store).forEach(k => delete store[k]);
+    Object.keys(localStore).forEach(k => delete localStore[k]);
     vi.clearAllMocks();
   });
 
@@ -79,6 +91,7 @@ describe("AuthProvider", () => {
     });
     expect(screen.getByTestId("token").textContent).toBe("null");
     expect(sessionStorageMock.removeItem).toHaveBeenCalledWith("nagz_token");
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith("nagz_family_id");
   });
 
   it("handles nagz:unauthorized event by logging out", () => {

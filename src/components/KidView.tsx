@@ -32,6 +32,10 @@ export default function KidView() {
   const [submitting, setSubmitting] = useState(false);
   const [snoozing, setSnoozing] = useState<string | null>(null);
 
+  // AI coaching state
+  const [coachingTips, setCoachingTips] = useState<Record<string, string>>({});
+  const [loadingCoaching, setLoadingCoaching] = useState<string | null>(null);
+
   const loadNags = async () => {
     if (!familyId) return;
     setError("");
@@ -124,6 +128,22 @@ export default function KidView() {
       setError(extractErrorMessage(err, "Failed to recompute escalation"));
     }
     setRecomputing(null);
+  };
+
+  const fetchCoaching = async (nagId: string) => {
+    setLoadingCoaching(nagId);
+    try {
+      const resp = await customInstance<{ nag_id: string; tip: string; category: string; scenario: string }>({
+        url: "/api/v1/ai/coaching",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: { nag_id: nagId },
+      });
+      setCoachingTips((prev) => ({ ...prev, [nagId]: resp.tip }));
+    } catch {
+      // AI coaching is optional, silently fail
+    }
+    setLoadingCoaching(null);
   };
 
   const snoozeNag = async (nagId: string, minutes: number) => {
@@ -294,6 +314,14 @@ export default function KidView() {
                     ))}
                   </div>
                 )}
+                {coachingTips[nag.id] && (
+                  <div className="excuse-list">
+                    <span className="excuse-heading">AI Coaching Tip</span>
+                    <div className="excuse-item">
+                      <span className="excuse-text">{coachingTips[nag.id]}</span>
+                    </div>
+                  </div>
+                )}
                 {isOpen && (
                   <div className="card-actions">
                     {nag.recipient_id === userId ? (
@@ -325,6 +353,16 @@ export default function KidView() {
                           Submit Excuse
                         </button>
                       </>
+                    )}
+                    {!coachingTips[nag.id] && (
+                      <button
+                        className="btn-secondary"
+                        onClick={() => fetchCoaching(nag.id)}
+                        disabled={loadingCoaching === nag.id}
+                        title="Get an AI coaching tip for this nag"
+                      >
+                        {loadingCoaching === nag.id ? "..." : "AI Tip"}
+                      </button>
                     )}
                   </div>
                 )}

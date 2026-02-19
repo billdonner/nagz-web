@@ -26,20 +26,22 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 /** Route restricted to guardians only (admin features). */
 function GuardianRoute({ children }: { children: React.ReactNode }) {
   const { token, userId } = useAuth();
-  const { members } = useMembers();
+  const { members, loading } = useMembers();
   if (!token) return <Navigate to="/login" replace />;
+  if (loading) return <p>Loading...</p>;
   const role = members.find((m) => m.user_id === userId)?.role;
-  if (role && role !== "guardian") return <Navigate to="/" replace />;
+  if (role !== "guardian") return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
 /** Route for users who can create nags (guardians + participants). */
 function NagCreatorRoute({ children }: { children: React.ReactNode }) {
   const { token, userId } = useAuth();
-  const { members } = useMembers();
+  const { members, loading } = useMembers();
   if (!token) return <Navigate to="/login" replace />;
+  if (loading) return <p>Loading...</p>;
   const role = members.find((m) => m.user_id === userId)?.role;
-  if (role && role === "child") return <Navigate to="/" replace />;
+  if (role === "child") return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 

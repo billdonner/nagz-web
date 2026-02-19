@@ -2,7 +2,7 @@ import Axios, { type AxiosRequestConfig } from "axios";
 import { getStoredToken } from "../auth";
 
 export const AXIOS_INSTANCE = Axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:8001",
+  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:9800",
   timeout: 30_000,
 });
 

@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     sessionStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem("nagz_family_id");
     setToken(null);
   }, []);
 
