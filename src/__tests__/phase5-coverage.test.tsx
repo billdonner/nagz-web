@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../auth";
 import { MembersProvider, type Member } from "../members";
@@ -78,24 +78,28 @@ describe("Gamification", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No family selected' when no family_id", () => {
+  it("shows 'No family selected' when no family_id", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <Gamification />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Gamification />
+        </Providers>
+      );
+    });
     expect(screen.getByText("No family selected.")).toBeDefined();
   });
 
-  it("shows loading state initially", () => {
+  it("shows loading state initially", async () => {
     store["nagz_family_id"] = "fam-1";
     (customInstance as Mock).mockImplementation(() => new Promise(() => {}));
-    render(
-      <Providers>
-        <Gamification />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Gamification />
+        </Providers>
+      );
+    });
     expect(screen.getByText("Loading...")).toBeDefined();
   });
 
@@ -197,13 +201,15 @@ describe("Consents", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No family selected' when no family_id", () => {
+  it("shows 'No family selected' when no family_id", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <Consents />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Consents />
+        </Providers>
+      );
+    });
     expect(screen.getByText("No family selected.")).toBeDefined();
   });
 
@@ -362,24 +368,28 @@ describe("Policies", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No family selected' without family_id", () => {
+  it("shows 'No family selected' without family_id", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <Policies />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Policies />
+        </Providers>
+      );
+    });
     expect(screen.getByText("No family selected.")).toBeDefined();
   });
 
-  it("shows loading state", () => {
+  it("shows loading state", async () => {
     store["nagz_family_id"] = "fam-1";
     (customInstance as Mock).mockImplementation(() => new Promise(() => {}));
-    render(
-      <Providers>
-        <Policies />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Policies />
+        </Providers>
+      );
+    });
     expect(screen.getByText("Loading policies...")).toBeDefined();
   });
 
@@ -434,24 +444,28 @@ describe("Reports", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No family selected' without family_id", () => {
+  it("shows 'No family selected' without family_id", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <Reports />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Reports />
+        </Providers>
+      );
+    });
     expect(screen.getByText(/No family selected/)).toBeDefined();
   });
 
-  it("shows loading state", () => {
+  it("shows loading state", async () => {
     store["nagz_family_id"] = "fam-1";
     (customInstance as Mock).mockImplementation(() => new Promise(() => {}));
-    render(
-      <Providers>
-        <Reports />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Reports />
+        </Providers>
+      );
+    });
     expect(screen.getByText("Loading reports...")).toBeDefined();
   });
 
@@ -510,23 +524,27 @@ describe("Deliveries", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No nag specified' without nag_id query param", () => {
+  it("shows 'No nag specified' without nag_id query param", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <Deliveries />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <Deliveries />
+        </Providers>
+      );
+    });
     expect(screen.getByText(/No nag specified/)).toBeDefined();
   });
 
-  it("shows loading state with nag_id", () => {
+  it("shows loading state with nag_id", async () => {
     (customInstance as Mock).mockImplementation(() => new Promise(() => {}));
-    render(
-      <Providers initialEntries={["/?nag_id=nag-1"]}>
-        <Deliveries />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers initialEntries={["/?nag_id=nag-1"]}>
+          <Deliveries />
+        </Providers>
+      );
+    });
     expect(screen.getByText("Loading deliveries...")).toBeDefined();
   });
 
@@ -585,13 +603,15 @@ describe("IncentiveRules", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No family selected' without family_id", () => {
+  it("shows 'No family selected' without family_id", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <IncentiveRules />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <IncentiveRules />
+        </Providers>
+      );
+    });
     expect(screen.getByText("No family selected.")).toBeDefined();
   });
 
@@ -673,19 +693,21 @@ describe("MemberSettings", () => {
     store["nagz_family_id"] = "fam-1";
   });
 
-  it("shows loading state initially", () => {
+  it("shows loading state initially", async () => {
     (customInstance as Mock).mockImplementation(() => new Promise(() => {}));
-    render(
-      <Providers>
-        <MemberSettings
-          userId="user-2"
-          familyId="fam-1"
-          displayName="Bob"
-          onClose={() => {}}
-          onSaved={() => {}}
-        />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <MemberSettings
+            userId="user-2"
+            familyId="fam-1"
+            displayName="Bob"
+            onClose={() => {}}
+            onSaved={() => {}}
+          />
+        </Providers>
+      );
+    });
     expect(screen.getByText("Settings for Bob")).toBeDefined();
     expect(screen.getByText("Loading...")).toBeDefined();
   });

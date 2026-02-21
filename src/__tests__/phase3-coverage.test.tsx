@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
 import { render, screen, act, waitFor, fireEvent } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "../auth";
+import { MemoryRouter } from "react-router-dom";
+import { AuthProvider } from "../auth";
 import { MembersProvider, useMembers, type Member } from "../members";
 
 // ---------------------------------------------------------------------------
@@ -98,42 +98,42 @@ function renderApp(entries: string[]) {
 }
 
 describe("Route Protection", () => {
-  it("redirects unauthenticated user to /login", () => {
-    renderApp(["/"]);
+  it("redirects unauthenticated user to /login", async () => {
+    await act(async () => { renderApp(["/"]); });
     expect(screen.getByText("Nagz")).toBeDefined();
     expect(screen.getByText("Family nagging system")).toBeDefined();
   });
 
-  it("redirects unauthenticated user from /nags to /login", () => {
-    renderApp(["/nags"]);
+  it("redirects unauthenticated user from /nags to /login", async () => {
+    await act(async () => { renderApp(["/nags"]); });
     expect(screen.getByText("Family nagging system")).toBeDefined();
   });
 
-  it("redirects unauthenticated user from /family to /login", () => {
-    renderApp(["/family"]);
+  it("redirects unauthenticated user from /family to /login", async () => {
+    await act(async () => { renderApp(["/family"]); });
     expect(screen.getByText("Family nagging system")).toBeDefined();
   });
 
-  it("redirects unauthenticated user from /create-nag to /login", () => {
-    renderApp(["/create-nag"]);
+  it("redirects unauthenticated user from /create-nag to /login", async () => {
+    await act(async () => { renderApp(["/create-nag"]); });
     expect(screen.getByText("Family nagging system")).toBeDefined();
   });
 
-  it("shows login page at /login for unauthenticated user", () => {
-    renderApp(["/login"]);
+  it("shows login page at /login for unauthenticated user", async () => {
+    await act(async () => { renderApp(["/login"]); });
     expect(screen.getByText("Sign in as a family member:")).toBeDefined();
   });
 
-  it("authenticated user on /login is redirected away", () => {
+  it("authenticated user on /login is redirected away", async () => {
     sessionStore["nagz_token"] = "dev:user-1";
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    renderApp(["/login"]);
+    await act(async () => { renderApp(["/login"]); });
     // Should NOT see the login page
     expect(screen.queryByText("Sign in as a family member:")).toBeNull();
   });
 
-  it("catches unknown routes and redirects to /", () => {
-    renderApp(["/nonexistent-page"]);
+  it("catches unknown routes and redirects to /", async () => {
+    await act(async () => { renderApp(["/nonexistent-page"]); });
     // Should redirect to / → login since not authenticated
     expect(screen.getByText("Family nagging system")).toBeDefined();
   });
@@ -144,8 +144,8 @@ describe("Route Protection", () => {
 // ===================================================
 
 describe("Login Component", () => {
-  it("renders all 5 dev user buttons", () => {
-    renderApp(["/login"]);
+  it("renders all 5 dev user buttons", async () => {
+    await act(async () => { renderApp(["/login"]); });
     expect(screen.getByText("Andrew")).toBeDefined();
     expect(screen.getByText("Katherine")).toBeDefined();
     expect(screen.getByText("George")).toBeDefined();
@@ -153,8 +153,8 @@ describe("Login Component", () => {
     expect(screen.getByText("Will")).toBeDefined();
   });
 
-  it("shows role labels for dev users", () => {
-    renderApp(["/login"]);
+  it("shows role labels for dev users", async () => {
+    await act(async () => { renderApp(["/login"]); });
     const guardianLabels = screen.getAllByText("guardian");
     expect(guardianLabels.length).toBe(2); // Andrew + Katherine
     const childLabels = screen.getAllByText("child");
@@ -162,8 +162,8 @@ describe("Login Component", () => {
   });
 
   it("clicking a dev user sets token in sessionStorage", async () => {
-    renderApp(["/login"]);
-    act(() => {
+    await act(async () => { renderApp(["/login"]); });
+    await act(async () => {
       screen.getByText("Andrew").click();
     });
     expect(sessionStorageMock.setItem).toHaveBeenCalledWith(
@@ -173,8 +173,8 @@ describe("Login Component", () => {
   });
 
   it("clicking a dev user sets family_id in localStorage", async () => {
-    renderApp(["/login"]);
-    act(() => {
+    await act(async () => { renderApp(["/login"]); });
+    await act(async () => {
       screen.getByText("Andrew").click();
     });
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
@@ -202,14 +202,16 @@ function MembersConsumer() {
 }
 
 describe("MembersProvider", () => {
-  it("starts in loading state", () => {
+  it("starts in loading state", async () => {
     // No family_id in localStorage → loading stops immediately but members empty
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <MembersConsumer />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <MembersConsumer />
+        </Providers>
+      );
+    });
     // Without nagz_family_id, loading should stop immediately
     expect(screen.getByTestId("member-count").textContent).toBe("0");
   });
@@ -303,25 +305,29 @@ describe("NagList", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No family selected' when no family_id in localStorage", () => {
+  it("shows 'No family selected' when no family_id in localStorage", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <NagList />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <NagList />
+        </Providers>
+      );
+    });
     expect(screen.getByText("No family selected.")).toBeDefined();
     expect(screen.getByText("Go to dashboard")).toBeDefined();
   });
 
-  it("shows loading state initially", () => {
+  it("shows loading state initially", async () => {
     store["nagz_family_id"] = "fam-1";
     (customInstance as Mock).mockImplementation(() => new Promise(() => {})); // never resolves
-    render(
-      <Providers>
-        <NagList />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <NagList />
+        </Providers>
+      );
+    });
     expect(screen.getByText("Loading nagz...")).toBeDefined();
   });
 
@@ -675,24 +681,28 @@ describe("KidView", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("shows 'No family selected' when no family_id", () => {
+  it("shows 'No family selected' when no family_id", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <KidView />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <KidView />
+        </Providers>
+      );
+    });
     expect(screen.getByText("No family selected.")).toBeDefined();
   });
 
-  it("shows loading state initially", () => {
+  it("shows loading state initially", async () => {
     store["nagz_family_id"] = "fam-1";
     (customInstance as Mock).mockImplementation(() => new Promise(() => {}));
-    render(
-      <Providers>
-        <KidView />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <KidView />
+        </Providers>
+      );
+    });
     expect(screen.getByText("Loading nagz...")).toBeDefined();
   });
 
@@ -847,17 +857,19 @@ describe("CreateNagModal", () => {
     sessionStore["nagz_token"] = "dev:user-1";
   });
 
-  it("renders the create form with required fields", () => {
+  it("renders the create form with required fields", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <CreateNagModal
-          familyId="fam-1"
-          onClose={() => {}}
-          onCreated={() => {}}
-        />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <CreateNagModal
+            familyId="fam-1"
+            onClose={() => {}}
+            onCreated={() => {}}
+          />
+        </Providers>
+      );
+    });
     // "Create Nagz" appears in both h3 and submit button
     const headings = screen.getAllByText("Create Nagz");
     expect(headings.length).toBe(2);
@@ -869,33 +881,37 @@ describe("CreateNagModal", () => {
     expect(screen.getByText("Due Date & Time")).toBeDefined();
   });
 
-  it("calls onClose when Cancel is clicked", () => {
+  it("calls onClose when Cancel is clicked", async () => {
     const onClose = vi.fn();
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <CreateNagModal
-          familyId="fam-1"
-          onClose={onClose}
-          onCreated={() => {}}
-        />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <CreateNagModal
+            familyId="fam-1"
+            onClose={onClose}
+            onCreated={() => {}}
+          />
+        </Providers>
+      );
+    });
     fireEvent.click(screen.getByText("Cancel"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("has a submit button with correct label", () => {
+  it("has a submit button with correct label", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <CreateNagModal
-          familyId="fam-1"
-          onClose={() => {}}
-          onCreated={() => {}}
-        />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <CreateNagModal
+            familyId="fam-1"
+            onClose={() => {}}
+            onCreated={() => {}}
+          />
+        </Providers>
+      );
+    });
     const submitBtn = screen.getAllByText("Create Nagz").find(
       (el) => el.tagName === "BUTTON" && el.getAttribute("type") === "submit"
     );
@@ -965,24 +981,28 @@ describe("CreateNagModal", () => {
 import CreateNag from "../components/CreateNag";
 
 describe("CreateNag (route wrapper)", () => {
-  it("shows 'No family selected' when no family_id", () => {
+  it("shows 'No family selected' when no family_id", async () => {
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <CreateNag />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <CreateNag />
+        </Providers>
+      );
+    });
     expect(screen.getByText("No family selected.")).toBeDefined();
   });
 
-  it("renders the create nag modal when family_id exists", () => {
+  it("renders the create nag modal when family_id exists", async () => {
     store["nagz_family_id"] = "fam-1";
     (customInstance as Mock).mockResolvedValue({ items: [], total: 0 });
-    render(
-      <Providers>
-        <CreateNag />
-      </Providers>
-    );
+    await act(async () => {
+      render(
+        <Providers>
+          <CreateNag />
+        </Providers>
+      );
+    });
     // "Create Nagz" appears in both heading and submit button
     const elements = screen.getAllByText("Create Nagz");
     expect(elements.length).toBeGreaterThanOrEqual(1);

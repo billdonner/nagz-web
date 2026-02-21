@@ -73,8 +73,9 @@ export function MembersProvider({ children }: { children: ReactNode }) {
         map[m.user_id] = m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH);
       }
       setNameMap(map);
-    } catch {
-      // ignore — will show UUIDs as fallback
+    } catch (err) {
+      console.error("Failed to load members:", err);
+      // Will show UUIDs as fallback
     }
     setLoading(false);
   }, []);

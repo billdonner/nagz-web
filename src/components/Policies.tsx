@@ -57,7 +57,8 @@ export default function Policies() {
         method: "GET",
       });
       setApprovals(data.items);
-    } catch {
+    } catch (err) {
+      console.error("Failed to load approvals:", err);
       setApprovals([]);
     }
   };

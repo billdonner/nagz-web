@@ -69,7 +69,8 @@ export default function NagList() {
           method: "GET",
         });
         if (!cancelled) setDetailEscalation(esc);
-      } catch {
+      } catch (err) {
+        console.error("Failed to load escalation:", err);
         if (!cancelled) setDetailEscalation(null);
       }
     })();
