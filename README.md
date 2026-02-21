@@ -25,7 +25,7 @@ The dev server proxies to the API at `http://127.0.0.1:8001/api/v1`.
 |------|-------------|
 | `src/components/` | UI components (Login, NagList, FamilyDashboard, Policies, Reports, etc.) |
 | `src/api/` | Axios instance and auto-generated API client (endpoints + models) |
-| `src/auth.tsx` | AuthProvider — JWT stored in localStorage |
+| `src/auth.tsx` | AuthProvider — JWT stored in sessionStorage |
 | `src/version.tsx` | VersionProvider — API compatibility check on mount |
 | `src/__tests__/` | Vitest test suite |
 | `openapi.json` | OpenAPI spec (copied from nagzerver) |
@@ -38,7 +38,7 @@ npm run dev            # Start dev server
 npm run build          # Production build
 npm run lint           # ESLint
 npm run api:generate   # Regenerate TypeScript API client from openapi.json
-npx vitest run         # Run tests (105)
+npx vitest run         # Run tests (126)
 ```
 
 ## API Client Workflow
@@ -66,7 +66,7 @@ All AI endpoints require `ai_mediation` consent and the `ai_server_enabled` user
 
 ## Architecture
 
-- `AuthProvider` wraps the app, stores JWT in localStorage
+- `AuthProvider` wraps the app, stores JWT in sessionStorage
 - `VersionProvider` checks API compatibility on mount
 - `ErrorBoundary` catches unhandled errors app-wide
 - Axios interceptor auto-logs out on 401; 30s request timeout
