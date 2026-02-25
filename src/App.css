@@ -820,3 +820,43 @@ tr:hover td {
     padding: 0.5rem 0.65rem;
   }
 }
+
+/* ===== Connections / People page ===== */
+.section {
+  margin: 1.5rem 0;
+}
+
+.section h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.invite-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.invite-form input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+}
+
+.invite-success {
+  padding: 1rem 1.25rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-md);
+}
+
+.invite-success p {
+  margin: 0 0 0.5rem;
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}

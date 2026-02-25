@@ -172,6 +172,7 @@ export default function NagList() {
         <h2>All Nagz</h2>
         <div className="header-actions">
           <Link to="/">Family</Link>
+          <Link to="/connections">People</Link>
           <Link to="/leaderboard">Leaderboard</Link>
           <span className="logged-in-as">{getName(userId ?? "")}</span>
           <button onClick={logout} className="link-button">Logout</button>

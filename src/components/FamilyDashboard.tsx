@@ -162,6 +162,7 @@ export default function FamilyDashboard() {
         <h2>{familyName ?? "Family Dashboard"}</h2>
         <div className="header-actions">
           <Link to="/nags">Nagz</Link>
+          <Link to="/connections">People</Link>
           <Link to="/leaderboard">Leaderboard</Link>
           {isAdmin && <Link to="/reports">Reports</Link>}
           {isAdmin && <Link to="/consents">Consents</Link>}

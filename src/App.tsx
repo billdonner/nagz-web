@@ -13,6 +13,7 @@ import Reports from "./components/Reports";
 import Deliveries from "./components/Deliveries";
 import Safety from "./components/Safety";
 import Policies from "./components/Policies";
+import Connections from "./components/Connections";
 import { VersionProvider } from "./version";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import "./App.css";
@@ -149,6 +150,14 @@ function AppRoutes() {
             <GuardianRoute>
               <Policies />
             </GuardianRoute>
+          }
+        />
+        <Route
+          path="/connections"
+          element={
+            <ProtectedRoute>
+              <Connections />
+            </ProtectedRoute>
           }
         />
         <Route
