@@ -9,6 +9,7 @@ interface ConnectionResponse {
   invitee_id: string | null;
   invitee_email: string;
   status: string;
+  trusted: boolean;
   created_at: string;
   responded_at: string | null;
 }
@@ -150,6 +151,19 @@ export default function Connections() {
     }
   };
 
+  const handleToggleTrust = async (id: string, currentTrusted: boolean) => {
+    try {
+      await customInstance<ConnectionResponse>({
+        url: `/api/v1/connections/${id}/trust`,
+        method: "PATCH",
+        data: { trusted: !currentTrusted },
+      });
+      await loadConnections();
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to update trust"));
+    }
+  };
+
   if (loading) return <p>Loading connections...</p>;
 
   return (
@@ -283,6 +297,7 @@ export default function Connections() {
               <tr>
                 <th>Person</th>
                 <th>Connected</th>
+                <th>Trusted</th>
                 <th></th>
               </tr>
             </thead>
@@ -291,6 +306,14 @@ export default function Connections() {
                 <tr key={c.id}>
                   <td>{c.invitee_email}</td>
                   <td>{timeAgo(c.responded_at ?? c.created_at)}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={c.trusted}
+                      onChange={() => handleToggleTrust(c.id, c.trusted)}
+                      title={c.trusted ? "Trusted — can nag each other's kids" : "Not trusted — click to enable"}
+                    />
+                  </td>
                   <td>
                     <button
                       className="btn-secondary"

@@ -13,7 +13,8 @@ import type { StrategyTemplate } from './strategyTemplate';
 
 export interface NagResponse {
   id: string;
-  family_id: string;
+  family_id?: string | null;
+  connection_id?: string | null;
   creator_id: string;
   recipient_id: string;
   due_at: string;

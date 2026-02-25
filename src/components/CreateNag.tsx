@@ -1,10 +1,28 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import { NagCategory, DoneDefinition } from "../api/model";
 import { useMembers } from "../members";
 import { UUID_DISPLAY_LENGTH } from "../nag-utils";
 import type { NagCreate, NagResponse } from "../api/model";
+
+interface TrustedChild {
+  user_id: string;
+  display_name: string | null;
+  family_id: string;
+  family_name: string;
+  connection_id: string;
+}
+
+interface ConnectionItem {
+  id: string;
+  trusted: boolean;
+}
+
+interface PaginatedConnections {
+  items: ConnectionItem[];
+  total: number;
+}
 
 interface CreateNagModalProps {
   familyId: string;
@@ -22,6 +40,7 @@ export function CreateNagModal({
   const { members } = useMembers();
 
   const [recipientId, setRecipientId] = useState(initialRecipient ?? "");
+  const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
   const [category, setCategory] = useState<string>(NagCategory.chores);
   const [doneDefinition, setDoneDefinition] = useState<string>(
     DoneDefinition.ack_only
@@ -35,6 +54,43 @@ export function CreateNagModal({
   const [recurrence, setRecurrence] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [trustedChildren, setTrustedChildren] = useState<TrustedChild[]>([]);
+
+  // Load trusted children from active trusted connections
+  useEffect(() => {
+    (async () => {
+      try {
+        const connResp = await customInstance<PaginatedConnections>({
+          url: "/api/v1/connections",
+          method: "GET",
+          params: { status: "active" },
+        });
+        const trustedConns = (connResp.items ?? []).filter((c) => c.trusted);
+        const allChildren: TrustedChild[] = [];
+        for (const conn of trustedConns) {
+          try {
+            const children = await customInstance<TrustedChild[]>({
+              url: `/api/v1/connections/${conn.id}/children`,
+              method: "GET",
+            });
+            allChildren.push(...children);
+          } catch {
+            // Skip connections that fail
+          }
+        }
+        setTrustedChildren(allChildren);
+      } catch {
+        // Non-critical — just skip trusted children
+      }
+    })();
+  }, []);
+
+  const handleRecipientChange = (value: string) => {
+    setRecipientId(value);
+    // Check if the selected recipient is a trusted child
+    const trustedChild = trustedChildren.find((tc) => tc.user_id === value);
+    setSelectedConnectionId(trustedChild ? trustedChild.connection_id : null);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -45,15 +101,25 @@ export function CreateNagModal({
     setSubmitting(true);
     setError("");
     try {
-      const body: NagCreate = {
-        family_id: familyId,
-        recipient_id: recipientId,
-        category: category as NagCreate["category"],
-        done_definition: doneDefinition as NagCreate["done_definition"],
-        due_at: new Date(dueAt).toISOString(),
-        description: description.trim() || undefined,
-        recurrence: (recurrence || undefined) as NagCreate["recurrence"],
-      };
+      const body: NagCreate = selectedConnectionId
+        ? {
+            connection_id: selectedConnectionId,
+            recipient_id: recipientId,
+            category: category as NagCreate["category"],
+            done_definition: doneDefinition as NagCreate["done_definition"],
+            due_at: new Date(dueAt).toISOString(),
+            description: description.trim() || undefined,
+            recurrence: (recurrence || undefined) as NagCreate["recurrence"],
+          }
+        : {
+            family_id: familyId,
+            recipient_id: recipientId,
+            category: category as NagCreate["category"],
+            done_definition: doneDefinition as NagCreate["done_definition"],
+            due_at: new Date(dueAt).toISOString(),
+            description: description.trim() || undefined,
+            recurrence: (recurrence || undefined) as NagCreate["recurrence"],
+          };
       await customInstance<NagResponse>({
         url: "/api/v1/nags",
         method: "POST",
@@ -76,15 +142,28 @@ export function CreateNagModal({
             Recipient
             <select
               value={recipientId}
-              onChange={(e) => setRecipientId(e.target.value)}
+              onChange={(e) => handleRecipientChange(e.target.value)}
               required
             >
-              <option value="">-- select a family member --</option>
-              {members.map((m) => (
-                <option key={m.user_id} value={m.user_id}>
-                  {m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH)} ({m.role})
-                </option>
-              ))}
+              <option value="">-- select a recipient --</option>
+              {members.length > 0 && (
+                <optgroup label="Family Members">
+                  {members.map((m) => (
+                    <option key={m.user_id} value={m.user_id}>
+                      {m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH)} ({m.role})
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              {trustedChildren.length > 0 && (
+                <optgroup label="Trusted Connections' Kids">
+                  {trustedChildren.map((tc) => (
+                    <option key={`${tc.connection_id}-${tc.user_id}`} value={tc.user_id}>
+                      {tc.display_name ?? tc.user_id.slice(0, UUID_DISPLAY_LENGTH)} ({tc.family_name})
+                    </option>
+                  ))}
+                </optgroup>
+              )}
             </select>
           </label>
 

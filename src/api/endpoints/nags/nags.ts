@@ -24,7 +24,7 @@ import { customInstance } from '../../axios-instance';
 
   export const getNags = () => {
 /**
- * POST /nags — creator_or_guardian.
+ * POST /nags — family or connection context.
  * @summary Create Nag
  */
 const createNagApiV1NagsPost = (
@@ -38,11 +38,11 @@ const createNagApiV1NagsPost = (
       );
     }
   /**
- * GET /nags?family_id={familyId}&state={state} — member.
+ * GET /nags — optional family_id or connection_id filter.
  * @summary List Nags
  */
 const listNagsApiV1NagsGet = (
-    params: ListNagsApiV1NagsGetParams,
+    params?: ListNagsApiV1NagsGetParams,
  ) => {
       return customInstance<PaginatedResponseNagResponse>(
       {url: `/api/v1/nags`, method: 'GET',

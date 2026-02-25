@@ -6,10 +6,7 @@
  * OpenAPI spec version: 0.2.0
  */
 
-export type ListNagsApiV1NagsGetParams = {
-family_id?: string | null;
-connection_id?: string | null;
-state?: string | null;
+export type ListPendingInvitesApiV1ConnectionsPendingGetParams = {
 /**
  * @minimum 1
  * @maximum 200

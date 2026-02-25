@@ -5,11 +5,10 @@
  * Family-oriented AI-mediated nagging system
  * OpenAPI spec version: 0.2.0
  */
+import type { ConnectionStatus } from './connectionStatus';
 
-export type ListNagsApiV1NagsGetParams = {
-family_id?: string | null;
-connection_id?: string | null;
-state?: string | null;
+export type ListConnectionsApiV1ConnectionsGetParams = {
+status?: ConnectionStatus | null;
 /**
  * @minimum 1
  * @maximum 200

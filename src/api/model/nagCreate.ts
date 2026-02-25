@@ -11,7 +11,8 @@ import type { Recurrence } from './recurrence';
 import type { StrategyTemplate } from './strategyTemplate';
 
 export interface NagCreate {
-  family_id: string;
+  family_id?: string | null;
+  connection_id?: string | null;
   recipient_id: string;
   due_at: string;
   category: NagCategory;
