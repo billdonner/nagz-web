@@ -105,6 +105,7 @@ function ProdLogin() {
 export default function Login() {
   return (
     <div className="login-container">
+      <img src="/nagz-icon.png" alt="Nagz" width="160" height="160" style={{ borderRadius: "32px", marginBottom: "16px" }} />
       <h1>Nagz</h1>
       <p>Family nagging system</p>
       {import.meta.env.DEV ? <DevLogin /> : <ProdLogin />}
