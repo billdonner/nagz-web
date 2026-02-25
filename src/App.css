@@ -104,6 +104,24 @@
 .login-submit-btn:hover { opacity: 0.9; }
 .login-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+.login-toggle {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.login-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.login-link-btn:hover { opacity: 0.8; }
+
 .login-error {
   color: var(--color-danger);
   font-size: 0.875rem;

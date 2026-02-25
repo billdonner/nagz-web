@@ -46,12 +46,14 @@ function DevLogin() {
 
 function ProdLogin() {
   const { login } = useAuth();
+  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -76,29 +78,109 @@ function ProdLogin() {
     }
   };
 
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const resp = await customInstance<{
+        access_token: string;
+        user: { id: string; family_memberships?: { family_id: string }[] };
+      }>({
+        method: "POST",
+        url: "/api/v1/auth/signup",
+        data: { email, password, display_name: displayName || undefined },
+      });
+      const familyId = resp.user.family_memberships?.[0]?.family_id;
+      if (familyId) {
+        localStorage.setItem("nagz_family_id", familyId);
+      }
+      login(resp.access_token);
+    } catch {
+      setError("Could not create account. Email may already be in use.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (mode === "signup") {
+    return (
+      <>
+        <form onSubmit={handleSignup} className="login-form">
+          <input
+            type="text"
+            placeholder="Display Name (optional)"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            className="login-input"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="login-input"
+          />
+          <input
+            type="password"
+            placeholder="Password (8+ characters)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+            className="login-input"
+          />
+          {error && <p className="login-error">{error}</p>}
+          <button type="submit" className="login-submit-btn" disabled={loading}>
+            {loading ? "Creating account..." : "Sign Up"}
+          </button>
+        </form>
+        <p className="login-toggle">
+          Already have an account?{" "}
+          <button className="login-link-btn" onClick={() => { setMode("login"); setError(""); }}>
+            Sign In
+          </button>
+        </p>
+      </>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="login-form">
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="login-input"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        className="login-input"
-      />
-      {error && <p className="login-error">{error}</p>}
-      <button type="submit" className="login-submit-btn" disabled={loading}>
-        {loading ? "Signing in..." : "Sign In"}
-      </button>
-    </form>
+    <>
+      <form onSubmit={handleLogin} className="login-form">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="login-input"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="login-input"
+        />
+        {error && <p className="login-error">{error}</p>}
+        <button type="submit" className="login-submit-btn" disabled={loading}>
+          {loading ? "Signing in..." : "Sign In"}
+        </button>
+      </form>
+      <p className="login-toggle">
+        Don&apos;t have an account?{" "}
+        <button className="login-link-btn" onClick={() => { setMode("signup"); setError(""); }}>
+          Sign Up
+        </button>
+      </p>
+    </>
   );
 }
 
