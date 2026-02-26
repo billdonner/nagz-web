@@ -17,6 +17,8 @@ export interface NagResponse {
   connection_id?: string | null;
   creator_id: string;
   recipient_id: string;
+  creator_display_name?: string | null;
+  recipient_display_name?: string | null;
   due_at: string;
   category: NagCategory;
   done_definition: DoneDefinition;

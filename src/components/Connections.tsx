@@ -12,6 +12,8 @@ interface ConnectionResponse {
   trusted: boolean;
   created_at: string;
   responded_at: string | null;
+  other_party_email?: string | null;
+  other_party_display_name?: string | null;
 }
 
 interface PaginatedConnections {
@@ -234,7 +236,7 @@ export default function Connections() {
             <tbody>
               {inbound.map((c) => (
                 <tr key={c.id}>
-                  <td>{c.invitee_email}</td>
+                  <td>{c.other_party_display_name ?? c.other_party_email ?? c.invitee_email}</td>
                   <td>{timeAgo(c.created_at)}</td>
                   <td>
                     <button onClick={() => handleAccept(c.id)}>Accept</button>{" "}
@@ -267,7 +269,7 @@ export default function Connections() {
             <tbody>
               {sent.map((c) => (
                 <tr key={c.id}>
-                  <td>{c.invitee_email}</td>
+                  <td>{c.other_party_display_name ?? c.other_party_email ?? c.invitee_email}</td>
                   <td>{timeAgo(c.created_at)}</td>
                   <td>
                     <button
@@ -304,7 +306,7 @@ export default function Connections() {
             <tbody>
               {active.map((c) => (
                 <tr key={c.id}>
-                  <td>{c.invitee_email}</td>
+                  <td>{c.other_party_display_name ?? c.other_party_email ?? c.invitee_email}</td>
                   <td>{timeAgo(c.responded_at ?? c.created_at)}</td>
                   <td>
                     <input

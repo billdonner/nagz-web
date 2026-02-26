@@ -16,4 +16,6 @@ export interface ConnectionResponse {
   trusted?: boolean;
   created_at: string;
   responded_at?: string | null;
+  other_party_email?: string | null;
+  other_party_display_name?: string | null;
 }

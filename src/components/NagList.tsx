@@ -159,8 +159,8 @@ export default function NagList() {
     switch (sortCol) {
       case "category": cmp = a.category.localeCompare(b.category); break;
       case "status": cmp = a.status.localeCompare(b.status); break;
-      case "to": cmp = getName(a.recipient_id).localeCompare(getName(b.recipient_id)); break;
-      case "from": cmp = getName(a.creator_id).localeCompare(getName(b.creator_id)); break;
+      case "to": cmp = (a.recipient_display_name ?? getName(a.recipient_id)).localeCompare(b.recipient_display_name ?? getName(b.recipient_id)); break;
+      case "from": cmp = (a.creator_display_name ?? getName(a.creator_id)).localeCompare(b.creator_display_name ?? getName(b.creator_id)); break;
       case "due": cmp = new Date(a.due_at).getTime() - new Date(b.due_at).getTime(); break;
     }
     return sortAsc ? cmp : -cmp;
@@ -218,8 +218,8 @@ export default function NagList() {
                     {statusLabel(nag.status)}
                   </span>
                 </td>
-                <td>{getName(nag.recipient_id)}</td>
-                <td>{getName(nag.creator_id)}</td>
+                <td>{nag.recipient_display_name ?? getName(nag.recipient_id)}</td>
+                <td>{nag.creator_display_name ?? getName(nag.creator_id)}</td>
                 <td className="due-cell">{new Date(nag.due_at).toLocaleDateString()}</td>
               </tr>
             ))}
@@ -245,9 +245,9 @@ export default function NagList() {
                 </span>
               </dd>
               <dt>Recipient</dt>
-              <dd>{getName(detailNag.recipient_id)}</dd>
+              <dd>{detailNag.recipient_display_name ?? getName(detailNag.recipient_id)}</dd>
               <dt>From</dt>
-              <dd>{getName(detailNag.creator_id)}</dd>
+              <dd>{detailNag.creator_display_name ?? getName(detailNag.creator_id)}</dd>
               <dt>Due</dt>
               <dd>{new Date(detailNag.due_at).toLocaleString()}</dd>
               <dt>Created</dt>
