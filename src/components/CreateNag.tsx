@@ -209,6 +209,10 @@ export function CreateNagModal({
             Repeat
             <select value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
               <option value="">None (one-time)</option>
+              <option value="every_5_minutes">Every 5 min</option>
+              <option value="every_15_minutes">Every 15 min</option>
+              <option value="every_30_minutes">Every 30 min</option>
+              <option value="hourly">Hourly</option>
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>

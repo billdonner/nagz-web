@@ -10,6 +10,10 @@ export type Recurrence = typeof Recurrence[keyof typeof Recurrence];
 
 
 export const Recurrence = {
+  every_5_minutes: 'every_5_minutes',
+  every_15_minutes: 'every_15_minutes',
+  every_30_minutes: 'every_30_minutes',
+  hourly: 'hourly',
   daily: 'daily',
   weekly: 'weekly',
   monthly: 'monthly',

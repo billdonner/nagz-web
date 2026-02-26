@@ -28,4 +28,5 @@ export interface NagResponse {
   parent_nag_id?: string | null;
   status: NagStatus;
   created_at: string;
+  completed_at?: string | null;
 }

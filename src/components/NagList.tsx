@@ -211,6 +211,7 @@ export default function NagList() {
               <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
                 <td>
                   <span className="nag-cat">{nag.category}</span>
+                  {nag.recurrence && <span className="nag-repeat" title={nag.recurrence}>&#x1F501;</span>}
                   {nag.description && <span className="nag-desc">{nag.description}</span>}
                 </td>
                 <td>
