@@ -23,6 +23,7 @@ interface MembersCtx {
   members: Member[];
   familyName: string | null;
   inviteCode: string | null;
+  childCode: string | null;
   nameMap: Record<string, string>;
   getName: (userId: string) => string;
   loading: boolean;
@@ -33,6 +34,7 @@ const MembersContext = createContext<MembersCtx>({
   members: [],
   familyName: null,
   inviteCode: null,
+  childCode: null,
   nameMap: {},
   getName: (id) => id.slice(0, UUID_DISPLAY_LENGTH) + "...",
   loading: true,
@@ -44,6 +46,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
   const [members, setMembers] = useState<Member[]>([]);
   const [familyName, setFamilyName] = useState<string | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [childCode, setChildCode] = useState<string | null>(null);
   const [nameMap, setNameMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
@@ -59,7 +62,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
           url: `/api/v1/families/${familyId}/members`,
           method: "GET",
         }),
-        customInstance<{ family_id: string; name: string; invite_code: string }>({
+        customInstance<{ family_id: string; name: string; invite_code: string; child_code?: string }>({
           url: `/api/v1/families/${familyId}`,
           method: "GET",
         }),
@@ -68,6 +71,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
       setMembers(data);
       setFamilyName(family.name);
       setInviteCode(family.invite_code ?? null);
+      setChildCode(family.child_code ?? null);
       const map: Record<string, string> = {};
       for (const m of data) {
         map[m.user_id] = m.display_name ?? m.user_id.slice(0, UUID_DISPLAY_LENGTH);
@@ -91,7 +95,7 @@ export function MembersProvider({ children }: { children: ReactNode }) {
 
   return (
     <MembersContext.Provider
-      value={{ members, familyName, inviteCode, nameMap, getName, loading, reload: load }}
+      value={{ members, familyName, inviteCode, childCode, nameMap, getName, loading, reload: load }}
     >
       {children}
     </MembersContext.Provider>

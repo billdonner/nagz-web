@@ -14,4 +14,6 @@ export interface MemberCreateAndAdd {
    */
   display_name: string;
   role: FamilyRole;
+  username?: string | null;
+  pin?: string | null;
 }

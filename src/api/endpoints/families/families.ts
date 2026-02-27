@@ -6,6 +6,9 @@
  * OpenAPI spec version: 0.2.0
  */
 import type {
+  ChildCredentialsSet,
+  ChildSettingsResponse,
+  ChildSettingsUpdate,
   FamilyCreate,
   FamilyResponse,
   JoinRequest,
@@ -14,7 +17,8 @@ import type {
   MemberCreateAndAdd,
   MemberDetail,
   MemberResponse,
-  PaginatedResponseMemberDetail
+  PaginatedResponseMemberDetail,
+  PinChangeRequest
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -134,7 +138,68 @@ const removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete = (
     },
       );
     }
-  return {createFamilyApiV1FamiliesPost,getFamilyApiV1FamiliesFamilyIdGet,joinFamilyByCodeApiV1FamiliesJoinPost,joinFamilyApiV1FamiliesFamilyIdJoinPost,addMemberApiV1FamiliesFamilyIdMembersPost,listMembersApiV1FamiliesFamilyIdMembersGet,createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost,removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete}};
+  /**
+ * PUT — guardian sets/updates a child's username and PIN.
+ * @summary Set Child Credentials
+ */
+const setChildCredentialsApiV1FamiliesFamilyIdMembersUserIdCredentialsPut = (
+    familyId: string,
+    userId: string,
+    childCredentialsSet: ChildCredentialsSet,
+ ) => {
+      return customInstance<MemberDetail>(
+      {url: `/api/v1/families/${familyId}/members/${userId}/credentials`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: childCredentialsSet
+    },
+      );
+    }
+  /**
+ * PATCH — child changes their own PIN.
+ * @summary Change Pin
+ */
+const changePinApiV1FamiliesFamilyIdMembersUserIdPinPatch = (
+    familyId: string,
+    userId: string,
+    pinChangeRequest: PinChangeRequest,
+ ) => {
+      return customInstance<unknown>(
+      {url: `/api/v1/families/${familyId}/members/${userId}/pin`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: pinChangeRequest
+    },
+      );
+    }
+  /**
+ * GET — guardian views child controls.
+ * @summary Get Child Settings
+ */
+const getChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsGet = (
+    familyId: string,
+    userId: string,
+ ) => {
+      return customInstance<ChildSettingsResponse>(
+      {url: `/api/v1/families/${familyId}/children/${userId}/settings`, method: 'GET'
+    },
+      );
+    }
+  /**
+ * PATCH — guardian updates child controls (snooze, excuses, quiet hours).
+ * @summary Update Child Settings
+ */
+const updateChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsPatch = (
+    familyId: string,
+    userId: string,
+    childSettingsUpdate: ChildSettingsUpdate,
+ ) => {
+      return customInstance<ChildSettingsResponse>(
+      {url: `/api/v1/families/${familyId}/children/${userId}/settings`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: childSettingsUpdate
+    },
+      );
+    }
+  return {createFamilyApiV1FamiliesPost,getFamilyApiV1FamiliesFamilyIdGet,joinFamilyByCodeApiV1FamiliesJoinPost,joinFamilyApiV1FamiliesFamilyIdJoinPost,addMemberApiV1FamiliesFamilyIdMembersPost,listMembersApiV1FamiliesFamilyIdMembersGet,createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost,removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete,setChildCredentialsApiV1FamiliesFamilyIdMembersUserIdCredentialsPut,changePinApiV1FamiliesFamilyIdMembersUserIdPinPatch,getChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsGet,updateChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsPatch}};
 export type CreateFamilyApiV1FamiliesPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['createFamilyApiV1FamiliesPost']>>>
 export type GetFamilyApiV1FamiliesFamilyIdGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['getFamilyApiV1FamiliesFamilyIdGet']>>>
 export type JoinFamilyByCodeApiV1FamiliesJoinPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['joinFamilyByCodeApiV1FamiliesJoinPost']>>>
@@ -143,3 +208,7 @@ export type AddMemberApiV1FamiliesFamilyIdMembersPostResult = NonNullable<Awaite
 export type ListMembersApiV1FamiliesFamilyIdMembersGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['listMembersApiV1FamiliesFamilyIdMembersGet']>>>
 export type CreateAndAddMemberApiV1FamiliesFamilyIdMembersCreatePostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['createAndAddMemberApiV1FamiliesFamilyIdMembersCreatePost']>>>
 export type RemoveMemberApiV1FamiliesFamilyIdMembersUserIdDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['removeMemberApiV1FamiliesFamilyIdMembersUserIdDelete']>>>
+export type SetChildCredentialsApiV1FamiliesFamilyIdMembersUserIdCredentialsPutResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['setChildCredentialsApiV1FamiliesFamilyIdMembersUserIdCredentialsPut']>>>
+export type ChangePinApiV1FamiliesFamilyIdMembersUserIdPinPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['changePinApiV1FamiliesFamilyIdMembersUserIdPinPatch']>>>
+export type GetChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['getChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsGet']>>>
+export type UpdateChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getFamilies>['updateChildSettingsApiV1FamiliesFamilyIdChildrenUserIdSettingsPatch']>>>

@@ -12,4 +12,6 @@ export interface AuthResponse {
   refresh_token: string;
   token_type?: string;
   user: AccountResponse;
+  family_id?: string | null;
+  family_role?: string | null;
 }

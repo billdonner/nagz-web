@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../auth";
-import { customInstance } from "../api/axios-instance";
+import { customInstance, extractErrorMessage } from "../api/axios-instance";
 
 // Dev-only credentials — tree-shaken out of production builds
 const DEV_FAMILY_ID = import.meta.env.DEV
@@ -184,13 +184,124 @@ function ProdLogin() {
   );
 }
 
+function ChildLoginForm() {
+  const { login } = useAuth();
+  const [familyCode, setFamilyCode] = useState("");
+  const [username, setUsername] = useState("");
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (familyCode.length < 6) {
+      setError("Family code must be at least 6 characters.");
+      return;
+    }
+    if (!username.trim()) {
+      setError("Username is required.");
+      return;
+    }
+    if (!/^\d{4}$/.test(pin)) {
+      setError("PIN must be exactly 4 digits.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const resp = await customInstance<{
+        access_token: string;
+        family_id?: string;
+        family_role?: string;
+      }>({
+        method: "POST",
+        url: "/api/v1/auth/child-login",
+        data: { family_code: familyCode.toUpperCase(), username: username.trim(), pin },
+      });
+      if (resp.family_id) {
+        localStorage.setItem("nagz_family_id", resp.family_id);
+      }
+      login(resp.access_token);
+    } catch (err) {
+      setError(extractErrorMessage(err, "Could not sign in. Check your family code, username, and PIN."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="login-form">
+      <input
+        type="text"
+        placeholder="Family Code (e.g. NAG7K2)"
+        value={familyCode}
+        onChange={(e) => setFamilyCode(e.target.value.toUpperCase())}
+        maxLength={8}
+        required
+        className="login-input"
+        style={{ textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 700, textAlign: "center" }}
+      />
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required
+        className="login-input"
+        autoCapitalize="off"
+        autoCorrect="off"
+      />
+      <input
+        type="password"
+        inputMode="numeric"
+        placeholder="4-Digit PIN"
+        value={pin}
+        onChange={(e) => {
+          const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+          setPin(v);
+        }}
+        maxLength={4}
+        required
+        className="login-input"
+        style={{ textAlign: "center", letterSpacing: "0.3em", fontSize: "1.2rem" }}
+      />
+      {error && <p className="login-error">{error}</p>}
+      <button type="submit" className="login-submit-btn" disabled={loading}>
+        {loading ? "Signing in..." : "Sign In"}
+      </button>
+    </form>
+  );
+}
+
 export default function Login() {
+  const [showChildLogin, setShowChildLogin] = useState(false);
+
   return (
     <div className="login-container">
       <img src="/nagz-icon.png" alt="Nagz" width="160" height="160" style={{ borderRadius: "32px", marginBottom: "16px" }} />
       <h1>Nagz</h1>
       <p>Family nagging system</p>
-      {import.meta.env.DEV ? <DevLogin /> : <ProdLogin />}
+      {showChildLogin ? (
+        <>
+          <ChildLoginForm />
+          <p className="login-toggle">
+            <button className="login-link-btn" onClick={() => setShowChildLogin(false)}>
+              Back to adult sign in
+            </button>
+          </p>
+        </>
+      ) : (
+        <>
+          {import.meta.env.DEV ? <DevLogin /> : <ProdLogin />}
+          <button
+            className="btn-secondary"
+            onClick={() => setShowChildLogin(true)}
+            style={{ marginTop: "1.5rem", maxWidth: "320px", width: "100%" }}
+          >
+            I'm a Kid
+          </button>
+        </>
+      )}
     </div>
   );
 }

@@ -7,11 +7,12 @@ import type { NagResponse } from "../api/model";
 import { UUID_DISPLAY_LENGTH } from "../nag-utils";
 import { CreateNagModal } from "./CreateNag";
 import { MemberSettings } from "./MemberSettings";
+import { ChildSettings } from "./ChildSettings";
 
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
   const navigate = useNavigate();
-  const { members, familyName, inviteCode, getName, reload: reloadMembers } = useMembers();
+  const { members, familyName, inviteCode, childCode, getName, reload: reloadMembers } = useMembers();
   const [familyId, setFamilyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -24,6 +25,14 @@ export default function FamilyDashboard() {
   const [createNagRecipient, setCreateNagRecipient] = useState<string | null>(null);
   // Member settings modal
   const [settingsMemberId, setSettingsMemberId] = useState<string | null>(null);
+  // Child controls modal
+  const [childControlsTarget, setChildControlsTarget] = useState<{ id: string; name: string } | null>(null);
+  // Set credentials modal
+  const [credTarget, setCredTarget] = useState<{ id: string; name: string } | null>(null);
+  const [credUsername, setCredUsername] = useState("");
+  const [credPin, setCredPin] = useState("");
+  const [credError, setCredError] = useState("");
+  const [credSaving, setCredSaving] = useState(false);
 
   // Add member form
   const [showAddForm, setShowAddForm] = useState(false);
@@ -125,6 +134,35 @@ export default function FamilyDashboard() {
     }
   };
 
+  const handleSaveCredentials = async () => {
+    if (!familyId || !credTarget) return;
+    if (!credUsername.trim()) {
+      setCredError("Username is required.");
+      return;
+    }
+    if (!/^\d{4}$/.test(credPin)) {
+      setCredError("PIN must be exactly 4 digits.");
+      return;
+    }
+    setCredSaving(true);
+    setCredError("");
+    try {
+      await customInstance({
+        url: `/api/v1/families/${familyId}/members/${credTarget.id}/credentials`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        data: { username: credUsername.trim(), pin: credPin },
+      });
+      setCredTarget(null);
+      setCredUsername("");
+      setCredPin("");
+      reloadMembers();
+    } catch (err) {
+      setCredError(extractErrorMessage(err, "Failed to set credentials."));
+    }
+    setCredSaving(false);
+  };
+
   if (loading) return <p>Loading...</p>;
 
   if (!familyId) {
@@ -189,6 +227,7 @@ export default function FamilyDashboard() {
                 <th>Name</th>
                 <th>Nagz</th>
                 <th>Settings</th>
+                {isAdmin && <th>Child</th>}
                 <th></th>
               </tr>
             </thead>
@@ -226,6 +265,33 @@ export default function FamilyDashboard() {
                         Settings
                       </button>
                     </td>
+                    {isAdmin && (
+                      <td>
+                        {m.role === "child" && (
+                          <span style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                            <button
+                              className="link-button"
+                              onClick={() => {
+                                setCredTarget({ id: m.user_id, name: m.display_name ?? "Child" });
+                                setCredUsername("");
+                                setCredPin("");
+                                setCredError("");
+                              }}
+                              style={{ fontSize: "0.8rem" }}
+                            >
+                              Login
+                            </button>
+                            <button
+                              className="link-button"
+                              onClick={() => setChildControlsTarget({ id: m.user_id, name: m.display_name ?? "Child" })}
+                              style={{ fontSize: "0.8rem" }}
+                            >
+                              Controls
+                            </button>
+                          </span>
+                        )}
+                      </td>
+                    )}
                     <td>
                       {isAdmin && m.user_id !== userId && (
                         <span style={{ display: "flex", gap: "0.5rem" }}>
@@ -279,17 +345,34 @@ export default function FamilyDashboard() {
         />
       )}
 
-      {inviteCode && (
-        <div className="invite-code-section" style={{ margin: "1rem 0", padding: "0.75rem 1rem", background: "#f0f9ff", borderRadius: "8px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontWeight: 600 }}>Invite Code:</span>
-          <code style={{ fontFamily: "monospace", fontSize: "1.1rem", letterSpacing: "0.05em" }}>{inviteCode}</code>
-          <button
-            className="link-button"
-            onClick={() => navigator.clipboard.writeText(inviteCode).catch(() => {})}
-            title="Copy to clipboard"
-          >
-            Copy
-          </button>
+      {(inviteCode || childCode) && (
+        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", margin: "1rem 0" }}>
+          {inviteCode && (
+            <div className="invite-code-section" style={{ flex: 1, minWidth: "200px", margin: 0, padding: "0.75rem 1rem", background: "#f0f9ff", borderRadius: "8px", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <span style={{ fontWeight: 600 }}>Invite Code:</span>
+              <code style={{ fontFamily: "monospace", fontSize: "1.1rem", letterSpacing: "0.05em" }}>{inviteCode}</code>
+              <button
+                className="link-button"
+                onClick={() => navigator.clipboard.writeText(inviteCode).catch(() => {})}
+                title="Copy to clipboard"
+              >
+                Copy
+              </button>
+            </div>
+          )}
+          {childCode && (
+            <div style={{ flex: 1, minWidth: "200px", padding: "0.75rem 1rem", background: "#fef3c7", borderRadius: "8px", border: "1px solid #fde68a", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <span style={{ fontWeight: 600 }}>Kid Login Code:</span>
+              <code style={{ fontFamily: "monospace", fontSize: "1.1rem", letterSpacing: "0.15em", fontWeight: 700 }}>{childCode}</code>
+              <button
+                className="link-button"
+                onClick={() => navigator.clipboard.writeText(childCode).catch(() => {})}
+                title="Copy to clipboard"
+              >
+                Copy
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -341,6 +424,61 @@ export default function FamilyDashboard() {
           + Add family member
         </button>
       ))}
+
+      {credTarget && (
+        <div className="modal-overlay" onClick={() => setCredTarget(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Set Login for {credTarget.name}</h3>
+            <div className="form">
+              <label>
+                Username
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={credUsername}
+                  onChange={(e) => setCredUsername(e.target.value)}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  autoFocus
+                />
+              </label>
+              <label>
+                4-Digit PIN
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  placeholder="0000"
+                  value={credPin}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+                    setCredPin(v);
+                  }}
+                  maxLength={4}
+                  style={{ textAlign: "center", letterSpacing: "0.3em" }}
+                />
+              </label>
+              {credError && <p className="error">{credError}</p>}
+              <div className="card-actions">
+                <button onClick={handleSaveCredentials} disabled={credSaving}>
+                  {credSaving ? "Saving..." : "Save"}
+                </button>
+                <button type="button" className="btn-secondary" onClick={() => setCredTarget(null)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {childControlsTarget && familyId && (
+        <ChildSettings
+          familyId={familyId}
+          childUserId={childControlsTarget.id}
+          childName={childControlsTarget.name}
+          onClose={() => setChildControlsTarget(null)}
+        />
+      )}
     </div>
   );
 }

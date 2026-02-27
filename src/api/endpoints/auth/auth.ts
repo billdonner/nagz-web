@@ -7,6 +7,7 @@
  */
 import type {
   AuthResponse,
+  ChildLoginRequest,
   LoginRequest,
   RefreshRequest,
   SignupRequest
@@ -57,6 +58,20 @@ const refreshApiV1AuthRefreshPost = (
       );
     }
   /**
+ * Authenticate a child using family code + username + 4-digit PIN.
+ * @summary Child Login
+ */
+const childLoginApiV1AuthChildLoginPost = (
+    childLoginRequest: ChildLoginRequest,
+ ) => {
+      return customInstance<AuthResponse>(
+      {url: `/api/v1/auth/child-login`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: childLoginRequest
+    },
+      );
+    }
+  /**
  * @summary Logout
  */
 const logoutApiV1AuthLogoutPost = (
@@ -69,8 +84,9 @@ const logoutApiV1AuthLogoutPost = (
     },
       );
     }
-  return {signupApiV1AuthSignupPost,loginApiV1AuthLoginPost,refreshApiV1AuthRefreshPost,logoutApiV1AuthLogoutPost}};
+  return {signupApiV1AuthSignupPost,loginApiV1AuthLoginPost,refreshApiV1AuthRefreshPost,childLoginApiV1AuthChildLoginPost,logoutApiV1AuthLogoutPost}};
 export type SignupApiV1AuthSignupPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['signupApiV1AuthSignupPost']>>>
 export type LoginApiV1AuthLoginPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['loginApiV1AuthLoginPost']>>>
 export type RefreshApiV1AuthRefreshPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['refreshApiV1AuthRefreshPost']>>>
+export type ChildLoginApiV1AuthChildLoginPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['childLoginApiV1AuthChildLoginPost']>>>
 export type LogoutApiV1AuthLogoutPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['logoutApiV1AuthLogoutPost']>>>

@@ -10,5 +10,6 @@ export interface FamilyResponse {
   family_id: string;
   name: string;
   invite_code: string;
+  child_code?: string | null;
   created_at: string;
 }

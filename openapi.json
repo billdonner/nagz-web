@@ -151,6 +151,48 @@
         }
       }
     },
+    "/api/v1/auth/child-login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Child Login",
+        "description": "Authenticate a child using family code + username + 4-digit PIN.",
+        "operationId": "child_login_api_v1_auth_child_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/logout": {
       "post": {
         "tags": [
@@ -901,6 +943,284 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MemberResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/families/{family_id}/members/{user_id}/credentials": {
+      "put": {
+        "tags": [
+          "families"
+        ],
+        "summary": "Set Child Credentials",
+        "description": "PUT \u2014 guardian sets/updates a child's username and PIN.",
+        "operationId": "set_child_credentials_api_v1_families__family_id__members__user_id__credentials_put",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildCredentialsSet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/families/{family_id}/members/{user_id}/pin": {
+      "patch": {
+        "tags": [
+          "families"
+        ],
+        "summary": "Change Pin",
+        "description": "PATCH \u2014 child changes their own PIN.",
+        "operationId": "change_pin_api_v1_families__family_id__members__user_id__pin_patch",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PinChangeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/families/{family_id}/children/{user_id}/settings": {
+      "get": {
+        "tags": [
+          "families"
+        ],
+        "summary": "Get Child Settings",
+        "description": "GET \u2014 guardian views child controls.",
+        "operationId": "get_child_settings_api_v1_families__family_id__children__user_id__settings_get",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildSettingsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "families"
+        ],
+        "summary": "Update Child Settings",
+        "description": "PATCH \u2014 guardian updates child controls (snooze, excuses, quiet hours).",
+        "operationId": "update_child_settings_api_v1_families__family_id__children__user_id__settings_patch",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChildSettingsUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChildSettingsResponse"
                 }
               }
             }
@@ -4651,6 +4971,29 @@
           },
           "user": {
             "$ref": "#/components/schemas/AccountResponse"
+          },
+          "family_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Family Id"
+          },
+          "family_role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Family Role"
           }
         },
         "type": "object",
@@ -4772,6 +5115,183 @@
           "state"
         ],
         "title": "BlockUpdate"
+      },
+      "ChildCredentialsSet": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Username"
+          },
+          "pin": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "pattern": "^\\d{4}$",
+            "title": "Pin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "pin"
+        ],
+        "title": "ChildCredentialsSet"
+      },
+      "ChildLoginRequest": {
+        "properties": {
+          "family_code": {
+            "type": "string",
+            "maxLength": 8,
+            "minLength": 6,
+            "title": "Family Code"
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Username"
+          },
+          "pin": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "pattern": "^\\d{4}$",
+            "title": "Pin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "family_code",
+          "username",
+          "pin"
+        ],
+        "title": "ChildLoginRequest"
+      },
+      "ChildSettingsResponse": {
+        "properties": {
+          "child_user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Child User Id"
+          },
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "can_snooze": {
+            "type": "boolean",
+            "title": "Can Snooze"
+          },
+          "max_snoozes_per_day": {
+            "type": "integer",
+            "title": "Max Snoozes Per Day"
+          },
+          "can_submit_excuses": {
+            "type": "boolean",
+            "title": "Can Submit Excuses"
+          },
+          "quiet_hours_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiet Hours Start"
+          },
+          "quiet_hours_end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiet Hours End"
+          }
+        },
+        "type": "object",
+        "required": [
+          "child_user_id",
+          "family_id",
+          "can_snooze",
+          "max_snoozes_per_day",
+          "can_submit_excuses"
+        ],
+        "title": "ChildSettingsResponse"
+      },
+      "ChildSettingsUpdate": {
+        "properties": {
+          "can_snooze": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Can Snooze"
+          },
+          "max_snoozes_per_day": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 99.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Snoozes Per Day"
+          },
+          "can_submit_excuses": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Can Submit Excuses"
+          },
+          "quiet_hours_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiet Hours Start"
+          },
+          "quiet_hours_end": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quiet Hours End"
+          }
+        },
+        "type": "object",
+        "title": "ChildSettingsUpdate"
       },
       "CoachingRequest": {
         "properties": {
@@ -5513,6 +6033,17 @@
             "type": "string",
             "title": "Invite Code"
           },
+          "child_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Child Code"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -5959,6 +6490,33 @@
           },
           "role": {
             "$ref": "#/components/schemas/FamilyRole"
+          },
+          "username": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "pin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4,
+                "minLength": 4,
+                "pattern": "^\\d{4}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pin"
           }
         },
         "type": "object",
@@ -6001,6 +6559,11 @@
             "type": "string",
             "format": "date-time",
             "title": "Joined At"
+          },
+          "has_child_login": {
+            "type": "boolean",
+            "title": "Has Child Login",
+            "default": false
           }
         },
         "type": "object",
@@ -6942,6 +7505,30 @@
           "analyzed_at"
         ],
         "title": "PatternsResponse"
+      },
+      "PinChangeRequest": {
+        "properties": {
+          "current_pin": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "pattern": "^\\d{4}$",
+            "title": "Current Pin"
+          },
+          "new_pin": {
+            "type": "string",
+            "maxLength": 4,
+            "minLength": 4,
+            "pattern": "^\\d{4}$",
+            "title": "New Pin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_pin",
+          "new_pin"
+        ],
+        "title": "PinChangeRequest"
       },
       "PolicyResponse": {
         "properties": {

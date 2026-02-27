@@ -15,4 +15,5 @@ export interface MemberDetail {
   role: FamilyRole;
   status: MembershipStatus;
   joined_at: string;
+  has_child_login?: boolean;
 }
