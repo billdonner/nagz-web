@@ -207,7 +207,21 @@ export function CreateNagModal({
 
           <label>
             Repeat
-            <select value={recurrence} onChange={(e) => setRecurrence(e.target.value)}>
+            <select value={recurrence} onChange={(e) => {
+              const val = e.target.value;
+              setRecurrence(val);
+              // Auto-adjust due date to match recurrence interval
+              const intervals: Record<string, number> = {
+                every_5_minutes: 5 * 60_000,
+                every_15_minutes: 15 * 60_000,
+                every_30_minutes: 30 * 60_000,
+                hourly: 60 * 60_000,
+              };
+              if (val && intervals[val]) {
+                const d = new Date(Date.now() + intervals[val]);
+                setDueAt(d.toISOString().slice(0, 16));
+              }
+            }}>
               <option value="">None (one-time)</option>
               <option value="every_5_minutes">Every 5 min</option>
               <option value="every_15_minutes">Every 15 min</option>
