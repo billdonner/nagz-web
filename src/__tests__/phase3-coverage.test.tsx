@@ -411,11 +411,17 @@ describe("NagList", () => {
         due_at: "2026-03-01T10:00:00Z", created_at: "2026-02-01T10:00:00Z",
         strategy_template: "default",
       },
+      {
+        id: "nag-2", family_id: "fam-1", creator_id: "user-2", recipient_id: "user-1",
+        category: "chores", done_definition: "ack_only", status: "open",
+        due_at: "2026-03-02T10:00:00Z", created_at: "2026-02-01T10:00:00Z",
+        strategy_template: "default",
+      },
     ];
     (customInstance as Mock).mockImplementation((config: { url: string }) => {
       if (config.url.includes("/members")) return Promise.resolve({ items: [], total: 0 });
       if (config.url.includes("/families/")) return Promise.resolve({ family_id: "fam-1", name: "F", invite_code: null });
-      return Promise.resolve({ items: nags, total: 1 });
+      return Promise.resolve({ items: nags, total: 2 });
     });
     render(
       <Providers>
@@ -423,12 +429,16 @@ describe("NagList", () => {
       </Providers>
     );
     await waitFor(() => {
-      expect(screen.getByText(/^Nag/)).toBeDefined();
+      expect(screen.getByText("For Me")).toBeDefined();
     });
-    expect(screen.getByText(/^Status/)).toBeDefined();
-    expect(screen.getByText(/^To/)).toBeDefined();
+    expect(screen.getByText("For Others")).toBeDefined();
+    // Each section has its own Nag, Status, Due columns
+    expect(screen.getAllByText(/^Nag/).length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText(/^Status/).length).toBe(2);
+    expect(screen.getAllByText(/^Due/).length).toBe(2);
+    // "From" in For Me section, "To" in For Others section
     expect(screen.getByText(/^From/)).toBeDefined();
-    expect(screen.getByText(/^Due/)).toBeDefined();
+    expect(screen.getByText(/^To/)).toBeDefined();
   });
 
   it("has a '+ New Nag' button", async () => {

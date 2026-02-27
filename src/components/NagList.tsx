@@ -161,7 +161,7 @@ export default function NagList() {
   const sortIndicator = (col: typeof sortCol) =>
     sortCol === col ? (sortAsc ? " \u25B2" : " \u25BC") : "";
 
-  const sortedNags = [...nags].sort((a, b) => {
+  const sortNags = (list: NagResponse[]) => [...list].sort((a, b) => {
     let cmp = 0;
     switch (sortCol) {
       case "category": cmp = a.category.localeCompare(b.category); break;
@@ -173,10 +173,13 @@ export default function NagList() {
     return sortAsc ? cmp : -cmp;
   });
 
+  const nagsForMe = nags.filter((n) => n.recipient_id === userId);
+  const nagsForOthers = nags.filter((n) => n.recipient_id !== userId);
+
   return (
     <div>
       <div className="header">
-        <h2>All Nagz</h2>
+        <h2>Nagz</h2>
         <div className="header-actions">
           <Link to="/">Family</Link>
           <Link to="/connections">People</Link>
@@ -203,36 +206,75 @@ export default function NagList() {
       {nags.length === 0 ? (
         <p>No nagz found.</p>
       ) : (
-        <table className="compact-table">
-          <thead>
-            <tr>
-              <th className="sortable" onClick={() => toggleSort("category")}>Nag{sortIndicator("category")}</th>
-              <th className="sortable" onClick={() => toggleSort("status")}>Status{sortIndicator("status")}</th>
-              <th className="sortable" onClick={() => toggleSort("to")}>To{sortIndicator("to")}</th>
-              <th className="sortable" onClick={() => toggleSort("from")}>From{sortIndicator("from")}</th>
-              <th className="sortable" onClick={() => toggleSort("due")}>Due{sortIndicator("due")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedNags.map((nag) => (
-              <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
-                <td>
-                  <span className="nag-cat">{nag.category}</span>
-                  {nag.recurrence && <span className="nag-repeat" title={nag.recurrence}>&#x1F501;</span>}
-                  {nag.description && <span className="nag-desc">{nag.description}</span>}
-                </td>
-                <td>
-                  <span className={`badge badge-${statusLabel(nag.status)}`}>
-                    {statusLabel(nag.status)}
-                  </span>
-                </td>
-                <td>{nag.recipient_display_name ?? getName(nag.recipient_id)}</td>
-                <td>{nag.creator_display_name ?? getName(nag.creator_id)}</td>
-                <td className="due-cell">{new Date(nag.due_at).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          {nagsForMe.length > 0 && (
+            <>
+              <h3 style={{ margin: "1rem 0 0.5rem" }}>For Me</h3>
+              <table className="compact-table">
+                <thead>
+                  <tr>
+                    <th className="sortable" onClick={() => toggleSort("category")}>Nag{sortIndicator("category")}</th>
+                    <th className="sortable" onClick={() => toggleSort("status")}>Status{sortIndicator("status")}</th>
+                    <th className="sortable" onClick={() => toggleSort("from")}>From{sortIndicator("from")}</th>
+                    <th className="sortable" onClick={() => toggleSort("due")}>Due{sortIndicator("due")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortNags(nagsForMe).map((nag) => (
+                    <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
+                      <td>
+                        <span className="nag-cat">{nag.category}</span>
+                        {nag.recurrence && <span className="nag-repeat" title={nag.recurrence}>&#x1F501;</span>}
+                        {nag.description && <span className="nag-desc">{nag.description}</span>}
+                      </td>
+                      <td>
+                        <span className={`badge badge-${statusLabel(nag.status)}`}>
+                          {statusLabel(nag.status)}
+                        </span>
+                      </td>
+                      <td>{nag.creator_display_name ?? getName(nag.creator_id)}</td>
+                      <td className="due-cell">{new Date(nag.due_at).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+
+          {nagsForOthers.length > 0 && (
+            <>
+              <h3 style={{ margin: "1rem 0 0.5rem" }}>For Others</h3>
+              <table className="compact-table">
+                <thead>
+                  <tr>
+                    <th className="sortable" onClick={() => toggleSort("category")}>Nag{sortIndicator("category")}</th>
+                    <th className="sortable" onClick={() => toggleSort("status")}>Status{sortIndicator("status")}</th>
+                    <th className="sortable" onClick={() => toggleSort("to")}>To{sortIndicator("to")}</th>
+                    <th className="sortable" onClick={() => toggleSort("due")}>Due{sortIndicator("due")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortNags(nagsForOthers).map((nag) => (
+                    <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
+                      <td>
+                        <span className="nag-cat">{nag.category}</span>
+                        {nag.recurrence && <span className="nag-repeat" title={nag.recurrence}>&#x1F501;</span>}
+                        {nag.description && <span className="nag-desc">{nag.description}</span>}
+                      </td>
+                      <td>
+                        <span className={`badge badge-${statusLabel(nag.status)}`}>
+                          {statusLabel(nag.status)}
+                        </span>
+                      </td>
+                      <td>{nag.recipient_display_name ?? getName(nag.recipient_id)}</td>
+                      <td className="due-cell">{new Date(nag.due_at).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+        </>
       )}
 
       {detailNag && (
