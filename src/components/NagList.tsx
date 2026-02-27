@@ -6,6 +6,7 @@ import { useMembers } from "../members";
 import { CATEGORIES, DONE_DEFS, formatPhase, statusLabel } from "../nag-utils";
 import type { NagResponse } from "../api/model";
 import { CreateNagModal } from "./CreateNag";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 export default function NagList() {
   const { userId, logout } = useAuth();
@@ -33,6 +34,7 @@ export default function NagList() {
   const [editError, setEditError] = useState("");
 
   const familyId = localStorage.getItem("nagz_family_id");
+  const { eventCount } = useWebSocket(familyId);
 
   const loadNags = async () => {
     if (!familyId) return;
@@ -55,6 +57,11 @@ export default function NagList() {
   useEffect(() => {
     loadNags();
   }, [familyId, filter]);
+
+  // Auto-refresh when WebSocket events arrive
+  useEffect(() => {
+    if (eventCount > 0) loadNags();
+  }, [eventCount]);
 
   useEffect(() => {
     if (!detailNag || detailNag.status !== "open") {

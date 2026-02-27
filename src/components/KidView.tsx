@@ -6,6 +6,7 @@ import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import { formatPhase, statusLabel } from "../nag-utils";
 import type { NagResponse } from "../api/model";
 import { CreateNagModal } from "./CreateNag";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 export default function KidView() {
   const { userId, logout } = useAuth();
@@ -14,6 +15,7 @@ export default function KidView() {
   const viewUserId = searchParams.get("user") ?? userId;
   const isOwnView = viewUserId === userId;
   const familyId = localStorage.getItem("nagz_family_id");
+  const { eventCount } = useWebSocket(familyId);
   const myRole = members.find((m) => m.user_id === userId)?.role;
   const [nags, setNags] = useState<NagResponse[]>([]);
   const [excuses, setExcuses] = useState<Record<string, { summary: string; at: string }[]>>({});
@@ -95,6 +97,12 @@ export default function KidView() {
     loadNags();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [familyId, viewUserId]);
+
+  // Auto-refresh when WebSocket events arrive
+  useEffect(() => {
+    if (eventCount > 0) loadNags();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventCount]);
 
   const markComplete = async (nagId: string) => {
     setError("");

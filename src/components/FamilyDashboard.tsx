@@ -8,6 +8,7 @@ import { UUID_DISPLAY_LENGTH } from "../nag-utils";
 import { CreateNagModal } from "./CreateNag";
 import { MemberSettings } from "./MemberSettings";
 import { ChildSettings } from "./ChildSettings";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 export default function FamilyDashboard() {
   const { userId, logout } = useAuth();
@@ -20,6 +21,7 @@ export default function FamilyDashboard() {
   const [nagCounts, setNagCounts] = useState<Record<string, number>>({});
   const myRole = members.find((m) => m.user_id === userId)?.role;
   const isAdmin = myRole === "guardian";
+  const { eventCount } = useWebSocket(familyId);
 
   // Create nag modal
   const [createNagRecipient, setCreateNagRecipient] = useState<string | null>(null);
@@ -77,6 +79,13 @@ export default function FamilyDashboard() {
       setLoading(false);
     }
   }, []);
+
+  // Auto-refresh when WebSocket events arrive
+  useEffect(() => {
+    if (eventCount > 0 && familyId) {
+      loadFamily(familyId);
+    }
+  }, [eventCount]);
 
   const handleAddMember = async (e: FormEvent) => {
     e.preventDefault();
