@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth";
 import { customInstance, extractErrorMessage } from "../api/axios-instance";
 import { useMembers } from "../members";
-import { CATEGORIES, DONE_DEFS, formatPhase, statusLabel } from "../nag-utils";
+import { CATEGORIES, DONE_DEFS, formatPhase, statusLabel, urgencyTier, URGENCY_COLORS, URGENCY_BORDER } from "../nag-utils";
 import type { NagResponse } from "../api/model";
 import { CreateNagModal } from "./CreateNag";
 import { useWebSocket } from "../hooks/useWebSocket";
@@ -220,8 +220,12 @@ export default function NagList() {
                   </tr>
                 </thead>
                 <tbody>
-                  {sortNags(nagsForMe).map((nag) => (
-                    <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
+                  {sortNags(nagsForMe).map((nag) => {
+                    const tier = urgencyTier(nag.due_at, nag.status);
+                    const borderColor = URGENCY_BORDER[tier];
+                    const dueColor = URGENCY_COLORS[tier];
+                    return (
+                    <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer", borderLeft: borderColor ? `3px solid ${borderColor}` : undefined }}>
                       <td>
                         <span className="nag-cat">{nag.category}</span>
                         {nag.recurrence && <span className="nag-repeat" title={nag.recurrence}>&#x1F501;</span>}
@@ -233,9 +237,10 @@ export default function NagList() {
                         </span>
                       </td>
                       <td>{nag.creator_display_name ?? getName(nag.creator_id)}</td>
-                      <td className="due-cell">{new Date(nag.due_at).toLocaleDateString()}</td>
+                      <td className="due-cell" style={dueColor ? { color: dueColor } : undefined}>{new Date(nag.due_at).toLocaleDateString()}</td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </>
@@ -243,7 +248,7 @@ export default function NagList() {
 
           {nagsForOthers.length > 0 && (
             <>
-              <h3 style={{ margin: "1rem 0 0.5rem" }}>For Others</h3>
+              <h3 style={{ margin: "1rem 0 0.5rem" }}>Nagz to Others:</h3>
               <table className="compact-table">
                 <thead>
                   <tr>
@@ -254,8 +259,12 @@ export default function NagList() {
                   </tr>
                 </thead>
                 <tbody>
-                  {sortNags(nagsForOthers).map((nag) => (
-                    <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer" }}>
+                  {sortNags(nagsForOthers).map((nag) => {
+                    const tier = urgencyTier(nag.due_at, nag.status);
+                    const borderColor = URGENCY_BORDER[tier];
+                    const dueColor = URGENCY_COLORS[tier];
+                    return (
+                    <tr key={nag.id} onClick={() => setDetailNag(nag)} style={{ cursor: "pointer", borderLeft: borderColor ? `3px solid ${borderColor}` : undefined }}>
                       <td>
                         <span className="nag-cat">{nag.category}</span>
                         {nag.recurrence && <span className="nag-repeat" title={nag.recurrence}>&#x1F501;</span>}
@@ -267,9 +276,10 @@ export default function NagList() {
                         </span>
                       </td>
                       <td>{nag.recipient_display_name ?? getName(nag.recipient_id)}</td>
-                      <td className="due-cell">{new Date(nag.due_at).toLocaleDateString()}</td>
+                      <td className="due-cell" style={dueColor ? { color: dueColor } : undefined}>{new Date(nag.due_at).toLocaleDateString()}</td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </>

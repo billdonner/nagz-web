@@ -33,3 +33,37 @@ export function formatPhase(p: string): string {
 export function statusLabel(s: string): string {
   return s.startsWith("cancelled") ? "cancelled" : s;
 }
+
+/** Urgency tier for open nags based on time until/since due date. */
+export type UrgencyTier = "calm" | "approaching" | "dueSoon" | "overdue" | "critical";
+
+/** Compute urgency tier for a nag based on due_at and status. */
+export function urgencyTier(dueAt: string, status: string): UrgencyTier {
+  if (status !== "open") return "calm";
+  const now = Date.now();
+  const due = new Date(dueAt).getTime();
+  const hoursUntil = (due - now) / (1000 * 60 * 60);
+  if (hoursUntil > 24) return "calm";
+  if (hoursUntil > 2) return "approaching";
+  if (hoursUntil > 0) return "dueSoon";
+  if (hoursUntil > -1) return "overdue";
+  return "critical";
+}
+
+/** Due-date text color for each urgency tier. */
+export const URGENCY_COLORS: Record<UrgencyTier, string> = {
+  calm: "",            // inherit default
+  approaching: "#3b82f6", // blue
+  dueSoon: "#eab308",     // yellow
+  overdue: "#f97316",     // orange
+  critical: "#ef4444",    // red
+};
+
+/** Left accent border color for each urgency tier (empty = no border). */
+export const URGENCY_BORDER: Record<UrgencyTier, string> = {
+  calm: "",
+  approaching: "",
+  dueSoon: "#eab308",
+  overdue: "#f97316",
+  critical: "#ef4444",
+};

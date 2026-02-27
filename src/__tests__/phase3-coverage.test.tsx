@@ -431,7 +431,7 @@ describe("NagList", () => {
     await waitFor(() => {
       expect(screen.getByText("For Me")).toBeDefined();
     });
-    expect(screen.getByText("For Others")).toBeDefined();
+    expect(screen.getByText("Nagz to Others:")).toBeDefined();
     // Each section has its own Nag, Status, Due columns
     expect(screen.getAllByText(/^Nag/).length).toBeGreaterThanOrEqual(2);
     expect(screen.getAllByText(/^Status/).length).toBe(2);
