@@ -1651,14 +1651,14 @@
         }
       }
     },
-    "/api/v1/connections/{connection_id}/trust": {
+    "/api/v1/connections/{connection_id}/type": {
       "patch": {
         "tags": [
           "connections"
         ],
-        "summary": "Update Connection Trust",
-        "description": "PATCH /connections/{id}/trust \u2014 toggle trusted flag.",
-        "operationId": "update_connection_trust_api_v1_connections__connection_id__trust_patch",
+        "summary": "Update Connection Type",
+        "description": "PATCH /connections/{id}/type \u2014 toggle caregiver flag.",
+        "operationId": "update_connection_type_api_v1_connections__connection_id__type_patch",
         "parameters": [
           {
             "name": "connection_id",
@@ -1685,7 +1685,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ConnectionTrustUpdate"
+                "$ref": "#/components/schemas/ConnectionTypeUpdate"
               }
             }
           }
@@ -1719,9 +1719,9 @@
         "tags": [
           "connections"
         ],
-        "summary": "List Trusted Children",
-        "description": "GET /connections/{id}/children \u2014 list naggable children via trusted connection.",
-        "operationId": "list_trusted_children_api_v1_connections__connection_id__children_get",
+        "summary": "List Caregiver Children",
+        "description": "GET /connections/{id}/children \u2014 list naggable children via caregiver connection.",
+        "operationId": "list_caregiver_children_api_v1_connections__connection_id__children_get",
         "parameters": [
           {
             "name": "connection_id",
@@ -1751,9 +1751,9 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TrustedConnectionChild"
+                    "$ref": "#/components/schemas/CaregiverConnectionChild"
                   },
-                  "title": "Response List Trusted Children Api V1 Connections  Connection Id  Children Get"
+                  "title": "Response List Caregiver Children Api V1 Connections  Connection Id  Children Get"
                 }
               }
             }
@@ -5338,6 +5338,48 @@
         ],
         "title": "BlockUpdate"
       },
+      "CaregiverConnectionChild": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "family_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Family Id"
+          },
+          "family_name": {
+            "type": "string",
+            "title": "Family Name"
+          },
+          "connection_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Connection Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "family_id",
+          "family_name",
+          "connection_id"
+        ],
+        "title": "CaregiverConnectionChild"
+      },
       "ChildCredentialsSet": {
         "properties": {
           "username": {
@@ -5582,6 +5624,11 @@
             "type": "string",
             "format": "email",
             "title": "Invitee Email"
+          },
+          "caregiver": {
+            "type": "boolean",
+            "title": "Caregiver",
+            "default": false
           }
         },
         "type": "object",
@@ -5621,9 +5668,9 @@
           "status": {
             "$ref": "#/components/schemas/ConnectionStatus"
           },
-          "trusted": {
+          "caregiver": {
             "type": "boolean",
-            "title": "Trusted",
+            "title": "Caregiver",
             "default": false
           },
           "created_at": {
@@ -5686,18 +5733,18 @@
         ],
         "title": "ConnectionStatus"
       },
-      "ConnectionTrustUpdate": {
+      "ConnectionTypeUpdate": {
         "properties": {
-          "trusted": {
+          "caregiver": {
             "type": "boolean",
-            "title": "Trusted"
+            "title": "Caregiver"
           }
         },
         "type": "object",
         "required": [
-          "trusted"
+          "caregiver"
         ],
-        "title": "ConnectionTrustUpdate"
+        "title": "ConnectionTypeUpdate"
       },
       "ConsentCreate": {
         "properties": {
@@ -8273,9 +8320,9 @@
             "type": "string",
             "title": "Status"
           },
-          "trusted": {
+          "caregiver": {
             "type": "boolean",
-            "title": "Trusted"
+            "title": "Caregiver"
           },
           "created_at": {
             "type": "string",
@@ -8302,7 +8349,7 @@
           "invitee_id",
           "invitee_email",
           "status",
-          "trusted",
+          "caregiver",
           "created_at",
           "responded_at"
         ],
@@ -8527,48 +8574,6 @@
           "reason"
         ],
         "title": "ToneSelectResponse"
-      },
-      "TrustedConnectionChild": {
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "User Id"
-          },
-          "display_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name"
-          },
-          "family_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Family Id"
-          },
-          "family_name": {
-            "type": "string",
-            "title": "Family Name"
-          },
-          "connection_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Connection Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "user_id",
-          "family_id",
-          "family_name",
-          "connection_id"
-        ],
-        "title": "TrustedConnectionChild"
       },
       "ValidationError": {
         "properties": {

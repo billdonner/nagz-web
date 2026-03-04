@@ -12,7 +12,7 @@ export interface SyncedConnection {
   invitee_id: string | null;
   invitee_email: string;
   status: string;
-  trusted: boolean;
+  caregiver: boolean;
   created_at: string;
   responded_at: string | null;
 }

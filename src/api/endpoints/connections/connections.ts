@@ -6,13 +6,13 @@
  * OpenAPI spec version: 0.2.0
  */
 import type {
+  CaregiverConnectionChild,
   ConnectionInvite,
   ConnectionResponse,
-  ConnectionTrustUpdate,
+  ConnectionTypeUpdate,
   ListConnectionsApiV1ConnectionsGetParams,
   ListPendingInvitesApiV1ConnectionsPendingGetParams,
-  PaginatedResponseConnectionResponse,
-  TrustedConnectionChild
+  PaginatedResponseConnectionResponse
 } from '../../model';
 
 import { customInstance } from '../../axios-instance';
@@ -97,38 +97,38 @@ const revokeConnectionApiV1ConnectionsConnectionIdRevokePost = (
       );
     }
   /**
- * PATCH /connections/{id}/trust — toggle trusted flag.
- * @summary Update Connection Trust
+ * PATCH /connections/{id}/type — toggle caregiver flag.
+ * @summary Update Connection Type
  */
-const updateConnectionTrustApiV1ConnectionsConnectionIdTrustPatch = (
+const updateConnectionTypeApiV1ConnectionsConnectionIdTypePatch = (
     connectionId: string,
-    connectionTrustUpdate: ConnectionTrustUpdate,
+    connectionTypeUpdate: ConnectionTypeUpdate,
  ) => {
       return customInstance<ConnectionResponse>(
-      {url: `/api/v1/connections/${connectionId}/trust`, method: 'PATCH',
+      {url: `/api/v1/connections/${connectionId}/type`, method: 'PATCH',
       headers: {'Content-Type': 'application/json', },
-      data: connectionTrustUpdate
+      data: connectionTypeUpdate
     },
       );
     }
   /**
- * GET /connections/{id}/children — list naggable children via trusted connection.
- * @summary List Trusted Children
+ * GET /connections/{id}/children — list naggable children via caregiver connection.
+ * @summary List Caregiver Children
  */
-const listTrustedChildrenApiV1ConnectionsConnectionIdChildrenGet = (
+const listCaregiverChildrenApiV1ConnectionsConnectionIdChildrenGet = (
     connectionId: string,
  ) => {
-      return customInstance<TrustedConnectionChild[]>(
+      return customInstance<CaregiverConnectionChild[]>(
       {url: `/api/v1/connections/${connectionId}/children`, method: 'GET'
     },
       );
     }
-  return {inviteConnectionApiV1ConnectionsInvitePost,listConnectionsApiV1ConnectionsGet,listPendingInvitesApiV1ConnectionsPendingGet,acceptConnectionApiV1ConnectionsConnectionIdAcceptPost,declineConnectionApiV1ConnectionsConnectionIdDeclinePost,revokeConnectionApiV1ConnectionsConnectionIdRevokePost,updateConnectionTrustApiV1ConnectionsConnectionIdTrustPatch,listTrustedChildrenApiV1ConnectionsConnectionIdChildrenGet}};
+  return {inviteConnectionApiV1ConnectionsInvitePost,listConnectionsApiV1ConnectionsGet,listPendingInvitesApiV1ConnectionsPendingGet,acceptConnectionApiV1ConnectionsConnectionIdAcceptPost,declineConnectionApiV1ConnectionsConnectionIdDeclinePost,revokeConnectionApiV1ConnectionsConnectionIdRevokePost,updateConnectionTypeApiV1ConnectionsConnectionIdTypePatch,listCaregiverChildrenApiV1ConnectionsConnectionIdChildrenGet}};
 export type InviteConnectionApiV1ConnectionsInvitePostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['inviteConnectionApiV1ConnectionsInvitePost']>>>
 export type ListConnectionsApiV1ConnectionsGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['listConnectionsApiV1ConnectionsGet']>>>
 export type ListPendingInvitesApiV1ConnectionsPendingGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['listPendingInvitesApiV1ConnectionsPendingGet']>>>
 export type AcceptConnectionApiV1ConnectionsConnectionIdAcceptPostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['acceptConnectionApiV1ConnectionsConnectionIdAcceptPost']>>>
 export type DeclineConnectionApiV1ConnectionsConnectionIdDeclinePostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['declineConnectionApiV1ConnectionsConnectionIdDeclinePost']>>>
 export type RevokeConnectionApiV1ConnectionsConnectionIdRevokePostResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['revokeConnectionApiV1ConnectionsConnectionIdRevokePost']>>>
-export type UpdateConnectionTrustApiV1ConnectionsConnectionIdTrustPatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['updateConnectionTrustApiV1ConnectionsConnectionIdTrustPatch']>>>
-export type ListTrustedChildrenApiV1ConnectionsConnectionIdChildrenGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['listTrustedChildrenApiV1ConnectionsConnectionIdChildrenGet']>>>
+export type UpdateConnectionTypeApiV1ConnectionsConnectionIdTypePatchResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['updateConnectionTypeApiV1ConnectionsConnectionIdTypePatch']>>>
+export type ListCaregiverChildrenApiV1ConnectionsConnectionIdChildrenGetResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getConnections>['listCaregiverChildrenApiV1ConnectionsConnectionIdChildrenGet']>>>

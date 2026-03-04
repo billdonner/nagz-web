@@ -6,7 +6,6 @@
  * OpenAPI spec version: 0.2.0
  */
 
-export interface ConnectionInvite {
-  invitee_email: string;
-  caregiver?: boolean;
+export interface ConnectionTypeUpdate {
+  caregiver: boolean;
 }

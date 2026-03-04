@@ -13,7 +13,7 @@ export interface ConnectionResponse {
   invitee_id?: string | null;
   invitee_email: string;
   status: ConnectionStatus;
-  trusted?: boolean;
+  caregiver?: boolean;
   created_at: string;
   responded_at?: string | null;
   other_party_email?: string | null;

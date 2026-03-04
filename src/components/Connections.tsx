@@ -9,7 +9,7 @@ interface ConnectionResponse {
   invitee_id: string | null;
   invitee_email: string;
   status: string;
-  trusted: boolean;
+  caregiver: boolean;
   created_at: string;
   responded_at: string | null;
   other_party_email?: string | null;
@@ -153,16 +153,16 @@ export default function Connections() {
     }
   };
 
-  const handleToggleTrust = async (id: string, currentTrusted: boolean) => {
+  const handleToggleCaregiver = async (id: string, currentCaregiver: boolean) => {
     try {
       await customInstance<ConnectionResponse>({
-        url: `/api/v1/connections/${id}/trust`,
+        url: `/api/v1/connections/${id}/type`,
         method: "PATCH",
-        data: { trusted: !currentTrusted },
+        data: { caregiver: !currentCaregiver },
       });
       await loadConnections();
     } catch (err) {
-      setError(extractErrorMessage(err, "Failed to update trust"));
+      setError(extractErrorMessage(err, "Failed to update connection type"));
     }
   };
 
@@ -299,7 +299,7 @@ export default function Connections() {
               <tr>
                 <th>Person</th>
                 <th>Connected</th>
-                <th>Trusted</th>
+                <th>Caregiver</th>
                 <th></th>
               </tr>
             </thead>
@@ -311,9 +311,9 @@ export default function Connections() {
                   <td>
                     <input
                       type="checkbox"
-                      checked={c.trusted}
-                      onChange={() => handleToggleTrust(c.id, c.trusted)}
-                      title={c.trusted ? "Trusted — can nag each other's kids" : "Not trusted — click to enable"}
+                      checked={c.caregiver}
+                      onChange={() => handleToggleCaregiver(c.id, c.caregiver)}
+                      title={c.caregiver ? "Caregiver — can nag your children" : "Friend — click to make caregiver"}
                     />
                   </td>
                   <td>

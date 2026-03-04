@@ -6,7 +6,7 @@ import { useMembers } from "../members";
 import { UUID_DISPLAY_LENGTH } from "../nag-utils";
 import type { NagCreate, NagResponse } from "../api/model";
 
-interface TrustedChild {
+interface CaregiverChild {
   user_id: string;
   display_name: string | null;
   family_id: string;
@@ -16,7 +16,7 @@ interface TrustedChild {
 
 interface ConnectionItem {
   id: string;
-  trusted: boolean;
+  caregiver: boolean;
 }
 
 interface PaginatedConnections {
@@ -54,9 +54,9 @@ export function CreateNagModal({
   const [recurrence, setRecurrence] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [trustedChildren, setTrustedChildren] = useState<TrustedChild[]>([]);
+  const [caregiverChildren, setCaregiverChildren] = useState<CaregiverChild[]>([]);
 
-  // Load trusted children from active trusted connections
+  // Load children from active caregiver connections
   useEffect(() => {
     (async () => {
       try {
@@ -65,11 +65,11 @@ export function CreateNagModal({
           method: "GET",
           params: { status: "active" },
         });
-        const trustedConns = (connResp.items ?? []).filter((c) => c.trusted);
-        const allChildren: TrustedChild[] = [];
-        for (const conn of trustedConns) {
+        const caregiverConns = (connResp.items ?? []).filter((c) => c.caregiver);
+        const allChildren: CaregiverChild[] = [];
+        for (const conn of caregiverConns) {
           try {
-            const children = await customInstance<TrustedChild[]>({
+            const children = await customInstance<CaregiverChild[]>({
               url: `/api/v1/connections/${conn.id}/children`,
               method: "GET",
             });
@@ -78,18 +78,18 @@ export function CreateNagModal({
             // Skip connections that fail
           }
         }
-        setTrustedChildren(allChildren);
+        setCaregiverChildren(allChildren);
       } catch {
-        // Non-critical — just skip trusted children
+        // Non-critical — just skip caregiver children
       }
     })();
   }, []);
 
   const handleRecipientChange = (value: string) => {
     setRecipientId(value);
-    // Check if the selected recipient is a trusted child
-    const trustedChild = trustedChildren.find((tc) => tc.user_id === value);
-    setSelectedConnectionId(trustedChild ? trustedChild.connection_id : null);
+    // Check if the selected recipient is a caregiver's child
+    const caregiverChild = caregiverChildren.find((tc) => tc.user_id === value);
+    setSelectedConnectionId(caregiverChild ? caregiverChild.connection_id : null);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -155,9 +155,9 @@ export function CreateNagModal({
                   ))}
                 </optgroup>
               )}
-              {trustedChildren.length > 0 && (
-                <optgroup label="Trusted Connections' Kids">
-                  {trustedChildren.map((tc) => (
+              {caregiverChildren.length > 0 && (
+                <optgroup label="Caregivers' Kids">
+                  {caregiverChildren.map((tc) => (
                     <option key={`${tc.connection_id}-${tc.user_id}`} value={tc.user_id}>
                       {tc.display_name ?? tc.user_id.slice(0, UUID_DISPLAY_LENGTH)} ({tc.family_name})
                     </option>
