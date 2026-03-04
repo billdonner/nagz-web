@@ -960,6 +960,59 @@
         }
       }
     },
+    "/api/v1/families/{family_id}/leave": {
+      "post": {
+        "tags": [
+          "families"
+        ],
+        "summary": "Leave Family",
+        "description": "POST /families/{familyId}/leave \u2014 any member leaves voluntarily.",
+        "operationId": "leave_family_api_v1_families__family_id__leave_post",
+        "parameters": [
+          {
+            "name": "family_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Family Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/families/{family_id}/members/{user_id}/credentials": {
       "put": {
         "tags": [
@@ -1829,6 +1882,16 @@
             }
           },
           {
+            "name": "exclude_dismissed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Exclude Dismissed"
+            }
+          },
+          {
             "name": "limit",
             "in": "query",
             "required": false,
@@ -1942,7 +2005,7 @@
           "nags"
         ],
         "summary": "Update Nag",
-        "description": "PATCH /nags/{nagId} \u2014 creator_or_guardian.",
+        "description": "PATCH /nags/{nagId} \u2014 creator_or_guardian, or recipient for committed_at only.",
         "operationId": "update_nag_api_v1_nags__nag_id__patch",
         "parameters": [
           {
@@ -2038,6 +2101,165 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NagResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nags/{nag_id}/withdraw": {
+      "post": {
+        "tags": [
+          "nags"
+        ],
+        "summary": "Withdraw Nag",
+        "description": "POST /nags/{nagId}/withdraw \u2014 creator_only, open\u2192withdrawn.",
+        "operationId": "withdraw_nag_api_v1_nags__nag_id__withdraw_post",
+        "parameters": [
+          {
+            "name": "nag_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Nag Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NagResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nags/{nag_id}/dismiss": {
+      "post": {
+        "tags": [
+          "nags"
+        ],
+        "summary": "Dismiss Nag",
+        "description": "POST /nags/{nagId}/dismiss \u2014 recipient_only, hides from recipient's view.",
+        "operationId": "dismiss_nag_api_v1_nags__nag_id__dismiss_post",
+        "parameters": [
+          {
+            "name": "nag_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Nag Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NagResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/nags/{nag_id}/undismiss": {
+      "post": {
+        "tags": [
+          "nags"
+        ],
+        "summary": "Undismiss Nag",
+        "description": "POST /nags/{nagId}/undismiss \u2014 recipient_only, restores visibility.",
+        "operationId": "undismiss_nag_api_v1_nags__nag_id__undismiss_post",
+        "parameters": [
+          {
+            "name": "nag_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Nag Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Authorization"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -6982,6 +7204,30 @@
               }
             ],
             "title": "Completed At"
+          },
+          "committed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Committed At"
+          },
+          "recipient_dismissed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recipient Dismissed At"
           }
         },
         "type": "object",
@@ -7004,7 +7250,8 @@
           "open",
           "completed",
           "missed",
-          "cancelled_relationship_change"
+          "cancelled_relationship_change",
+          "withdrawn"
         ],
         "title": "NagStatus"
       },
@@ -7064,6 +7311,18 @@
                 "type": "null"
               }
             ]
+          },
+          "committed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Committed At"
           }
         },
         "type": "object",
@@ -7917,6 +8176,14 @@
             "type": "array",
             "title": "Gamification Events"
           },
+          "connections": {
+            "items": {
+              "$ref": "#/components/schemas/SyncedConnection"
+            },
+            "type": "array",
+            "title": "Connections",
+            "default": []
+          },
           "server_time": {
             "type": "string",
             "format": "date-time",
@@ -7973,6 +8240,73 @@
           "at"
         ],
         "title": "SyncedAIMediationEvent"
+      },
+      "SyncedConnection": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "inviter_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Inviter Id"
+          },
+          "invitee_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invitee Id"
+          },
+          "invitee_email": {
+            "type": "string",
+            "title": "Invitee Email"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "trusted": {
+            "type": "boolean",
+            "title": "Trusted"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "responded_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responded At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "inviter_id",
+          "invitee_id",
+          "invitee_email",
+          "status",
+          "trusted",
+          "created_at",
+          "responded_at"
+        ],
+        "title": "SyncedConnection"
       },
       "SyncedGamificationEvent": {
         "properties": {
@@ -8075,6 +8409,18 @@
             "type": "string",
             "format": "date-time",
             "title": "Created At"
+          },
+          "committed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Committed At"
           }
         },
         "type": "object",

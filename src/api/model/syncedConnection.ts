@@ -5,13 +5,14 @@
  * Family-oriented AI-mediated nagging system
  * OpenAPI spec version: 0.2.0
  */
-import type { DevicePlatform } from './devicePlatform';
 
-export interface DeviceTokenResponse {
+export interface SyncedConnection {
   id: string;
-  user_id: string;
-  platform: DevicePlatform;
-  token: string;
+  inviter_id: string;
+  invitee_id: string | null;
+  invitee_email: string;
+  status: string;
+  trusted: boolean;
   created_at: string;
-  last_used_at: string | null;
+  responded_at: string | null;
 }
